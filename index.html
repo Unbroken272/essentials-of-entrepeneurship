@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Sustainable Move – Circular Moving Platform</title>
+  <meta name="description"
+    content="The Sustainable Move: rent, trade, and donate your way to a greener home. Circular marketplace, starter packs, bus rental and donation hub – all in one place." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="auth.js"></script>
+</head>
+
+<body>
+
+  <!-- ─── ONBOARDING OVERLAY ─── -->
+  <div id="onboarding-overlay" class="overlay active">
+    <div class="onboarding-card">
+      <div class="onboarding-logo">
+        <span class="logo-leaf">🌿</span>
+        <span class="logo-text">The Sustainable Move</span>
+      </div>
+      <h1 class="onboarding-title">Moving should be good for the planet too.</h1>
+      <p class="onboarding-sub">Tell us what brings you here today</p>
+      <div class="onboarding-choices">
+        <button id="btn-moving" class="choice-card" onclick="selectRole('moving')">
+          <div class="choice-icon">📦</div>
+          <h3>I'm Moving Out</h3>
+          <p>Sell, donate or rent out your stuff. List items for fast local pickup.</p>
+        </button>
+        <button id="btn-arriving" class="choice-card" onclick="selectRole('arriving')">
+          <div class="choice-icon">🏠</div>
+          <h3>New in Town</h3>
+          <p>Find furniture, rent a starter pack or book a van to get settled fast.</p>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── NAV ─── -->
+  <nav id="navbar" class="navbar">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">
+        <span class="logo-leaf">🌿</span>
+        <span>The Sustainable Move</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#marketplace" class="nav-link">Marketplace</a></li>
+        <li><a href="#starter-packs" class="nav-link">Starter Packs</a></li>
+        <li><a href="#logistics" class="nav-link">Van Rental</a></li>
+        <li><a href="#donate" class="nav-link">Donate</a></li>
+      </ul>
+      <!-- Auth-aware nav actions (updated by JS) -->
+      <div class="nav-actions" id="nav-actions">
+        <!-- Injected by updateNavAuth() in app.js -->
+      </div>
+      <button class="hamburger" id="hamburger" onclick="toggleMenu()">☰</button>
+    </div>
+    <div class="nav-mobile" id="nav-mobile">
+      <a href="#marketplace" onclick="toggleMenu()">Marketplace</a>
+      <a href="#starter-packs" onclick="toggleMenu()">Starter Packs</a>
+      <a href="#logistics" onclick="toggleMenu()">Van Rental</a>
+      <a href="#donate" onclick="toggleMenu()">Donate</a>
+      <div class="nav-mobile-auth" id="nav-mobile-auth"></div>
+    </div>
+  </nav>
+
+  <!-- ─── HERO ─── -->
+  <section class="hero" id="home">
+    <div class="hero-bg-orbs">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-badge">🌱 Circular Economy · Zero Waste Moving</div>
+      <h1 class="hero-title">
+        Move Smarter.<br />
+        <span class="gradient-text">Live Greener.</span>
+      </h1>
+      <p class="hero-desc">
+        The Netherlands first all-in-one sustainable moving platform. Buy, sell, rent, and donate — all within your
+        neighbourhood.
+      </p>
+      <div class="hero-buttons">
+        <button class="btn-hero-primary"
+          onclick="document.getElementById('marketplace').scrollIntoView({behavior:'smooth'})">
+          Browse Marketplace →
+        </button>
+        <button class="btn-hero-secondary"
+          onclick="document.getElementById('starter-packs').scrollIntoView({behavior:'smooth'})">
+          Discover Starter Packs
+        </button>
+      </div>
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-num">1,240</span>
+          <span class="stat-label">Items Available</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-num">340 kg</span>
+          <span class="stat-label">Waste Prevented</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-num">580+</span>
+          <span class="stat-label">Happy Movers</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-card-stack">
+        <div class="floating-card card-a">
+          <span class="fc-icon">✅</span>
+          <div>
+            <strong>IKEA KALLAX reserved</strong>
+            <small>2 mins ago · €45</small>
+          </div>
+        </div>
+        <div class="floating-card card-b">
+          <span class="fc-icon">📦</span>
+          <div>
+            <strong>Starter Pack delivered!</strong>
+            <small>Oud-West · Today</small>
+          </div>
+        </div>
+        <div class="floating-card card-c">
+          <span class="fc-icon">🚐</span>
+          <div>
+            <strong>Van booked for Saturday</strong>
+            <small>€29 · 4h slot</small>
+          </div>
+        </div>
+        <div class="hero-phone-mock">
+          <div class="phone-screen">
+            <div class="phone-header">
+              <span>🌿 Near You</span>
+              <span class="phone-badge">Available Today</span>
+            </div>
+            <div class="phone-item">
+              <div class="phone-thumb thumb-1"></div>
+              <div>
+                <p>IKEA Sofa – Grey</p>
+                <small>€120 · 0.4 km</small>
+              </div>
+              <span class="urgency-dot"></span>
+            </div>
+            <div class="phone-item">
+              <div class="phone-thumb thumb-2"></div>
+              <div>
+                <p>Dining Table + 4 Chairs</p>
+                <small>€85 · 0.8 km</small>
+              </div>
+              <span class="urgency-dot"></span>
+            </div>
+            <div class="phone-item">
+              <div class="phone-thumb thumb-3"></div>
+              <div>
+                <p>Kitchen Starter Pack</p>
+                <small>€35/week · Rental</small>
+              </div>
+              <span class="urgency-dot yellow"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── HOW IT WORKS ─── -->
+  <section class="how-it-works" id="how">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">Simple Process</div>
+        <h2>Moving made <span class="gradient-text">effortless</span></h2>
+        <p>Three steps to a complete, sustainable move</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <div class="step-icon">📍</div>
+          <h3>Browse Locally</h3>
+          <p>See items and packs available in your neighbourhood this week — filter by urgency, category, and distance.
+          </p>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <div class="step-icon">🔒</div>
+          <h3>Reserve Instantly</h3>
+          <p>Tap to reserve. The item is yours. Pay securely in-app via card — no cash, no hassle.</p>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <div class="step-icon">🚐</div>
+          <h3>Book a Van</h3>
+          <p>Book an affordable van directly in the app to pick up everything you've reserved. One trip, zero waste.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── MARKETPLACE ─── -->
+  <section class="marketplace" id="marketplace">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">Circular Marketplace</div>
+        <h2>Items <span class="gradient-text">near you</span></h2>
+        <p>Secondhand furniture and household goods — local, fast, and sustainable</p>
+      </div>
+
+      <!-- Filters -->
+      <div class="market-filters">
+        <div class="filter-tabs">
+          <button class="filter-tab active" id="tab-all" onclick="filterItems('all', this)">All Items</button>
+          <button class="filter-tab urgent" id="tab-today" onclick="filterItems('today', this)">🔥 Available
+            Today</button>
+          <button class="filter-tab" id="tab-week" onclick="filterItems('week', this)">📅 This Week</button>
+          <button class="filter-tab" id="tab-furniture" onclick="filterItems('furniture', this)">🪑 Furniture</button>
+          <button class="filter-tab" id="tab-kitchen" onclick="filterItems('kitchen', this)">🍳 Kitchen</button>
+          <button class="filter-tab" id="tab-bedroom" onclick="filterItems('bedroom', this)">🛏 Bedroom</button>
+        </div>
+        <div class="filter-sort">
+          <label for="sort-select">Sort:</label>
+          <select id="sort-select" onchange="sortItems(this.value)">
+            <option value="distance">Nearest First</option>
+            <option value="price-low">Price: Low → High</option>
+            <option value="price-high">Price: High → Low</option>
+            <option value="urgency">Most Urgent</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Urgency Banner -->
+      <div class="urgency-banner" id="urgency-banner">
+        <span class="pulse-dot"></span>
+        <strong>15 items</strong> must go this week — help prevent furniture waste!
+        <button onclick="filterItems('today', document.getElementById('tab-today'))">See urgent items →</button>
+      </div>
+
+      <!-- Item Grid -->
+      <div class="items-grid" id="items-grid">
+
+        <div class="item-card" data-category="furniture" data-urgency="today" data-price="45" data-distance="0.4">
+          <div class="item-img" style="background: linear-gradient(135deg, #a8d8a8, #5cb85c);">
+            <span class="item-emoji">🪑</span>
+          </div>
+          <div class="urgency-badge today">Available Today</div>
+          <div class="item-info">
+            <div class="item-header">
+              <h4>KALLAX Shelf Unit</h4>
+              <span class="item-price">€45</span>
+            </div>
+            <p class="item-desc">White IKEA KALLAX, 4 compartments. Great condition. Must go today!</p>
+            <div class="item-meta">
+              <span>📍 0.4 km · Oud-West</span>
+              <span>⭐ 4.8</span>
+            </div>
+            <div class="item-actions">
+              <button class="btn-reserve" onclick="openReserveModal('KALLAX Shelf Unit', '€45')">Reserve Now</button>
+              <button class="btn-wishlist" onclick="toggleWishlist(this)">♡</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="item-card" data-category="furniture" data-urgency="today" data-price="85" data-distance="0.8">
+          <div class="item-img" style="background: linear-gradient(135deg, #d4a373, #a0522d);">
+            <span class="item-emoji">🍽️</span>
+          </div>
+          <div class="urgency-badge today">Available Today</div>
+          <div class="item-info">
+            <div class="item-header">
+              <h4>Dining Table + 4 Chairs</h4>
+              <span class="item-price">€85</span>
+            </div>
+            <p class="item-desc">Solid oak table with 4 matching chairs. Moving abroad tomorrow!</p>
+            <div class="item-meta">
+              <span>📍 0.8 km · De Pijp</span>
+              <span>⭐ 5.0</span>
+            </div>
+            <div class="item-actions">
+              <button class="btn-reserve" onclick="openReserveModal('Dining Table + 4 Chairs', '€85')">Reserve
+                Now</button>
+              <button class="btn-wishlist" onclick="toggleWishlist(this)">♡</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="item-card" data-category="bedroom" data-urgency="today" data-price="120" data-distance="1.2">
+          <div class="item-img" style="background: linear-gradient(135deg, #b8c0e0, #6c7fc4);">
+            <span class="item-emoji">🛋️</span>
+          </div>
+          <div class="urgency-badge today">Available Today</div>
+          <div class="item-info">
+            <div class="item-header">
+              <h4>2-Seat Sofa – Grey</h4>
+              <span class="item-price">€120</span>
+            </div>
+            <p class="item-desc">IKEA EKTORP 2-seat sofa, light grey, excellent condition. Pickup only.</p>
+            <div class="item-meta">
+              <span>📍 1.2 km · Jordaan</span>
+              <span>⭐ 4.7</span>
+            </div>
+            <div class="item-actions">
+              <button class="btn-reserve" onclick="openReserveModal('2-Seat Sofa – Grey', '€120')">Reserve Now</button>
+              <button class="btn-wishlist" onclick="toggleWishlist(this)">♡</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="item-card" data-category="kitchen" data-urgency="week" data-price="30" data-distance="0.6">
+          <div class="item-img" style="background: linear-gradient(135deg, #ffd6a5, #f4a261);">
+            <span class="item-emoji">🍳</span>
+          </div>
+          <div class="urgency-badge week">This Week</div>
+          <div class="item-info">
+            <div class="item-header">
+              <h4>Kitchen Essentials Set</h4>
+              <span class="item-price">€30</span>
+            </div>
+            <p class="item-desc">Pots, pans, knife block, cutting board, utensils. Complete starter kit.</p>
+            <div class="item-meta">
+              <span>📍 0.6 km · Bos en Lommer</span>
+              <span>⭐ 4.9</span>
+            </div>
+            <div class="item-actions">
+              <button class="btn-reserve" onclick="openReserveModal('Kitchen Essentials Set', '€30')">Reserve
+                Now</button>
+              <button class="btn-wishlist" onclick="toggleWishlist(this)">♡</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="item-card" data-category="bedroom" data-urgency="week" data-price="55" data-distance="1.5">
+          <div class="item-img" style="background: linear-gradient(135deg, #c9e4ca, #52b788);">
+            <span class="item-emoji">🛏️</span>
+          </div>
+          <div class="urgency-badge week">This Week</div>
+          <div class="item-info">
+            <div class="item-header">
+              <h4>Single Bed Frame + Mattress</h4>
+              <span class="item-price">€55</span>
+            </div>
+            <p class="item-desc">90x200 cm IKEA bed frame with clean mattress. Dismantled & ready.</p>
+            <div class="item-meta">
+              <span>📍 1.5 km · Oost</span>
+              <span>⭐ 4.6</span>
+            </div>
+            <div class="item-actions">
+              <button class="btn-reserve" onclick="openReserveModal('Single Bed Frame + Mattress', '€55')">Reserve
+                Now</button>
+              <button class="btn-wishlist" onclick="toggleWishlist(this)">♡</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="item-card" data-category="furniture" data-urgency="week" data-price="70" data-distance="2.1">
+          <div class="item-img" style="background: linear-gradient(135deg, #e0c3fc, #9b72cf);">
+            <span class="item-emoji">📺</span>
+          </div>
+          <div class="urgency-badge week">This Week</div>
+          <div class="item-info">
+            <div class="item-header">
+              <h4>TV Cabinet – Walnut</h4>
+              <span class="item-price">€70</span>
+            </div>
+            <p class="item-desc">Solid walnut veneer TV cabinet, 150 cm wide, 2 drawers. Stylish.</p>
+            <div class="item-meta">
+              <span>📍 2.1 km · Zuid</span>
+              <span>⭐ 4.8</span>
+            </div>
+            <div class="item-actions">
+              <button class="btn-reserve" onclick="openReserveModal('TV Cabinet – Walnut', '€70')">Reserve Now</button>
+              <button class="btn-wishlist" onclick="toggleWishlist(this)">♡</button>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /items-grid -->
+
+      <div class="load-more-wrap">
+        <button class="btn-outline" id="load-more-btn" onclick="loadMore()">Load 6 More Items</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── STARTER PACKS ─── -->
+  <section class="starter-packs" id="starter-packs">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">Starter Packs & Box Rental</div>
+        <h2>Everything you need <span class="gradient-text">from day one</span></h2>
+        <p>Curated rental packs for students and expats — delivered to your door</p>
+      </div>
+      <div class="packs-grid">
+
+        <div class="pack-card featured">
+          <div class="pack-badge">Most Popular</div>
+          <div class="pack-icon">🍳</div>
+          <h3>Kitchen Starter Pack</h3>
+          <div class="pack-price"><span>€35</span>/week</div>
+          <ul class="pack-contents">
+            <li>✓ 2 pots + 2 pans</li>
+            <li>✓ Knife block (5 knives)</li>
+            <li>✓ Cutting board</li>
+            <li>✓ Full utensil set</li>
+            <li>✓ 4 plates, 4 bowls, 4 mugs</li>
+            <li>✓ Cutlery for 4</li>
+          </ul>
+          <div class="pack-meta">
+            <span>📦 Delivered in 24h</span>
+            <span>🔄 Free return pickup</span>
+          </div>
+          <button class="btn-primary" onclick="openBookingModal('Kitchen Starter Pack', '€35/week')">Book Now</button>
+        </div>
+
+        <div class="pack-card">
+          <div class="pack-icon">🛏️</div>
+          <h3>Bedroom Starter Pack</h3>
+          <div class="pack-price"><span>€45</span>/week</div>
+          <ul class="pack-contents">
+            <li>✓ Duvet + cover (single or double)</li>
+            <li>✓ 2 pillows + pillowcases</li>
+            <li>✓ 2 bedsheets (fitted + flat)</li>
+            <li>✓ Towel set (bath + hand)</li>
+            <li>✓ Bed lamp</li>
+          </ul>
+          <div class="pack-meta">
+            <span>📦 Delivered in 24h</span>
+            <span>🔄 Free return pickup</span>
+          </div>
+          <button class="btn-primary" onclick="openBookingModal('Bedroom Starter Pack', '€45/week')">Book Now</button>
+        </div>
+
+        <div class="pack-card">
+          <div class="pack-icon">🏠</div>
+          <h3>Full Home Pack</h3>
+          <div class="pack-price"><span>€75</span>/week</div>
+          <ul class="pack-contents">
+            <li>✓ Everything in Kitchen Pack</li>
+            <li>✓ Everything in Bedroom Pack</li>
+            <li>✓ Iron + ironing board</li>
+            <li>✓ Vacuum cleaner</li>
+            <li>✓ Cleaning supplies set</li>
+          </ul>
+          <div class="pack-meta">
+            <span>📦 Delivered in 48h</span>
+            <span>🔄 Free return pickup</span>
+          </div>
+          <button class="btn-primary" onclick="openBookingModal('Full Home Pack', '€75/week')">Book Now</button>
+        </div>
+
+      </div>
+
+      <!-- Moving Box Rental -->
+      <div class="box-rental">
+        <div class="box-rental-text">
+          <div class="section-tag" style="justify-content:flex-start; display:inline-flex">Moving Boxes</div>
+          <h3>Reusable Moving Boxes</h3>
+          <p>Forget cardboard. Our heavy-duty plastic boxes are stackable, weather-resistant and come in 3 sizes. We
+            deliver, you fill, we pick up — no waste, no hassle.</p>
+          <ul class="box-features">
+            <li>✓ Small (30L) · Medium (50L) · Large (70L)</li>
+            <li>✓ Delivered & collected for free (within Amsterdam)</li>
+            <li>✓ Includes lids, straps & labels</li>
+            <li>✓ From €2/box/week</li>
+          </ul>
+          <button class="btn-primary" onclick="openBoxModal()">Order Boxes</button>
+        </div>
+        <div class="box-rental-visual">
+          <div class="box-stack">
+            <div class="box large">70L</div>
+            <div class="box medium">50L</div>
+            <div class="box small">30L</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── LOGISTICS ─── -->
+  <section class="logistics" id="logistics">
+    <div class="container">
+      <div class="section-header light">
+        <div class="section-tag light">Van Rental</div>
+        <h2>Get it all home, <span class="gradient-text">in one trip</span></h2>
+        <p>Book an electric van directly in the app — no phone calls, no queues</p>
+      </div>
+      <div class="van-options">
+
+        <div class="van-card">
+          <div class="van-img van-img-1">🚐</div>
+          <div class="van-info">
+            <h3>Cargo Van</h3>
+            <div class="van-specs">
+              <span>👥 1 driver</span>
+              <span>📦 8 m³</span>
+              <span>⚡ Electric</span>
+            </div>
+            <p>Perfect for a studio apartment or a few large items. Easy to park in the city.</p>
+            <div class="van-price-row">
+              <div class="van-price"><strong>€29</strong><small>/4 hours</small></div>
+              <button class="btn-primary" onclick="openVanModal('Cargo Van', '€29/4h')">Book Van</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="van-card featured-van">
+          <div class="van-badge">Best Value</div>
+          <div class="van-img van-img-2">🚛</div>
+          <div class="van-info">
+            <h3>Medium Truck</h3>
+            <div class="van-specs">
+              <span>👥 1–2 people</span>
+              <span>📦 15 m³</span>
+              <span>⚡ Hybrid</span>
+            </div>
+            <p>Ideal for a 1–2 bedroom apartment. With tailgate lift for heavy items.</p>
+            <div class="van-price-row">
+              <div class="van-price"><strong>€49</strong><small>/4 hours</small></div>
+              <button class="btn-primary" onclick="openVanModal('Medium Truck', '€49/4h')">Book Van</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="van-card">
+          <div class="van-img van-img-3">🏗️</div>
+          <div class="van-info">
+            <h3>Large Mover</h3>
+            <div class="van-specs">
+              <span>👥 1–3 people</span>
+              <span>📦 25 m³</span>
+              <span>⚡ Hybrid</span>
+            </div>
+            <p>Full apartment or house move. Includes moving blankets and straps.</p>
+            <div class="van-price-row">
+              <div class="van-price"><strong>€75</strong><small>/4 hours</small></div>
+              <button class="btn-primary" onclick="openVanModal('Large Mover', '€75/4h')">Book Van</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Availability Calendar -->
+      <div class="availability-strip">
+        <h4>Available Slots This Week</h4>
+        <div class="slots-row" id="slots-row"></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ─── DONATE ─── -->
+  <section class="donate" id="donate">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">Donation Hub</div>
+        <h2>Give it a <span class="gradient-text">second life</span></h2>
+        <p>Don't throw it — donate it. Find drop-off points and charities near you</p>
+      </div>
+
+      <div class="donate-grid">
+        <div class="donate-stats-panel">
+          <h3>Community Impact</h3>
+          <div class="impact-stats">
+            <div class="impact-stat">
+              <div class="impact-num">2,840</div>
+              <div class="impact-label">Items donated</div>
+            </div>
+            <div class="impact-stat">
+              <div class="impact-num">14.2 t</div>
+              <div class="impact-label">CO₂ saved</div>
+            </div>
+            <div class="impact-stat">
+              <div class="impact-num">12</div>
+              <div class="impact-label">Partner charities</div>
+            </div>
+          </div>
+          <div class="impact-bar-wrap">
+            <div class="impact-bar-label">Monthly donation goal</div>
+            <div class="impact-bar">
+              <div class="impact-bar-fill" style="width: 73%"></div>
+            </div>
+            <div class="impact-bar-pct">73% of 500 items</div>
+          </div>
+        </div>
+
+        <div class="donate-orgs">
+          <h3>Drop-off Partners Near You</h3>
+          <div class="org-list">
+
+            <div class="org-card">
+              <div class="org-icon">❤️</div>
+              <div class="org-info">
+                <h4>Salvation Army (Leger des Heils)</h4>
+                <p>Accepts furniture, clothing, kitchen items</p>
+                <span class="org-dist">📍 0.9 km · Mon–Sat 9:00–17:00</span>
+              </div>
+              <button class="btn-sm" onclick="openDonateModal('Salvation Army')">Schedule</button>
+            </div>
+
+            <div class="org-card">
+              <div class="org-icon">🏠</div>
+              <div class="org-info">
+                <h4>Humanitas Deventer</h4>
+                <p>Furniture for people starting fresh after crisis</p>
+                <span class="org-dist">📍 1.4 km · Mon–Fri 10:00–16:00</span>
+              </div>
+              <button class="btn-sm" onclick="openDonateModal('Humanitas Deventer')">Schedule</button>
+            </div>
+
+            <div class="org-card">
+              <div class="org-icon">🌍</div>
+              <div class="org-info">
+                <h4>Kledingbank Amsterdam</h4>
+                <p>Clothing, bedding & household textiles</p>
+                <span class="org-dist">📍 2.0 km · Tue & Thu 11:00–15:00</span>
+              </div>
+              <button class="btn-sm" onclick="openDonateModal('Kledingbank Amsterdam')">Schedule</button>
+            </div>
+
+            <div class="org-card">
+              <div class="org-icon">♻️</div>
+              <div class="org-info">
+                <h4>ReShare Amsterdam</h4>
+                <p>Electronics, small appliances, bikes</p>
+                <span class="org-dist">📍 2.6 km · Mon–Sat 10:00–18:00</span>
+              </div>
+              <button class="btn-sm" onclick="openDonateModal('ReShare Amsterdam')">Schedule</button>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <div class="donate-cta">
+        <div class="donate-cta-content">
+          <h3>Not sure what to do with your stuff?</h3>
+          <p>Take our 30-second quiz and we'll match your items with the best option: sell, rent, donate or recycle.</p>
+          <button class="btn-hero-primary" onclick="openQuizModal()">Take the Quiz →</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ─── MY ACCOUNT DASHBOARD ─── -->
+  <section class="dashboard" id="dashboard" style="display:none;">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">My Account</div>
+        <h2>Welcome back, <span class="gradient-text" id="dash-name">Mover</span></h2>
+        <p>Your reservations, listings, and rentals — all in one place</p>
+      </div>
+
+      <div class="dash-tabs">
+        <button class="dash-tab active" onclick="switchDashTab('reservations', this)">📋 My Reservations</button>
+        <button class="dash-tab" onclick="switchDashTab('listings', this)">🏷️ My Listings</button>
+        <button class="dash-tab" onclick="switchDashTab('rentals', this)">📦 My Rentals</button>
+        <button class="dash-tab" onclick="switchDashTab('donations', this)">❤️ My Donations</button>
+      </div>
+
+      <div class="dash-panel" id="dash-reservations"></div>
+      <div class="dash-panel" id="dash-listings" style="display:none;"></div>
+      <div class="dash-panel" id="dash-rentals" style="display:none;"></div>
+      <div class="dash-panel" id="dash-donations" style="display:none;"></div>
+    </div>
+  </section>
+
+  <!-- ─── FOOTER ─── -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="footer-logo">🌿 The Sustainable Move</div>
+        <p>Amsterdam's circular moving platform. Rent. Trade. Donate.</p>
+        <div class="footer-socials">
+          <a href="#" class="social-link">Instagram</a>
+          <a href="#" class="social-link">LinkedIn</a>
+          <a href="#" class="social-link">Twitter</a>
+        </div>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h5>Platform</h5>
+          <a href="#marketplace">Marketplace</a>
+          <a href="#starter-packs">Starter Packs</a>
+          <a href="#logistics">Van Rental</a>
+          <a href="#donate">Donate</a>
+        </div>
+        <div class="footer-col">
+          <h5>Company</h5>
+          <a href="#">About Us</a>
+          <a href="#">Sustainability</a>
+          <a href="#">Press</a>
+          <a href="#">Careers</a>
+        </div>
+        <div class="footer-col">
+          <h5>Support</h5>
+          <a href="#">Help Centre</a>
+          <a href="#">Contact</a>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 The Sustainable Move. Made with 🌱 in Amsterdam.</p>
+    </div>
+  </footer>
+
+  <!-- ─── MODALS ─── -->
+
+  <!-- Sign Up Modal -->
+  <div class="modal-overlay" id="signup-modal" onclick="closeModal('signup-modal')">
+    <div class="modal" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeModal('signup-modal')">✕</button>
+      <div class="auth-modal-header">
+        <div class="auth-modal-logo">🌿</div>
+        <h2 class="modal-title">Create your account</h2>
+        <p class="auth-modal-sub">Join Amsterdam's circular moving platform</p>
+      </div>
+      <div id="signup-error" class="auth-error" style="display:none;"></div>
+      <form id="signup-form" onsubmit="handleSignUp(event)">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="signup-name" placeholder="Anna Müller" required />
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="signup-email" placeholder="anna@email.com" required />
+        </div>
+        <div class="form-group">
+          <label>Password <small style="color:var(--slate-400);">(min 6 characters)</small></label>
+          <input type="password" id="signup-password" placeholder="••••••••" required />
+        </div>
+        <div class="form-group">
+          <label>I want to…</label>
+          <div class="role-options">
+            <label class="role-opt active"><input type="radio" name="role" value="both" checked /> 🔄 Buy & Sell</label>
+            <label class="role-opt"><input type="radio" name="role" value="buyer" /> 🛍️ Buy Only</label>
+            <label class="role-opt"><input type="radio" name="role" value="seller" /> 🏷️ Sell Only</label>
+          </div>
+        </div>
+        <button type="submit" class="btn-primary full-width" id="signup-submit">Create Account</button>
+      </form>
+      <p class="auth-switch">Already have an account? <button class="auth-link" onclick="switchAuthModal('login')">Log
+          in</button></p>
+    </div>
+  </div>
+
+  <!-- Log In Modal -->
+  <div class="modal-overlay" id="login-modal" onclick="closeModal('login-modal')">
+    <div class="modal" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeModal('login-modal')">✕</button>
+      <div class="auth-modal-header">
+        <div class="auth-modal-logo">🌿</div>
+        <h2 class="modal-title">Welcome back</h2>
+        <p class="auth-modal-sub">Log in to your account</p>
+      </div>
+      <div id="login-error" class="auth-error" style="display:none;"></div>
+      <form id="login-form" onsubmit="handleLogIn(event)">
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="login-email" placeholder="anna@email.com" required />
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="login-password" placeholder="••••••••" required />
+        </div>
+        <button type="submit" class="btn-primary full-width" id="login-submit">Log In</button>
+      </form>
+      <p class="auth-switch">Don't have an account? <button class="auth-link" onclick="switchAuthModal('signup')">Sign
+          up</button></p>
+    </div>
+  </div>
+
+  <!-- Reserve Modal -->
+  <div class="modal-overlay" id="reserve-modal" onclick="closeModal('reserve-modal')">
+    <div class="modal" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeModal('reserve-modal')">✕</button>
+      <h2 class="modal-title">Reserve Item</h2>
+      <div id="reserve-item-info"></div>
+      <form onsubmit="handleReserve(event)">
+        <div class="form-group">
+          <label>Preferred Pickup Date</label>
+          <input type="date" id="reserve-date" required />
+        </div>
+        <div class="form-group">
+          <label>Message to Seller (optional)</label>
+          <textarea id="reserve-msg" placeholder="I can pick up anytime after 5pm..." rows="2"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Payment Method</label>
+          <div class="payment-options">
+            <label class="pay-opt active"><input type="radio" name="pay" value="card" checked /> 💳 Card</label>
+            <label class="pay-opt"><input type="radio" name="pay" value="ideal" /> 🏦 iDEAL</label>
+            <label class="pay-opt"><input type="radio" name="pay" value="paypal" /> 🅿️ PayPal</label>
+          </div>
+        </div>
+        <button type="submit" class="btn-primary full-width">Confirm Reservation</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Booking Modal (Packs) -->
+  <div class="modal-overlay" id="booking-modal" onclick="closeModal('booking-modal')">
+    <div class="modal" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeModal('booking-modal')">✕</button>
+      <h2 class="modal-title">Book Starter Pack</h2>
+      <div id="booking-item-info"></div>
+      <form onsubmit="handleBooking(event)">
+        <div class="form-group">
+          <label>Your Name</label>
+          <input type="text" placeholder="Anna Müller" required />
+        </div>
+        <div class="form-group">
+          <label>Delivery Address</label>
+          <input type="text" placeholder="Keizersgracht 123, Amsterdam" required />
+        </div>
+        <div class="form-group">
+          <label>Delivery Date</label>
+          <input type="date" required />
+        </div>
+        <div class="form-group">
+          <label>Rental Duration</label>
+          <select>
+            <option>1 week</option>
+            <option>2 weeks</option>
+            <option>1 month</option>
+            <option>3 months</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Payment Method</label>
+          <div class="payment-options">
+            <label class="pay-opt active"><input type="radio" name="pay2" value="card" checked /> 💳 Card</label>
+            <label class="pay-opt"><input type="radio" name="pay2" value="ideal" /> 🏦 iDEAL</label>
+            <label class="pay-opt"><input type="radio" name="pay2" value="paypal" /> 🅿️ PayPal</label>
+          </div>
+        </div>
+        <button type="submit" class="btn-primary full-width">Confirm Booking</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Van Modal -->
+  <div class="modal-overlay" id="van-modal" onclick="closeModal('van-modal')">
+    <div class="modal" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeModal('van-modal')">✕</button>
+      <h2 class="modal-title">Book a Van</h2>
+      <div id="van-item-info"></div>
+      <form onsubmit="handleVanBooking(event)">
+        <div class="form-group">
+          <label>Your Name</label>
+          <input type="text" placeholder="Marco Rossi" required />
+        </div>
+        <div class="form-group">
+          <label>Pickup Address</label>
+          <input type="text" placeholder="Prinsengracht 456, Amsterdam" required />
+        </div>
+        <div class="form-group">
+          <label>Drop-off Address</label>
+          <input type="text" placeholder="Amstelveenseweg 789, Amsterdam" required />
+        </div>
+        <div class="form-group">
+          <label>Date & Time</label>
+          <input type="datetime-local" required />
+        </div>
+        <div class="form-group">
+          <label>Duration</label>
+          <select>
+            <option>4 hours</option>
+            <option>8 hours (full day)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Payment Method</label>
+          <div class="payment-options">
+            <label class="pay-opt active"><input type="radio" name="pay3" value="card" checked /> 💳 Card</label>
+            <label class="pay-opt"><input type="radio" name="pay3" value="ideal" /> 🏦 iDEAL</label>
+          </div>
+        </div>
+        <button type="submit" class="btn-primary full-width">Confirm Van Booking</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Donate Modal -->
+  <div class="modal-overlay" id="donate-modal" onclick="closeModal('donate-modal')">
+    <div class="modal" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeModal('donate-modal')">✕</button>
+      <h2 class="modal-title">Schedule a Donation</h2>
+      <div id="donate-org-info"></div>
+      <form onsubmit="handleDonate(event)">
+        <div class="form-group">
+          <label>Your Name</label>
+          <input type="text" placeholder="Sophie Janssen" required />
+        </div>
+        <div class="form-group">
+          <label>What would you like to donate?</label>
+          <textarea placeholder="e.g. sofa, kitchen items, clothing..." rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Preferred Drop-off Date</label>
+          <input type="date" required />
+        </div>
+        <div class="form-group">
+          <label>Need pickup? (€10 fee)</label>
+          <div class="toggle-row">
+            <span>Home pickup</span>
+            <label class="toggle">
+              <input type="checkbox" id="pickup-toggle" />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+        <button type="submit" class="btn-primary full-width">Schedule Donation</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Box Order Modal -->
+  <div class="modal-overlay" id="box-modal" onclick="closeModal('box-modal')">
+    <div class="modal" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeModal('box-modal')">✕</button>
+      <h2 class="modal-title">Order Moving Boxes</h2>
+      <div class="box-order-form">
+        <div class="box-qty-row">
+          <div class="box-qty-item">
+            <label>Small (30L) — €2/week</label>
+            <div class="qty-ctrl">
+              <button type="button" onclick="changeQty('sm', -1)">−</button>
+              <span id="qty-sm">0</span>
+              <button type="button" onclick="changeQty('sm', 1)">+</button>
+            </div>
+          </div>
+          <div class="box-qty-item">
+            <label>Medium (50L) — €3/week</label>
+            <div class="qty-ctrl">
+              <button type="button" onclick="changeQty('md', -1)">−</button>
+              <span id="qty-md">0</span>
+              <button type="button" onclick="changeQty('md', 1)">+</button>
+            </div>
+          </div>
+          <div class="box-qty-item">
+            <label>Large (70L) — €4/week</label>
+            <div class="qty-ctrl">
+              <button type="button" onclick="changeQty('lg', -1)">−</button>
+              <span id="qty-lg">0</span>
+              <button type="button" onclick="changeQty('lg', 1)">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="box-total">Total: <strong id="box-total">€0</strong>/week</div>
+        <form onsubmit="handleBoxOrder(event)">
+          <div class="form-group">
+            <label>Delivery Address</label>
+            <input type="text" placeholder="Herengracht 200, Amsterdam" required />
+          </div>
+          <div class="form-group">
+            <label>Delivery Date</label>
+            <input type="date" required />
+          </div>
+          <button type="submit" class="btn-primary full-width">Order Boxes</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- List Item Modal -->
+  <div class="modal-overlay" id="list-item-modal" onclick="closeModal('list-item-modal')">
+    <div class="modal" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeModal('list-item-modal')">✕</button>
+      <h2 class="modal-title">List an Item</h2>
+      <form onsubmit="handleListItem(event)">
+        <div class="form-group">
+          <label>Item Name</label>
+          <input type="text" placeholder="IKEA BILLY Bookcase" required />
+        </div>
+        <div class="form-group">
+          <label>Category</label>
+          <select>
+            <option>Furniture</option>
+            <option>Kitchen</option>
+            <option>Bedroom</option>
+            <option>Electronics</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Price (€)</label>
+          <input type="number" placeholder="0" min="0" required />
+        </div>
+        <div class="form-group">
+          <label>Availability</label>
+          <select>
+            <option>Available Today</option>
+            <option>Available This Week</option>
+            <option>Flexible</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea placeholder="Condition, dimensions, pickup notes..." rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Your Email</label>
+          <input type="email" placeholder="you@email.com" required />
+        </div>
+        <button type="submit" class="btn-primary full-width">Publish Listing</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Quiz Modal -->
+  <div class="modal-overlay" id="quiz-modal" onclick="closeModal('quiz-modal')">
+    <div class="modal" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeModal('quiz-modal')">✕</button>
+      <div id="quiz-content"></div>
+    </div>
+  </div>
+
+  <!-- Success Toast -->
+  <div class="toast" id="toast">
+    <span class="toast-icon">✅</span>
+    <span id="toast-msg">Done!</span>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+
+</html>
