@@ -203,6 +203,13 @@
       </div>
     </div>
 
+    <div class="card" style="margin-bottom: 32px;">
+      <h3 style="margin-top:0; font-size:1rem; color:var(--slate-800);">User Flow — Top Navigation Paths</h3>
+      <div class="chart-container" style="height:280px;">
+        <canvas id="flowChart"></canvas>
+      </div>
+    </div>
+
     <details>
       <summary>View Raw Data Dump</summary>
       <div style="overflow-x: auto;">
@@ -273,11 +280,23 @@
       document.getElementById('kpi-conversion').innerText = conversionRate + '%';
       document.getElementById('kpi-time').innerText = formatTime(avgTimeMs);
 
-      // 2. Charts
+      // 2. Navigation transitions
+      const transitions = {};
+      metrics.forEach(session => {
+        if (session.pageViews && session.pageViews.length > 1) {
+          for (let i = 0; i < session.pageViews.length - 1; i++) {
+            const key = session.pageViews[i] + ' → ' + session.pageViews[i + 1];
+            transitions[key] = (transitions[key] || 0) + 1;
+          }
+        }
+      });
+
+      // 3. Charts
       renderTrafficChart(trafficSources);
       renderEventsChart(eventsCount);
+      renderFlowChart(transitions);
 
-      // 3. Raw Data
+      // 4. Raw Data
       renderRawTable(metrics);
     }
 
@@ -343,6 +362,42 @@
           },
           scales: {
             y: { beginAtZero: true, ticks: { stepSize: 1 } }
+          }
+        }
+      });
+    }
+
+    let flowChartInstance = null;
+    function renderFlowChart(dataObj) {
+      const ctx = document.getElementById('flowChart').getContext('2d');
+      const sorted = Object.keys(dataObj)
+        .map(k => ({ label: k, count: dataObj[k] }))
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 10);
+
+      const labels = sorted.map(e => e.label);
+      const data = sorted.map(e => e.count);
+
+      if (flowChartInstance) flowChartInstance.destroy();
+
+      flowChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels.length ? labels : ['No navigation data yet'],
+          datasets: [{
+            label: 'Transitions',
+            data: data.length ? data : [0],
+            backgroundColor: '#3b82f6',
+            borderRadius: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          indexAxis: 'y',
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { beginAtZero: true, ticks: { stepSize: 1 } }
           }
         }
       });
