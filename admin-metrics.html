@@ -4,471 +4,384 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SwapNest – Circular Moving Platform</title>
-  <meta name="description"
-    content="SwapNest: rent, trade, and donate your way to a greener home. Circular marketplace, starter packs, bus rental and donation hub – all in one place." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
-    rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
-  <script src="auth.js"></script>
+  <title>Smoke Test Dashboard - SwapNest</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --green-500: #22c55e;
+      --green-600: #16a34a;
+      --slate-50: #f8fafc;
+      --slate-100: #f1f5f9;
+      --slate-200: #e2e8f0;
+      --slate-600: #475569;
+      --slate-800: #1e293b;
+      --radius: 8px;
+      --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: var(--slate-50);
+      color: var(--slate-800);
+    }
+
+    .navbar {
+      background: white;
+      border-bottom: 1px solid var(--slate-200);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .navbar-brand {
+      font-weight: 700;
+      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .navbar-brand span {
+      color: var(--green-600);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 32px auto;
+      padding: 0 24px;
+    }
+
+    .header {
+      margin-bottom: 32px;
+    }
+
+    .header h1 {
+      margin: 0 0 8px 0;
+      font-size: 1.875rem;
+    }
+
+    .header p {
+      margin: 0;
+      color: var(--slate-600);
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    .card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--slate-100);
+    }
+
+    .kpi-title {
+      font-size: 0.875rem;
+      color: var(--slate-600);
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .kpi-value {
+      font-size: 2.25rem;
+      font-weight: 700;
+      color: var(--slate-800);
+    }
+
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    .chart-container {
+      position: relative;
+      height: 300px;
+    }
+
+    details {
+      background: white;
+      border-radius: var(--radius);
+      padding: 16px;
+      border: 1px solid var(--slate-200);
+    }
+
+    summary {
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--slate-800);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+      text-align: left;
+      font-size: 0.875rem;
+    }
+
+    th,
+    td {
+      padding: 12px;
+      border-bottom: 1px solid var(--slate-100);
+    }
+
+    th {
+      color: var(--slate-600);
+      font-weight: 500;
+    }
+
+    .clear-btn {
+      background: transparent;
+      border: 1px solid var(--slate-200);
+      padding: 8px 16px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-size: 0.875rem;
+      color: var(--slate-600);
+      float: right;
+    }
+
+    .clear-btn:hover {
+      background: var(--slate-100);
+    }
+  </style>
 </head>
 
 <body>
-
-  <!-- ─── ONBOARDING OVERLAY REMOVED ─── -->
-
-  <!-- ─── NAV ─── -->
-  <nav id="navbar" class="navbar">
-    <div class="nav-inner">
-      <a href="#" class="nav-logo">
-        <span class="logo-leaf">🌿</span>
-        <span>SwapNest</span>
-      </a>
-      <ul class="nav-links">
-        <li><a href="marketplace.html" class="nav-link">Marketplace</a></li>
-        <li><a href="services.html#starter-packs" class="nav-link">Starter Packs</a></li>
-        <li><a href="services.html#logistics" class="nav-link">Van Rental</a></li>
-        <li><a href="services.html#donate" class="nav-link">Donate</a></li>
-      </ul>
-      <!-- Auth-aware nav actions (updated by JS) -->
-      <div class="nav-actions" id="nav-actions">
-        <!-- Injected by updateNavAuth() in app.js -->
-      </div>
-      <button class="hamburger" id="hamburger" onclick="toggleMenu()">☰</button>
-    </div>
-    <div class="nav-mobile" id="nav-mobile">
-      <a href="marketplace.html" onclick="toggleMenu()" href="marketplace.html">Marketplace</a>
-      <a href="services.html#starter-packs" onclick="toggleMenu()" href="services.html#starter-packs">Starter Packs</a>
-      <a href="services.html#logistics" onclick="toggleMenu()" href="services.html#logistics">Van Rental</a>
-      <a href="services.html#donate" onclick="toggleMenu()" href="services.html#donate">Donate</a>
-      <div class="nav-mobile-auth" id="nav-mobile-auth"></div>
-    </div>
+  <nav class="navbar">
+    <div class="navbar-brand">🌿 <span>SwapNest</span> Admin</div>
   </nav>
 
-  <section class="admin-dashboard" style="padding: 100px 24px;">
-    <div class="container">
-      <div class="section-header">
-        <div class="section-tag">Admin</div>
-        <h2>Analytics <span class="gradient-text">Dashboard</span></h2>
-        <p>Real-time metrics from the Smoke Test</p>
+  <div class="container">
+    <div class="header">
+      <button class="clear-btn" onclick="clearMetrics()">Clear Data</button>
+      <h1>Smoke Test Dashboard</h1>
+      <p>Real-time metrics overview</p>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="card">
+        <div class="kpi-title">Total Visitors</div>
+        <div class="kpi-value" id="kpi-visitors">0</div>
       </div>
+      <div class="card">
+        <div class="kpi-title">Waitlist Signups</div>
+        <div class="kpi-value" id="kpi-signups">0</div>
+      </div>
+      <div class="card">
+        <div class="kpi-title">Conversion Rate</div>
+        <div class="kpi-value" id="kpi-conversion">0%</div>
+      </div>
+      <div class="card">
+        <div class="kpi-title">Avg. Time on Site</div>
+        <div class="kpi-value" id="kpi-time">0s</div>
+      </div>
+    </div>
 
-      <div
-        style="background: white; padding: 24px; border-radius: var(--radius); border: 1px solid var(--slate-200); overflow-x: auto;">
-        <table style="width: 100%; border-collapse: collapse; text-align: left;">
-          <thead>
-            <tr style="border-bottom: 2px solid var(--slate-200); color: var(--slate-600);">
-              <th style="padding: 12px;">Session ID</th>
-              <th style="padding: 12px;">Referrer</th>
-              <th style="padding: 12px;">Time Spent</th>
-              <th style="padding: 12px;">Waitlist Signups</th>
-              <th style="padding: 12px;">Page Views</th>
-              <th style="padding: 12px;">Actions</th>
-            </tr>
-          </thead>
-          <tbody id="metrics-table-body">
-            <!-- Metrics injected via JS -->
-          </tbody>
-        </table>
-
-        <div style="margin-top: 20px; text-align: right;">
-          <button class="btn-outline" onclick="clearMetrics()">Clear Metrics</button>
+    <div class="charts-grid">
+      <div class="card">
+        <h3 style="margin-top:0; font-size:1rem; color:var(--slate-800);">Traffic Sources</h3>
+        <div class="chart-container">
+          <canvas id="trafficChart"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0; font-size:1rem; color:var(--slate-800);">Top Events / Clicks</h3>
+        <div class="chart-container">
+          <canvas id="eventsChart"></canvas>
         </div>
       </div>
     </div>
-  </section>
+
+    <details>
+      <summary>View Raw Data Dump</summary>
+      <div style="overflow-x: auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>Session ID</th>
+              <th>Referrer</th>
+              <th>Time Spent</th>
+              <th>Waitlist Signups</th>
+              <th>Page Views</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="raw-table-body">
+          </tbody>
+        </table>
+      </div>
+    </details>
+  </div>
 
   <script src="analytics.js"></script>
   <script>
-    function renderMetrics() {
-      if (typeof Analytics === 'undefined') return;
+    function formatTime(ms) {
+      if (!ms) return '0s';
+      const totalSeconds = Math.round(ms / 1000);
+      const m = Math.floor(totalSeconds / 60);
+      const s = totalSeconds % 60;
+      if (m > 0) return `${m}m ${s}s`;
+      return `${s}s`;
+    }
 
-      const metrics = Analytics.getMetrics();
-      const tbody = document.getElementById('metrics-table-body');
+    function renderDashboard() {
+      const metrics = (typeof Analytics !== 'undefined') ? Analytics.getMetrics() : [];
 
+      // 1. Calculate KPIs
+      const totalVisitors = metrics.length;
+      let totalSignups = 0;
+      let totalTimeSpent = 0;
+
+      const trafficSources = {};
+      const eventsCount = {};
+
+      metrics.forEach(session => {
+        // KPIs
+        totalSignups += (session.waitlistSignups || 0);
+        totalTimeSpent += (session.timeSpentMs || 0);
+
+        // Sources
+        const ref = session.referrer && session.referrer.trim() ? session.referrer : "direct";
+        trafficSources[ref] = (trafficSources[ref] || 0) + 1;
+
+        // Events
+        if (session.clicks) {
+          session.clicks.forEach(click => {
+            const label = click.label || 'Unknown Click';
+            eventsCount[label] = (eventsCount[label] || 0) + 1;
+          });
+        }
+      });
+
+      const conversionRate = totalVisitors > 0 ? ((totalSignups / totalVisitors) * 100).toFixed(1) : 0;
+      const avgTimeMs = totalVisitors > 0 ? totalTimeSpent / totalVisitors : 0;
+
+      // Update DOM
+      document.getElementById('kpi-visitors').innerText = totalVisitors;
+      document.getElementById('kpi-signups').innerText = totalSignups;
+      document.getElementById('kpi-conversion').innerText = conversionRate + '%';
+      document.getElementById('kpi-time').innerText = formatTime(avgTimeMs);
+
+      // 2. Charts
+      renderTrafficChart(trafficSources);
+      renderEventsChart(eventsCount);
+
+      // 3. Raw Data
+      renderRawTable(metrics);
+    }
+
+    let trafficChartInstance = null;
+    function renderTrafficChart(dataObj) {
+      const ctx = document.getElementById('trafficChart').getContext('2d');
+      const labels = Object.keys(dataObj);
+      const data = Object.values(dataObj);
+
+      if (trafficChartInstance) trafficChartInstance.destroy();
+
+      trafficChartInstance = new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: labels.length ? labels : ['No Data'],
+          datasets: [{
+            data: data.length ? data : [1],
+            backgroundColor: [
+              '#22c55e', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#e2e8f0'
+            ],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'right' }
+          }
+        }
+      });
+    }
+
+    let eventsChartInstance = null;
+    function renderEventsChart(dataObj) {
+      const ctx = document.getElementById('eventsChart').getContext('2d');
+      // Sort descending
+      const sortedEvents = Object.keys(dataObj).map(k => ({ label: k, count: dataObj[k] }))
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 10); // top 10
+
+      const labels = sortedEvents.map(e => e.label);
+      const data = sortedEvents.map(e => e.count);
+
+      if (eventsChartInstance) eventsChartInstance.destroy();
+
+      eventsChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels.length ? labels : ['No Data'],
+          datasets: [{
+            label: 'Clicks',
+            data: data.length ? data : [0],
+            backgroundColor: '#22c55e',
+            borderRadius: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            y: { beginAtZero: true, ticks: { stepSize: 1 } }
+          }
+        }
+      });
+    }
+
+    function renderRawTable(metrics) {
+      const tbody = document.getElementById('raw-table-body');
       if (!metrics || metrics.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" style="padding: 16px; text-align: center; color: var(--slate-500);">No session data yet.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No session data yet.</td></tr>';
         return;
       }
 
       tbody.innerHTML = metrics.map(session => {
-        const timeStr = Math.round(session.timeSpentMs / 1000) + 's';
-        const views = session.pageViews.join(', ');
-        const clicks = session.clicks.length + ' clicks';
+        const timeStr = formatTime(session.timeSpentMs);
+        const views = session.pageViews ? session.pageViews.join(', ') : '';
+        const clicks = session.clicks ? session.clicks.length + ' clicks' : '0 clicks';
 
         return `
-                <tr style="border-bottom: 1px solid var(--slate-100);">
-                    <td style="padding: 12px; font-family: monospace; font-size: 0.85rem;" title="${session.id}">${session.id.substring(0, 12)}...</td>
-                    <td style="padding: 12px;">${session.referrer}</td>
-                    <td style="padding: 12px;">${timeStr}</td>
-                    <td style="padding: 12px;"><strong>${session.waitlistSignups || 0}</strong></td>
-                    <td style="padding: 12px; max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${views}">${views}</td>
-                    <td style="padding: 12px;"><span style="color: var(--slate-500); font-size: 0.85rem;">${clicks}</span></td>
-                </tr>
-            `;
+          <tr>
+              <td style="font-family: monospace;" title="${session.id}">${session.id.substring(0, 12)}...</td>
+              <td>${session.referrer || 'direct'}</td>
+              <td>${timeStr}</td>
+              <td><strong>${session.waitlistSignups || 0}</strong></td>
+              <td style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${views}">${views}</td>
+              <td><span style="color: var(--slate-500);">${clicks}</span></td>
+          </tr>
+        `;
       }).reverse().join('');
     }
 
     function clearMetrics() {
       if (confirm("Are you sure you want to clear all analytics data?")) {
         localStorage.removeItem('swapnest_metrics');
-        renderMetrics();
+        renderDashboard();
       }
     }
 
-    // Render initially
-    document.addEventListener('DOMContentLoaded', renderMetrics);
+    document.addEventListener('DOMContentLoaded', renderDashboard);
   </script>
-
-  <!-- ─── FOOTER ─── -->
-  <footer class="footer">
-    <div class="footer-inner">
-      <div class="footer-brand">
-        <div class="footer-logo">🌿 SwapNest</div>
-        <p>A circular moving platform. Rent. Trade. Donate.</p>
-        <div class="footer-socials">
-          <a href="#" class="social-link">Instagram</a>
-          <a href="#" class="social-link">LinkedIn</a>
-          <a href="#" class="social-link">Twitter</a>
-        </div>
-      </div>
-      <div class="footer-links">
-        <div class="footer-col">
-          <h5>Platform</h5>
-          <a href="marketplace.html">Marketplace</a>
-          <a href="services.html#starter-packs">Starter Packs</a>
-          <a href="services.html#logistics">Van Rental</a>
-          <a href="services.html#donate">Donate</a>
-        </div>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>© 2025 SwapNest. Made with 🌱.</p>
-    </div>
-  </footer>
-
-  <!-- ─── MODALS ─── -->
-
-  <!-- Sign Up Modal -->
-  <div class="modal-overlay" id="signup-modal" onclick="closeModal('signup-modal')">
-    <div class="modal" onclick="event.stopPropagation()">
-      <button class="modal-close" onclick="closeModal('signup-modal')">✕</button>
-      <div class="auth-modal-header">
-        <div class="auth-modal-logo">🌿</div>
-        <h2 class="modal-title">Create your account</h2>
-        <p class="auth-modal-sub">Join Amsterdam's circular moving platform</p>
-      </div>
-      <div id="signup-error" class="auth-error" style="display:none;"></div>
-      <form id="signup-form" onsubmit="handleSignUp(event)">
-        <div class="form-group">
-          <label>Full Name</label>
-          <input type="text" id="signup-name" placeholder="Anna Müller" required />
-        </div>
-        <div class="form-group">
-          <label>Email Address</label>
-          <input type="email" id="signup-email" placeholder="anna@email.com" required />
-        </div>
-        <div class="form-group">
-          <label>Password <small style="color:var(--slate-400);">(min 6 characters)</small></label>
-          <input type="password" id="signup-password" placeholder="••••••••" required />
-        </div>
-        <div class="form-group">
-          <label>I want to…</label>
-          <div class="role-options">
-            <label class="role-opt active"><input type="radio" name="role" value="both" checked /> 🔄 Buy & Sell</label>
-            <label class="role-opt"><input type="radio" name="role" value="buyer" /> 🛍️ Buy Only</label>
-            <label class="role-opt"><input type="radio" name="role" value="seller" /> 🏷️ Sell Only</label>
-          </div>
-        </div>
-        <button type="submit" class="btn-primary full-width" id="signup-submit">Create Account</button>
-      </form>
-      <p class="auth-switch">Already have an account? <button class="auth-link" onclick="switchAuthModal('login')">Log
-          in</button></p>
-    </div>
-  </div>
-
-  <!-- Log In Modal -->
-  <div class="modal-overlay" id="login-modal" onclick="closeModal('login-modal')">
-    <div class="modal" onclick="event.stopPropagation()">
-      <button class="modal-close" onclick="closeModal('login-modal')">✕</button>
-      <div class="auth-modal-header">
-        <div class="auth-modal-logo">🌿</div>
-        <h2 class="modal-title">Welcome back</h2>
-        <p class="auth-modal-sub">Log in to your account</p>
-      </div>
-      <div id="login-error" class="auth-error" style="display:none;"></div>
-      <form id="login-form" onsubmit="handleLogIn(event)">
-        <div class="form-group">
-          <label>Email Address</label>
-          <input type="email" id="login-email" placeholder="anna@email.com" required />
-        </div>
-        <div class="form-group">
-          <label>Password</label>
-          <input type="password" id="login-password" placeholder="••••••••" required />
-        </div>
-        <button type="submit" class="btn-primary full-width" id="login-submit">Log In</button>
-      </form>
-      <p class="auth-switch">Don't have an account? <button class="auth-link" onclick="switchAuthModal('signup')">Sign
-          up</button></p>
-    </div>
-  </div>
-
-  <!-- Reserve Modal -->
-  <div class="modal-overlay" id="reserve-modal" onclick="closeModal('reserve-modal')">
-    <div class="modal" onclick="event.stopPropagation()">
-      <button class="modal-close" onclick="closeModal('reserve-modal')">✕</button>
-      <h2 class="modal-title">Reserve Item</h2>
-      <div id="reserve-item-info"></div>
-      <form onsubmit="handleReserve(event)">
-        <div class="form-group">
-          <label>Preferred Pickup Date</label>
-          <input type="date" id="reserve-date" required />
-        </div>
-        <div class="form-group">
-          <label>Message to Seller (optional)</label>
-          <textarea id="reserve-msg" placeholder="I can pick up anytime after 5pm..." rows="2"></textarea>
-        </div>
-        <div class="form-group">
-          <label>Payment Method</label>
-          <div class="payment-options">
-            <label class="pay-opt active"><input type="radio" name="pay" value="card" checked /> 💳 Card</label>
-            <label class="pay-opt"><input type="radio" name="pay" value="ideal" /> 🏦 iDEAL</label>
-            <label class="pay-opt"><input type="radio" name="pay" value="paypal" /> 🅿️ PayPal</label>
-          </div>
-        </div>
-        <button type="submit" class="btn-primary full-width">Confirm Reservation</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- Booking Modal (Packs) -->
-  <div class="modal-overlay" id="booking-modal" onclick="closeModal('booking-modal')">
-    <div class="modal" onclick="event.stopPropagation()">
-      <button class="modal-close" onclick="closeModal('booking-modal')">✕</button>
-      <h2 class="modal-title">Book Starter Pack</h2>
-      <div id="booking-item-info"></div>
-      <form onsubmit="handleBooking(event)">
-        <div class="form-group">
-          <label>Your Name</label>
-          <input type="text" placeholder="Anna Müller" required />
-        </div>
-        <div class="form-group">
-          <label>Delivery Address</label>
-          <input type="text" placeholder="Keizersgracht 123, Amsterdam" required />
-        </div>
-        <div class="form-group">
-          <label>Delivery Date</label>
-          <input type="date" required />
-        </div>
-        <div class="form-group">
-          <label>Rental Duration</label>
-          <select>
-            <option>1 week</option>
-            <option>2 weeks</option>
-            <option>1 month</option>
-            <option>3 months</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Payment Method</label>
-          <div class="payment-options">
-            <label class="pay-opt active"><input type="radio" name="pay2" value="card" checked /> 💳 Card</label>
-            <label class="pay-opt"><input type="radio" name="pay2" value="ideal" /> 🏦 iDEAL</label>
-            <label class="pay-opt"><input type="radio" name="pay2" value="paypal" /> 🅿️ PayPal</label>
-          </div>
-        </div>
-        <button type="submit" class="btn-primary full-width">Confirm Booking</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- Van Modal -->
-  <div class="modal-overlay" id="van-modal" onclick="closeModal('van-modal')">
-    <div class="modal" onclick="event.stopPropagation()">
-      <button class="modal-close" onclick="closeModal('van-modal')">✕</button>
-      <h2 class="modal-title">Book a Van</h2>
-      <div id="van-item-info"></div>
-      <form onsubmit="handleVanBooking(event)">
-        <div class="form-group">
-          <label>Your Name</label>
-          <input type="text" placeholder="Marco Rossi" required />
-        </div>
-        <div class="form-group">
-          <label>Pickup Address</label>
-          <input type="text" placeholder="Prinsengracht 456, Amsterdam" required />
-        </div>
-        <div class="form-group">
-          <label>Drop-off Address</label>
-          <input type="text" placeholder="Amstelveenseweg 789, Amsterdam" required />
-        </div>
-        <div class="form-group">
-          <label>Date & Time</label>
-          <input type="datetime-local" required />
-        </div>
-        <div class="form-group">
-          <label>Duration</label>
-          <select>
-            <option>4 hours</option>
-            <option>8 hours (full day)</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Payment Method</label>
-          <div class="payment-options">
-            <label class="pay-opt active"><input type="radio" name="pay3" value="card" checked /> 💳 Card</label>
-            <label class="pay-opt"><input type="radio" name="pay3" value="ideal" /> 🏦 iDEAL</label>
-          </div>
-        </div>
-        <button type="submit" class="btn-primary full-width">Confirm Van Booking</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- Donate Modal -->
-  <div class="modal-overlay" id="donate-modal" onclick="closeModal('donate-modal')">
-    <div class="modal" onclick="event.stopPropagation()">
-      <button class="modal-close" onclick="closeModal('donate-modal')">✕</button>
-      <h2 class="modal-title">Schedule a Donation</h2>
-      <div id="donate-org-info"></div>
-      <form onsubmit="handleDonate(event)">
-        <div class="form-group">
-          <label>Your Name</label>
-          <input type="text" placeholder="Sophie Janssen" required />
-        </div>
-        <div class="form-group">
-          <label>What would you like to donate?</label>
-          <textarea placeholder="e.g. sofa, kitchen items, clothing..." rows="3"></textarea>
-        </div>
-        <div class="form-group">
-          <label>Preferred Drop-off Date</label>
-          <input type="date" required />
-        </div>
-        <div class="form-group">
-          <label>Need pickup? (€10 fee)</label>
-          <div class="toggle-row">
-            <span>Home pickup</span>
-            <label class="toggle">
-              <input type="checkbox" id="pickup-toggle" />
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-        </div>
-        <button type="submit" class="btn-primary full-width">Schedule Donation</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- Box Order Modal -->
-  <div class="modal-overlay" id="box-modal" onclick="closeModal('box-modal')">
-    <div class="modal" onclick="event.stopPropagation()">
-      <button class="modal-close" onclick="closeModal('box-modal')">✕</button>
-      <h2 class="modal-title">Order Moving Boxes</h2>
-      <div class="box-order-form">
-        <div class="box-qty-row">
-          <div class="box-qty-item">
-            <label>Small (30L) — €2/week</label>
-            <div class="qty-ctrl">
-              <button type="button" onclick="changeQty('sm', -1)">−</button>
-              <span id="qty-sm">0</span>
-              <button type="button" onclick="changeQty('sm', 1)">+</button>
-            </div>
-          </div>
-          <div class="box-qty-item">
-            <label>Medium (50L) — €3/week</label>
-            <div class="qty-ctrl">
-              <button type="button" onclick="changeQty('md', -1)">−</button>
-              <span id="qty-md">0</span>
-              <button type="button" onclick="changeQty('md', 1)">+</button>
-            </div>
-          </div>
-          <div class="box-qty-item">
-            <label>Large (70L) — €4/week</label>
-            <div class="qty-ctrl">
-              <button type="button" onclick="changeQty('lg', -1)">−</button>
-              <span id="qty-lg">0</span>
-              <button type="button" onclick="changeQty('lg', 1)">+</button>
-            </div>
-          </div>
-        </div>
-        <div class="box-total">Total: <strong id="box-total">€0</strong>/week</div>
-        <form onsubmit="handleBoxOrder(event)">
-          <div class="form-group">
-            <label>Delivery Address</label>
-            <input type="text" placeholder="Herengracht 200, Amsterdam" required />
-          </div>
-          <div class="form-group">
-            <label>Delivery Date</label>
-            <input type="date" required />
-          </div>
-          <button type="submit" class="btn-primary full-width">Order Boxes</button>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <!-- List Item Modal -->
-  <div class="modal-overlay" id="list-item-modal" onclick="closeModal('list-item-modal')">
-    <div class="modal" onclick="event.stopPropagation()">
-      <button class="modal-close" onclick="closeModal('list-item-modal')">✕</button>
-      <h2 class="modal-title">List an Item</h2>
-      <form onsubmit="handleListItem(event)">
-        <div class="form-group">
-          <label>Item Name</label>
-          <input type="text" placeholder="IKEA BILLY Bookcase" required />
-        </div>
-        <div class="form-group">
-          <label>Category</label>
-          <select>
-            <option>Furniture</option>
-            <option>Kitchen</option>
-            <option>Bedroom</option>
-            <option>Electronics</option>
-            <option>Other</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Price (€)</label>
-          <input type="number" placeholder="0" min="0" required />
-        </div>
-        <div class="form-group">
-          <label>Availability</label>
-          <select>
-            <option>Available Today</option>
-            <option>Available This Week</option>
-            <option>Flexible</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Description</label>
-          <textarea placeholder="Condition, dimensions, pickup notes..." rows="3"></textarea>
-        </div>
-        <div class="form-group">
-          <label>Your Email</label>
-          <input type="email" placeholder="you@email.com" required />
-        </div>
-        <button type="submit" class="btn-primary full-width">Publish Listing</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- Quiz Modal -->
-  <div class="modal-overlay" id="quiz-modal" onclick="closeModal('quiz-modal')">
-    <div class="modal" onclick="event.stopPropagation()">
-      <button class="modal-close" onclick="closeModal('quiz-modal')">✕</button>
-      <div id="quiz-content"></div>
-    </div>
-  </div>
-
-  <!-- Success Toast -->
-  <div class="toast" id="toast">
-    <span class="toast-icon">✅</span>
-    <span id="toast-msg">Done!</span>
-  </div>
-
-  <script src="app.js"></script>
 </body>
 
 </html>
