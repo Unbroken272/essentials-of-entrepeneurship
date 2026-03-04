@@ -191,6 +191,31 @@ const Auth = (() => {
         return updated;
     }
 
-    return { signUp, logIn, logOut, currentUser, isLoggedIn, addListing, addReservation, addRental, addDonation, refreshSession };
+    function updateUser({ name, email }) {
+        const session = getSession();
+        if (!session) return { ok: false, error: 'Not logged in' };
+
+        const users = getUsers();
+        const idx = users.findIndex(u => u.id === session.id);
+        if (idx === -1) return { ok: false, error: 'User not found' };
+
+        if (email.toLowerCase() !== users[idx].email) {
+            if (users.find(u => u.id !== session.id && u.email.toLowerCase() === email.toLowerCase())) {
+                return { ok: false, error: 'Email already in use.' };
+            }
+        }
+
+        users[idx].name = name.trim();
+        users[idx].email = email.trim().toLowerCase();
+        users[idx].avatar = name.trim().slice(0, 2).toUpperCase();
+
+        saveUsers(users);
+
+        const { password: _, ...updated } = users[idx];
+        saveSession(updated);
+        return { ok: true, user: updated };
+    }
+
+    return { signUp, logIn, logOut, currentUser, isLoggedIn, addListing, addReservation, addRental, addDonation, refreshSession, updateUser };
 
 })();

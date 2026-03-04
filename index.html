@@ -7,6 +7,13 @@
   <title>SwapNest – Circular Moving Platform</title>
   <meta name="description"
     content="SwapNest: rent, trade, and donate your way to a greener home. Circular marketplace, starter packs, bus rental and donation hub – all in one place." />
+  <!-- Open Graph tags for WhatsApp / Instagram / social sharing -->
+  <meta property="og:title" content="SwapNest – Move Smarter. Live Greener." />
+  <meta property="og:description"
+    content="The student-focused circular moving platform. Rent, trade, donate — all in one place." />
+  <meta property="og:image" content="https://YOUR_DOMAIN/logo.png" />
+  <meta property="og:url" content="https://YOUR_DOMAIN/" />
+  <meta property="og:type" content="website" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
@@ -28,6 +35,7 @@
       </a>
       <ul class="nav-links">
         <li><a href="marketplace.html" class="nav-link">Marketplace</a></li>
+        <li><a href="about.html" class="nav-link">About Us</a></li>
         <li><a href="services.html#starter-packs" class="nav-link">Starter Packs</a></li>
         <li><a href="services.html#logistics" class="nav-link">Van Rental</a></li>
         <li><a href="services.html#donate" class="nav-link">Donate</a></li>
@@ -40,6 +48,7 @@
     </div>
     <div class="nav-mobile" id="nav-mobile">
       <a href="marketplace.html" onclick="toggleMenu()" href="marketplace.html">Marketplace</a>
+      <a href="about.html" onclick="toggleMenu()">About Us</a>
       <a href="services.html#starter-packs" onclick="toggleMenu()" href="services.html#starter-packs">Starter Packs</a>
       <a href="services.html#logistics" onclick="toggleMenu()" href="services.html#logistics">Van Rental</a>
       <a href="services.html#donate" onclick="toggleMenu()" href="services.html#donate">Donate</a>
@@ -70,11 +79,23 @@
         <form onsubmit="handleWaitlist(event)" style="display: flex; gap: 10px; flex-wrap: wrap;">
           <input type="text" id="waitlist-name" placeholder="Your Name" required
             style="flex: 1; min-width: 150px; padding: 12px 16px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.2); color: white;" />
-          <input type="email" id="waitlist-email" placeholder="Your Email" required
+          <input type="email" id="waitlist-email" placeholder="Use your university email for priority access" required
             style="flex: 1; min-width: 150px; padding: 12px 16px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.2); color: white;" />
           <button type="submit" class="btn-hero-primary" style="padding: 12px 24px; white-space: nowrap;">Join Waitlist
             →</button>
         </form>
+      </div>
+
+      <!-- Social proof testimonial -->
+      <div
+        style="margin: 20px 0; padding: 16px 20px; background: rgba(255,255,255,0.06); border-left: 3px solid var(--green-400); border-radius: 8px;">
+        <p style="color: rgba(255,255,255,0.9); font-style: italic; margin-bottom: 8px;">
+          "I furnished my whole room in two days through SwapNest — it was clean, easy,
+          and I saved over €200. Way better than buying new!"
+        </p>
+        <span style="color: rgba(255,255,255,0.6); font-size: 0.85rem;">
+          — Lisa M., UvA exchange student
+        </span>
       </div>
 
       <div class="trust-signals"
@@ -100,57 +121,7 @@
     </div>
   </section>
 
-  <!-- ─── ABOUT US (GROUP 6) ─── -->
-  <section class="about-us" style="padding: 80px 24px; background: white;">
-    <div class="container" style="max-width: 800px; text-align: center;">
-      <div class="section-tag">About Us</div>
-      <h2 style="margin-bottom: 20px;">Meet <span class="gradient-text">Group 6</span></h2>
-      <p style="font-size: 1.1rem; color: var(--slate-600); margin-bottom: 40px; line-height: 1.8;">
-        We are a passionate team of students on a mission to revolutionize how students move.
-        We experienced firsthand how stressful, expensive, and wasteful moving out can be.
-        That's why we created SwapNest: a platform designed specifically for our peers to easily swap furniture, rent
-        starter packs, and book affordable vans all in one place.
-      </p>
 
-      <div
-        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 24px; text-align: left;">
-        <div
-          style="background: var(--slate-50); padding: 24px; border-radius: var(--radius); border: 1px solid var(--slate-200);">
-          <div style="font-size: 2rem; margin-bottom: 12px;">🌍</div>
-          <h4 style="margin-bottom: 8px;">Accessibility</h4>
-          <p style="font-size: 0.85rem; color: var(--slate-500);">Making moving affordable and easy for every student.
-          </p>
-        </div>
-        <div
-          style="background: var(--slate-50); padding: 24px; border-radius: var(--radius); border: 1px solid var(--slate-200);">
-          <div style="font-size: 2rem; margin-bottom: 12px;">⚙️</div>
-          <h4 style="margin-bottom: 8px;">Functionality</h4>
-          <p style="font-size: 0.85rem; color: var(--slate-500);">A seamless, one-stop-shop for all your moving needs.
-          </p>
-        </div>
-        <div
-          style="background: var(--slate-50); padding: 24px; border-radius: var(--radius); border: 1px solid var(--slate-200);">
-          <div style="font-size: 2rem; margin-bottom: 12px;">🛡️</div>
-          <h4 style="margin-bottom: 8px;">Responsibility</h4>
-          <p style="font-size: 0.85rem; color: var(--slate-500);">Ensuring safe, clean, and reliable transactions.</p>
-        </div>
-        <div
-          style="background: var(--slate-50); padding: 24px; border-radius: var(--radius); border: 1px solid var(--slate-200);">
-          <div style="font-size: 2rem; margin-bottom: 12px;">🤝</div>
-          <h4 style="margin-bottom: 8px;">Collaboration</h4>
-          <p style="font-size: 0.85rem; color: var(--slate-500);">Built by students, powered by the campus community.
-          </p>
-        </div>
-        <div
-          style="background: var(--slate-50); padding: 24px; border-radius: var(--radius); border: 1px solid var(--slate-200);">
-          <div style="font-size: 2rem; margin-bottom: 12px;">🌱</div>
-          <h4 style="margin-bottom: 8px;">Sustainability</h4>
-          <p style="font-size: 0.85rem; color: var(--slate-500);">Reducing furniture waste through a circular economy.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
 
 
 
@@ -164,9 +135,9 @@
         <div class="footer-logo">🌿 SwapNest</div>
         <p>A circular moving platform. Rent. Trade. Donate.</p>
         <div class="footer-socials">
-          <a href="#" class="social-link">Instagram</a>
-          <a href="#" class="social-link">LinkedIn</a>
-          <a href="#" class="social-link">Twitter</a>
+          <a href="https://instagram.com/swapnest.nl" target="_blank" class="social-link">Instagram</a>
+          <a href="https://linkedin.com/company/swapnest" target="_blank" class="social-link">LinkedIn</a>
+          <a href="https://x.com/swapnest_nl" target="_blank" class="social-link">Twitter</a>
         </div>
       </div>
       <div class="footer-links">
@@ -355,6 +326,12 @@
             <label class="pay-opt active"><input type="radio" name="pay3" value="card" checked /> 💳 Card</label>
             <label class="pay-opt"><input type="radio" name="pay3" value="ideal" /> 🏦 iDEAL</label>
           </div>
+        </div>
+        <div class="form-group">
+          <label style="display:flex; align-items:flex-start; gap:8px; cursor:pointer;">
+            <input type="checkbox" required style="margin-top:3px;" />
+            <span>I confirm I have a valid driver's license</span>
+          </label>
         </div>
         <button type="submit" class="btn-primary full-width">Confirm Van Booking</button>
       </form>

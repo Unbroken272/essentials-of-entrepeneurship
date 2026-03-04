@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About Us – SwapNest</title>
+    <meta name="description"
+        content="Our vision at SwapNest is making student moves easy, affordable and waste-free." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="analytics.js"></script>
+    <script src="auth.js"></script>
+</head>
+
+<body>
+
+    <!-- ─── NAV ─── -->
+    <nav id="navbar" class="navbar">
+        <div class="nav-inner">
+            <a href="index.html" class="nav-logo">
+                <img src="logo.png" alt="SwapNest Logo"
+                    style="height: 24px; vertical-align: middle; margin-right: 8px;">
+                <span>SwapNest</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="marketplace.html" class="nav-link">Marketplace</a></li>
+                <li><a href="about.html" class="nav-link">About Us</a></li>
+                <li><a href="services.html#starter-packs" class="nav-link">Starter Packs</a></li>
+                <li><a href="services.html#logistics" class="nav-link">Van Rental</a></li>
+                <li><a href="services.html#donate" class="nav-link">Donate</a></li>
+            </ul>
+            <!-- Auth-aware nav actions (updated by JS) -->
+            <div class="nav-actions" id="nav-actions">
+                <!-- Injected by updateNavAuth() in app.js -->
+            </div>
+            <button class="hamburger" id="hamburger" onclick="toggleMenu()">☰</button>
+        </div>
+        <div class="nav-mobile" id="nav-mobile">
+            <a href="marketplace.html" onclick="toggleMenu()" href="marketplace.html">Marketplace</a>
+            <a href="about.html" onclick="toggleMenu()">About Us</a>
+            <a href="services.html#starter-packs" onclick="toggleMenu()" href="services.html#starter-packs">Starter
+                Packs</a>
+            <a href="services.html#logistics" onclick="toggleMenu()" href="services.html#logistics">Van Rental</a>
+            <a href="services.html#donate" onclick="toggleMenu()" href="services.html#donate">Donate</a>
+            <div class="nav-mobile-auth" id="nav-mobile-auth"></div>
+        </div>
+    </nav>
+
+    <!-- ─── ABOUT US HERO & VALUES ─── -->
+    <section class="about-hero" style="padding: 120px 24px 60px; background: var(--slate-50); text-align: center;">
+        <div class="container" style="max-width: 800px; margin: 0 auto;">
+            <div class="section-tag">About SwapNest</div>
+            <h1 style="margin-bottom: 24px; font-size: 3rem; font-weight: 800; color: var(--slate-900);">
+                Making student moves <br /><span class="gradient-text">easy, affordable and waste-free.</span>
+            </h1>
+            <p style="font-size: 1.25rem; color: var(--slate-600); line-height: 1.8; margin-bottom: 40px;">
+                We are a passionate team on a mission to revolutionize how students transition between homes.
+                We know firsthand how stressful, expensive, and wasteful moving out can be.
+                That's why we created a unified, professional platform designed specifically to easily swap furniture,
+                rent
+                starter packs, and book affordable logistics all in one place.
+            </p>
+        </div>
+    </section>
+
+    <section class="core-values" style="padding: 60px 24px 100px; background: white;">
+        <div class="container" style="max-width: 1000px; margin: 0 auto;">
+            <div style="text-align: center; margin-bottom: 60px;">
+                <h2 style="font-size: 2.25rem;">Our Core Values</h2>
+                <p style="color: var(--slate-500); font-size: 1.1rem; margin-top: 8px;">The principles that guide
+                    everything we do</p>
+            </div>
+
+            <div
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 32px; text-align: left;">
+                <div style="background: var(--slate-50); padding: 32px; border-radius: var(--radius); border: 1px solid var(--slate-200); box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05); transition: transform 0.2s;"
+                    onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='none'">
+                    <div style="font-size: 2.5rem; margin-bottom: 16px;">🌍</div>
+                    <h4 style="margin-bottom: 12px; font-size: 1.25rem;">Accessibility</h4>
+                    <p style="font-size: 1rem; color: var(--slate-600); line-height: 1.6;">Making moving affordable and
+                        easy for every student, regardless of their background or budget.</p>
+                </div>
+                <div style="background: var(--slate-50); padding: 32px; border-radius: var(--radius); border: 1px solid var(--slate-200); box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05); transition: transform 0.2s;"
+                    onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='none'">
+                    <div style="font-size: 2.5rem; margin-bottom: 16px;">⚙️</div>
+                    <h4 style="margin-bottom: 12px; font-size: 1.25rem;">Functionality</h4>
+                    <p style="font-size: 1rem; color: var(--slate-600); line-height: 1.6;">A seamless, intuitive,
+                        one-stop-shop for all your moving needs, from boxes to furniture.</p>
+                </div>
+                <div style="background: var(--slate-50); padding: 32px; border-radius: var(--radius); border: 1px solid var(--slate-200); box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05); transition: transform 0.2s;"
+                    onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='none'">
+                    <div style="font-size: 2.5rem; margin-bottom: 16px;">🛡️</div>
+                    <h4 style="margin-bottom: 12px; font-size: 1.25rem;">Responsibility</h4>
+                    <p style="font-size: 1rem; color: var(--slate-600); line-height: 1.6;">Ensuring safe, clean,
+                        reliable transactions and upholding the highest standards of trust.</p>
+                </div>
+                <div style="background: var(--slate-50); padding: 32px; border-radius: var(--radius); border: 1px solid var(--slate-200); box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05); transition: transform 0.2s;"
+                    onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='none'">
+                    <div style="font-size: 2.5rem; margin-bottom: 16px;">🤝</div>
+                    <h4 style="margin-bottom: 12px; font-size: 1.25rem;">Collaboration</h4>
+                    <p style="font-size: 1rem; color: var(--slate-600); line-height: 1.6;">Powered by the community,
+                        emphasizing shared resources and cooperative student networks.</p>
+                </div>
+                <div style="background: var(--slate-50); padding: 32px; border-radius: var(--radius); border: 1px solid var(--slate-200); box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05); transition: transform 0.2s;"
+                    onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='none'">
+                    <div style="font-size: 2.5rem; margin-bottom: 16px;">🌱</div>
+                    <h4 style="margin-bottom: 12px; font-size: 1.25rem;">Sustainability</h4>
+                    <p style="font-size: 1rem; color: var(--slate-600); line-height: 1.6;">Committed to reducing
+                        furniture waste and carbon footprints through a thriving circular economy.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── FOOTER ─── -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <div class="footer-logo">🌿 SwapNest</div>
+                <p>A circular moving platform. Rent. Trade. Donate.</p>
+                <div class="footer-socials">
+                    <a href="https://instagram.com/swapnest.nl" target="_blank" class="social-link">Instagram</a>
+                    <a href="https://linkedin.com/company/swapnest" target="_blank" class="social-link">LinkedIn</a>
+                    <a href="https://x.com/swapnest_nl" target="_blank" class="social-link">Twitter</a>
+                </div>
+            </div>
+            <div class="footer-links">
+                <div class="footer-col">
+                    <h5>Platform</h5>
+                    <a href="marketplace.html">Marketplace</a>
+                    <a href="services.html#starter-packs">Starter Packs</a>
+                    <a href="services.html#logistics">Van Rental</a>
+                    <a href="services.html#donate">Donate</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 SwapNest. Made with 🌱.</p>
+        </div>
+    </footer>
+
+    <!-- ─── MODALS ─── -->
+
+    <!-- Sign Up Modal -->
+    <div class="modal-overlay" id="signup-modal" onclick="closeModal('signup-modal')">
+        <div class="modal" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="closeModal('signup-modal')">✕</button>
+            <div class="auth-modal-header">
+                <div class="auth-modal-logo">🌿</div>
+                <h2 class="modal-title">Create your account</h2>
+                <p class="auth-modal-sub">Join Amsterdam's circular moving platform</p>
+            </div>
+            <div id="signup-error" class="auth-error" style="display:none;"></div>
+            <form id="signup-form" onsubmit="handleSignUp(event)">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="signup-name" placeholder="Anna Müller" required />
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="signup-email" placeholder="anna@email.com" required />
+                </div>
+                <div class="form-group">
+                    <label>Password <small style="color:var(--slate-400);">(min 6 characters)</small></label>
+                    <input type="password" id="signup-password" placeholder="••••••••" required />
+                </div>
+                <div class="form-group">
+                    <label>I want to…</label>
+                    <div class="role-options">
+                        <label class="role-opt active"><input type="radio" name="role" value="both" checked /> 🔄 Buy &
+                            Sell</label>
+                        <label class="role-opt"><input type="radio" name="role" value="buyer" /> 🛍️ Buy Only</label>
+                        <label class="role-opt"><input type="radio" name="role" value="seller" /> 🏷️ Sell Only</label>
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary full-width" id="signup-submit">Create Account</button>
+            </form>
+            <p class="auth-switch">Already have an account? <button class="auth-link"
+                    onclick="switchAuthModal('login')">Log
+                    in</button></p>
+        </div>
+    </div>
+
+    <!-- Log In Modal -->
+    <div class="modal-overlay" id="login-modal" onclick="closeModal('login-modal')">
+        <div class="modal" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="closeModal('login-modal')">✕</button>
+            <div class="auth-modal-header">
+                <div class="auth-modal-logo">🌿</div>
+                <h2 class="modal-title">Welcome back</h2>
+                <p class="auth-modal-sub">Log in to your account</p>
+            </div>
+            <div id="login-error" class="auth-error" style="display:none;"></div>
+            <form id="login-form" onsubmit="handleLogIn(event)">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="login-email" placeholder="anna@email.com" required />
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="login-password" placeholder="••••••••" required />
+                </div>
+                <button type="submit" class="btn-primary full-width" id="login-submit">Log In</button>
+            </form>
+            <p class="auth-switch">Don't have an account? <button class="auth-link"
+                    onclick="switchAuthModal('signup')">Sign
+                    up</button></p>
+        </div>
+    </div>
+
+    <!-- Success Toast -->
+    <div class="toast" id="toast">
+        <span class="toast-icon">✅</span>
+        <span id="toast-msg">Done!</span>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

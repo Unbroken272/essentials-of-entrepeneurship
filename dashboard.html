@@ -28,6 +28,7 @@
       </a>
       <ul class="nav-links">
         <li><a href="marketplace.html" class="nav-link">Marketplace</a></li>
+        <li><a href="about.html" class="nav-link">About Us</a></li>
         <li><a href="services.html#starter-packs" class="nav-link">Starter Packs</a></li>
         <li><a href="services.html#logistics" class="nav-link">Van Rental</a></li>
         <li><a href="services.html#donate" class="nav-link">Donate</a></li>
@@ -40,6 +41,7 @@
     </div>
     <div class="nav-mobile" id="nav-mobile">
       <a href="marketplace.html" onclick="toggleMenu()" href="marketplace.html">Marketplace</a>
+      <a href="about.html" onclick="toggleMenu()">About Us</a>
       <a href="services.html#starter-packs" onclick="toggleMenu()" href="services.html#starter-packs">Starter Packs</a>
       <a href="services.html#logistics" onclick="toggleMenu()" href="services.html#logistics">Van Rental</a>
       <a href="services.html#donate" onclick="toggleMenu()" href="services.html#donate">Donate</a>
@@ -58,7 +60,10 @@
             <p>Member since 2024 · ⭐ 5.0 (12 reviews)</p>
           </div>
         </div>
-        <button class="btn-outline" onclick="handleLogOut()">Log Out</button>
+        <div style="display: flex; gap: 12px;">
+          <button class="btn-outline" onclick="openEditProfile()">Edit Profile</button>
+          <button class="btn-outline" onclick="handleLogOut()">Log Out</button>
+        </div>
       </div>
 
       <div class="dashboard-grid">
@@ -79,26 +84,23 @@
               <div style="background:var(--slate-50); padding:20px; border-radius:var(--radius);">
                 <div style="font-size:2rem; margin-bottom:8px;">📦</div>
                 <h4 style="margin-bottom:4px;">Active Rentals</h4>
-                <p style="font-size:1.5rem; font-weight:700;">2 items</p>
+                <p id="stat-rentals" style="font-size:1.5rem; font-weight:700;">0 items</p>
               </div>
               <div style="background:var(--slate-50); padding:20px; border-radius:var(--radius);">
                 <div style="font-size:2rem; margin-bottom:8px;">🏷️</div>
                 <h4 style="margin-bottom:4px;">Active Listings</h4>
-                <p style="font-size:1.5rem; font-weight:700;">3 items</p>
+                <p id="stat-listings" style="font-size:1.5rem; font-weight:700;">0 items</p>
               </div>
               <div style="background:var(--slate-50); padding:20px; border-radius:var(--radius);">
                 <div style="font-size:2rem; margin-bottom:8px;">🌱</div>
                 <h4 style="margin-bottom:4px;">Eco Score</h4>
-                <p style="font-size:1.5rem; font-weight:700; color:var(--green-600);">85 pts</p>
+                <p id="stat-eco" style="font-size:1.5rem; font-weight:700; color:var(--green-600);">0 pts</p>
               </div>
             </div>
             <div style="margin-top:24px;">
               <h4>Recent Activity</h4>
-              <ul style="list-style:none; padding:0; margin-top:12px;">
-                <li style="padding:12px 0; border-bottom:1px solid var(--slate-200);">You booked <strong>Kitchen Starter
-                    Pack</strong> (2 days ago)</li>
-                <li style="padding:12px 0; border-bottom:1px solid var(--slate-200);">You reserved <strong>TV
-                    Cabinet</strong> (1 week ago)</li>
+              <ul id="recent-activity" style="list-style:none; padding:0; margin-top:12px;">
+                <li style="padding:12px 0; color:var(--slate-500);">No recent activity yet.</li>
               </ul>
             </div>
           </div>
@@ -142,13 +144,115 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      // Small timeout to ensure auth is fully loaded
       setTimeout(() => {
-        if (typeof requireAuth === 'function') {
-          requireAuth();
+        if (typeof Auth === 'undefined' || !Auth.isLoggedIn()) {
+          window.location.href = 'index.html';
+          return;
         }
+        populateDashboard();
       }, 100);
     });
+
+    function populateDashboard() {
+      const user = Auth.refreshSession();
+      if (!user) {
+        window.location.href = 'index.html';
+        return;
+      }
+
+      // Name & avatar
+      document.getElementById('dash-name').textContent = user.name.split(' ')[0];
+      document.querySelector('.dash-avatar').textContent = user.avatar;
+
+      // Member since
+      const year = new Date(user.joinedAt).getFullYear();
+      const metaP = document.querySelector('.dash-user p');
+      if (metaP) {
+        metaP.innerHTML = `Member since ${year} &middot; ⭐ 5.0`;
+      }
+
+      // Dynamic stats
+      const rentals = user.rentals || [];
+      const listings = user.listings || [];
+      const reservations = user.reservations || [];
+      const donations = user.donations || [];
+
+      const statRentals = document.getElementById('stat-rentals');
+      const statListings = document.getElementById('stat-listings');
+      const statEco = document.getElementById('stat-eco');
+      if (statRentals) statRentals.textContent = `${rentals.length} item${rentals.length !== 1 ? 's' : ''}`;
+      if (statListings) statListings.textContent = `${listings.length} item${listings.length !== 1 ? 's' : ''}`;
+      // Eco score = 10 pts per action
+      const ecoScore = (rentals.length + listings.length + reservations.length + donations.length) * 10;
+      if (statEco) statEco.textContent = `${ecoScore} pts`;
+
+      // Recent activity
+      const activityEl = document.getElementById('recent-activity');
+      if (activityEl) {
+        const allActions = [
+          ...reservations.map(r => ({ label: `Reserved <strong>${r.name || 'an item'}</strong>`, date: r.reservedAt })),
+          ...rentals.map(r => ({ label: `Booked <strong>${r.type || 'a rental'}</strong>`, date: r.bookedAt })),
+          ...listings.map(r => ({ label: `Listed <strong>${r.name || 'an item'}</strong>`, date: r.createdAt })),
+          ...donations.map(r => ({ label: `Donated to <strong>${r.org || 'a charity'}</strong>`, date: r.scheduledAt })),
+        ].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
+
+        if (allActions.length === 0) {
+          activityEl.innerHTML = '<li style="padding:12px 0; color:var(--slate-500);">No recent activity yet. Start exploring the marketplace!</li>';
+        } else {
+          activityEl.innerHTML = allActions.map(a => {
+            const ago = timeAgo(a.date);
+            return `<li style="padding:12px 0; border-bottom:1px solid var(--slate-200);">${a.label} (${ago})</li>`;
+          }).join('');
+        }
+      }
+
+      // Render tab panels
+      if (typeof renderDashTab === 'function') {
+        renderDashTab('rentals', user);
+        renderDashTab('listings', user);
+        renderDashTab('donations', user);
+      }
+    }
+
+    function timeAgo(dateStr) {
+      const diff = Date.now() - new Date(dateStr).getTime();
+      const mins = Math.floor(diff / 60000);
+      if (mins < 60) return `${mins}m ago`;
+      const hrs = Math.floor(mins / 60);
+      if (hrs < 24) return `${hrs}h ago`;
+      const days = Math.floor(hrs / 24);
+      if (days < 7) return `${days}d ago`;
+      return `${Math.floor(days / 7)}w ago`;
+    }
+
+    function openEditProfile() {
+      const user = Auth.currentUser();
+      if (!user) return;
+      document.getElementById('edit-name').value = user.name;
+      document.getElementById('edit-email').value = user.email;
+      const err = document.getElementById('edit-error');
+      if (err) err.style.display = 'none';
+      openModal('edit-profile-modal');
+    }
+
+    function handleEditProfile(e) {
+      e.preventDefault();
+      const name = document.getElementById('edit-name').value;
+      const email = document.getElementById('edit-email').value;
+
+      const res = Auth.updateUser({ name, email });
+      if (!res.ok) {
+        const err = document.getElementById('edit-error');
+        err.style.display = 'block';
+        err.textContent = res.error;
+        return;
+      }
+
+      closeModal('edit-profile-modal');
+      populateDashboard();
+      if (typeof updateNavAuth === 'function') updateNavAuth();
+      if (typeof showToast === 'function') showToast('Profile updated successfully!');
+    }
   </script>
 
   <!-- ─── FOOTER ─── -->
@@ -158,9 +262,9 @@
         <div class="footer-logo">🌿 SwapNest</div>
         <p>A circular moving platform. Rent. Trade. Donate.</p>
         <div class="footer-socials">
-          <a href="#" class="social-link">Instagram</a>
-          <a href="#" class="social-link">LinkedIn</a>
-          <a href="#" class="social-link">Twitter</a>
+          <a href="https://instagram.com/swapnest.nl" target="_blank" class="social-link">Instagram</a>
+          <a href="https://linkedin.com/company/swapnest" target="_blank" class="social-link">LinkedIn</a>
+          <a href="https://x.com/swapnest_nl" target="_blank" class="social-link">Twitter</a>
         </div>
       </div>
       <div class="footer-links">
@@ -179,6 +283,29 @@
   </footer>
 
   <!-- ─── MODALS ─── -->
+
+  <!-- Edit Profile Modal -->
+  <div class="modal-overlay" id="edit-profile-modal" onclick="closeModal('edit-profile-modal')">
+    <div class="modal" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeModal('edit-profile-modal')">✕</button>
+      <div class="auth-modal-header">
+        <h2 class="modal-title">Edit Profile</h2>
+        <p class="auth-modal-sub">Update your personal details</p>
+      </div>
+      <div id="edit-error" class="auth-error" style="display:none;"></div>
+      <form id="edit-profile-form" onsubmit="handleEditProfile(event)">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="edit-name" required />
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="edit-email" required />
+        </div>
+        <button type="submit" class="btn-primary full-width">Save Changes</button>
+      </form>
+    </div>
+  </div>
 
   <!-- Sign Up Modal -->
   <div class="modal-overlay" id="signup-modal" onclick="closeModal('signup-modal')">
@@ -349,6 +476,12 @@
             <label class="pay-opt active"><input type="radio" name="pay3" value="card" checked /> 💳 Card</label>
             <label class="pay-opt"><input type="radio" name="pay3" value="ideal" /> 🏦 iDEAL</label>
           </div>
+        </div>
+        <div class="form-group">
+          <label style="display:flex; align-items:flex-start; gap:8px; cursor:pointer;">
+            <input type="checkbox" required style="margin-top:3px;" />
+            <span>I confirm I have a valid driver's license</span>
+          </label>
         </div>
         <button type="submit" class="btn-primary full-width">Confirm Van Booking</button>
       </form>

@@ -1,0 +1,175 @@
+# SwapNest MVP — Smoke Test Improvements Plan
+
+7 prioritized changes to prepare the MVP for a university smoke test by Friday.
+
+---
+
+## Proposed Changes
+
+### Step 1 — Fix the LocalStorage Trap (Waitlist + Analytics)
+
+> [!IMPORTANT]
+> **Recommended tool: Google Apps Script Webhook** — 100% free, no account signup, data lands in a Google Sheet you already own. Zero dependencies, just a `fetch()` call.
+
+**How it works:**
+1. You create a Google Sheet → Extensions → Apps Script → deploy a `doPost()` web app
+2. The script receives JSON and appends a row to the sheet
+3. From the website, we fire a `fetch(WEBHOOK_URL, { method:'POST', body: JSON.stringify(data) })` — done
+
+**Why this over alternatives:**
+| Option | Pros | Cons |
+|---|---|---|
+| **Google Apps Script** ✅ | Free, instant, data in a Sheet | Requires one-time 5-min setup |
+| Formspree | Easy | Free tier = 50 submissions/mo |
+| Make.com | Visual | Overkill, requires account |
+| Netlify Forms | Nice | Only works on Netlify |
+
+#### [MODIFY] [analytics.js](file:///c:/Users/niekl/OneDrive/Bureaublad/universiteit/Essentials%20of%20entrepeneurship/website/analytics.js)
+
+- Add a `WEBHOOK_URL` constant at the top (placeholder until you deploy the Apps Script)
+- Add a `sendToSheet(payload)` helper that `fetch`es the webhook URL with the payload
+- Modify [trackWaitlistSignup()](file:///c:/Users/niekl/OneDrive/Bureaublad/universiteit/Essentials%20of%20entrepeneurship/website/analytics.js#92-107) → also call `sendToSheet({ type:'waitlist', ... })`
+- Modify [trackClick()](file:///c:/Users/niekl/OneDrive/Bureaublad/universiteit/Essentials%20of%20entrepeneurship/website/analytics.js#77-91) → also call `sendToSheet({ type:'click', ... })`
+- Keep localStorage as a local fallback / for the admin-metrics page — **don't remove it**
+
+#### [MODIFY] [app.js](file:///c:/Users/niekl/OneDrive/Bureaublad/universiteit/Essentials%20of%20entrepeneurship/website/app.js)
+
+- In `handleWaitlist()`, pass the name + email to the webhook via `sendToSheet`
+
+---
+
+### Step 2 — Open Graph Meta Tags
+
+#### [MODIFY] [index.html](file:///c:/Users/niekl/OneDrive/Bureaublad/universiteit/Essentials%20of%20entrepeneurship/website/index.html)
+
+Add inside `<head>` (after existing `<meta description>`):
+
+```html
+<meta property="og:title" content="SwapNest – Move Smarter. Live Greener." />
+<meta property="og:description" content="The student-focused circular moving platform. Rent, trade, donate — all in one place." />
+<meta property="og:image" content="https://<YOUR_DOMAIN>/logo.png" />
+<meta property="og:url" content="https://<YOUR_DOMAIN>/" />
+<meta property="og:type" content="website" />
+```
+
+> [!WARNING]
+> The `og:image` URL **must be an absolute HTTPS URL** — relative paths won't work on WhatsApp/Instagram. You'll need to replace `<YOUR_DOMAIN>` with the actual deployed URL (e.g. your GitHub Pages or Netlify URL).
+
+---
+
+### Step 3 — Dynamic Dashboard
+
+#### [MODIFY] [dashboard.html](file:///c:/Users/niekl/OneDrive/Bureaublad/universiteit/Essentials%20of%20entrepeneurship/website/dashboard.html)
+
+Currently hardcoded on lines 56–59:
+- Avatar: `AM`
+- Name: `Anna`
+- Email shown statically
+
+**Changes in the `<script>` section at the bottom of [dashboard.html](file:///c:/Users/niekl/OneDrive/Bureaublad/universiteit/Essentials%20of%20entrepeneurship/website/dashboard.html):**
+- On `DOMContentLoaded`, call `Auth.currentUser()` (or `Auth.refreshSession()`)
+- Populate `#dash-name` with `user.name`
+- Populate `.dash-avatar` with `user.avatar`
+- Populate `#dash-email` with `user.email`
+- Populate the overview stats (reservations count, rentals count, eco score) from the user's `reservations.length`, `rentals.length`, etc.
+- Populate the "Recent Activity" list dynamically from the user's reservations/rentals/donations arrays
+- If no user session exists → redirect to [index.html](file:///c:/Users/niekl/OneDrive/Bureaublad/universiteit/Essentials%20of%20entrepeneurship/website/index.html)
+
+---
+
+### Step 4 — Social Proof Testimonial
+
+#### [MODIFY] [index.html](file:///c:/Users/niekl/OneDrive/Bureaublad/universiteit/Essentials%20of%20entrepeneurship/website/index.html)
+
+Add a testimonial block **directly below** the waitlist `</div>` (after line 80) and **above** the trust-signals div:
+
+```html
+<div style="margin: 20px 0; padding: 16px 20px; background: rgba(255,255,255,0.06); 
+     border-left: 3px solid var(--green-400); border-radius: 8px;">
+  <p style="color: rgba(255,255,255,0.9); font-style: italic; margin-bottom: 8px;">
+    "I furnished my whole room in two days through SwapNest — it was clean, easy, 
+    and I saved over €200. Way better than buying new!"
+  </p>
+  <span style="color: rgba(255,255,255,0.6); font-size: 0.85rem;">
+    — Lisa M., UvA exchange student
+  </span>
+</div>
+```
+
+---
+
+### Step 5 — Waitlist FOMO Placeholder
+
+#### [MODIFY] [index.html](file:///c:/Users/niekl/OneDrive/Bureaublad/universiteit/Essentials%20of%20entrepeneurship/website/index.html)
+
+Line 75–76: Change the email input placeholder from `"Your Email"` to:
+
+```
+"Use your university email for priority access"
+```
+
+---
+
+### Step 6 — Van Rental Driver's License Checkbox
+
+#### [MODIFY] [index.html](file:///c:/Users/niekl/OneDrive/Bureaublad/universiteit/Essentials%20of%20entrepeneurship/website/index.html)
+#### [MODIFY] [services.html](file:///c:/Users/niekl/OneDrive/Bureaublad/universiteit/Essentials%20of%20entrepeneurship/website/services.html)
+#### [MODIFY] [marketplace.html](file:///c:/Users/niekl/OneDrive/Bureaublad/universiteit/Essentials%20of%20entrepeneurship/website/marketplace.html)
+
+The Van Modal (`#van-modal`) is duplicated across all three HTML files. In **each file**, add a mandatory checkbox before the submit button:
+
+```html
+<div class="form-group">
+  <label style="display:flex; align-items:flex-start; gap:8px; cursor:pointer;">
+    <input type="checkbox" required style="margin-top:3px;" />
+    <span>I confirm I have a valid driver's license</span>
+  </label>
+</div>
+```
+
+Insert this immediately **before** the `<button type="submit"...>Confirm Van Booking</button>` in each Van Modal.
+
+---
+
+### Step 7 — Empty States + Footer Fix
+
+#### [MODIFY] [marketplace.html](file:///c:/Users/niekl/OneDrive/Bureaublad/universiteit/Essentials%20of%20entrepeneurship/website/marketplace.html)
+
+Add an empty-state `<div>` inside `#items-grid` (hidden by default):
+
+```html
+<div id="empty-state" style="display:none; grid-column: 1/-1; text-align:center; padding:60px 20px;">
+  <p style="font-size:1.1rem; color:var(--slate-500);">
+    Oops! No items found matching these filters.
+  </p>
+</div>
+```
+
+In [app.js](file:///c:/Users/niekl/OneDrive/Bureaublad/universiteit/Essentials%20of%20entrepeneurship/website/app.js): after `filterItems()` runs, check if any visible items remain. If zero → show `#empty-state`. Otherwise → hide it.
+
+#### [MODIFY] Footer social links in ALL pages ([index.html](file:///c:/Users/niekl/OneDrive/Bureaublad/universiteit/Essentials%20of%20entrepeneurship/website/index.html), [services.html](file:///c:/Users/niekl/OneDrive/Bureaublad/universiteit/Essentials%20of%20entrepeneurship/website/services.html), [marketplace.html](file:///c:/Users/niekl/OneDrive/Bureaublad/universiteit/Essentials%20of%20entrepeneurship/website/marketplace.html), [dashboard.html](file:///c:/Users/niekl/OneDrive/Bureaublad/universiteit/Essentials%20of%20entrepeneurship/website/dashboard.html), [about.html](file:///c:/Users/niekl/OneDrive/Bureaublad/universiteit/Essentials%20of%20entrepeneurship/website/about.html))
+
+Replace `href="#"` with placeholder social URLs:
+
+| Link | URL |
+|---|---|
+| Instagram | `https://instagram.com/swapnest.nl` |
+| LinkedIn | `https://linkedin.com/company/swapnest` |
+| Twitter | `https://x.com/swapnest_nl` |
+
+---
+
+## Verification Plan
+
+### Manual Verification (Browser)
+
+Since this is a static HTML/JS site with no test framework, verification is manual:
+
+1. **Waitlist webhook** — Open [index.html](file:///c:/Users/niekl/OneDrive/Bureaublad/universiteit/Essentials%20of%20entrepeneurship/website/index.html) in browser, submit the waitlist form, check the Google Sheet to confirm the row appeared. Also check browser console for no errors.
+2. **OG tags** — Use [opengraph.xyz](https://opengraph.xyz) or the [Facebook Sharing Debugger](https://developers.facebook.com/tools/debug/) with the deployed URL to verify the preview card renders correctly.
+3. **Dynamic dashboard** — Create an account → make a reservation → navigate to [dashboard.html](file:///c:/Users/niekl/OneDrive/Bureaublad/universiteit/Essentials%20of%20entrepeneurship/website/dashboard.html) → confirm the name, avatar, and stats reflect the logged-in user, not "Anna".
+4. **Social proof** — Open [index.html](file:///c:/Users/niekl/OneDrive/Bureaublad/universiteit/Essentials%20of%20entrepeneurship/website/index.html) and visually confirm the testimonial quote appears below the waitlist form.
+5. **Waitlist placeholder** — Check the email field says "Use your university email for priority access".
+6. **License checkbox** — Open the Van booking modal on [services.html](file:///c:/Users/niekl/OneDrive/Bureaublad/universiteit/Essentials%20of%20entrepeneurship/website/services.html) → try to submit without checking the box → confirm the browser blocks submission.
+7. **Empty state** — On [marketplace.html](file:///c:/Users/niekl/OneDrive/Bureaublad/universiteit/Essentials%20of%20entrepeneurship/website/marketplace.html), apply a filter that matches no items (e.g. Kitchen filter if no kitchen items are visible) → confirm the empty-state message appears.
+8. **Footer links** — Click each social link in the footer → confirm it opens the correct URL in a new tab (or stays on the correct URL).

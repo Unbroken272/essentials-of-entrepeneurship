@@ -28,6 +28,7 @@
       </a>
       <ul class="nav-links">
         <li><a href="marketplace.html" class="nav-link">Marketplace</a></li>
+        <li><a href="about.html" class="nav-link">About Us</a></li>
         <li><a href="services.html#starter-packs" class="nav-link">Starter Packs</a></li>
         <li><a href="services.html#logistics" class="nav-link">Van Rental</a></li>
         <li><a href="services.html#donate" class="nav-link">Donate</a></li>
@@ -40,6 +41,7 @@
     </div>
     <div class="nav-mobile" id="nav-mobile">
       <a href="marketplace.html" onclick="toggleMenu()" href="marketplace.html">Marketplace</a>
+      <a href="about.html" onclick="toggleMenu()">About Us</a>
       <a href="services.html#starter-packs" onclick="toggleMenu()" href="services.html#starter-packs">Starter Packs</a>
       <a href="services.html#logistics" onclick="toggleMenu()" href="services.html#logistics">Van Rental</a>
       <a href="services.html#donate" onclick="toggleMenu()" href="services.html#donate">Donate</a>
@@ -317,9 +319,9 @@
         <div class="footer-logo">🌿 SwapNest</div>
         <p>A circular moving platform. Rent. Trade. Donate.</p>
         <div class="footer-socials">
-          <a href="#" class="social-link">Instagram</a>
-          <a href="#" class="social-link">LinkedIn</a>
-          <a href="#" class="social-link">Twitter</a>
+          <a href="https://instagram.com/swapnest.nl" target="_blank" class="social-link">Instagram</a>
+          <a href="https://linkedin.com/company/swapnest" target="_blank" class="social-link">LinkedIn</a>
+          <a href="https://x.com/swapnest_nl" target="_blank" class="social-link">Twitter</a>
         </div>
       </div>
       <div class="footer-links">
@@ -508,6 +510,12 @@
             <label class="pay-opt active"><input type="radio" name="pay3" value="card" checked /> 💳 Card</label>
             <label class="pay-opt"><input type="radio" name="pay3" value="ideal" /> 🏦 iDEAL</label>
           </div>
+        </div>
+        <div class="form-group">
+          <label style="display:flex; align-items:flex-start; gap:8px; cursor:pointer;">
+            <input type="checkbox" required style="margin-top:3px;" />
+            <span>I confirm I have a valid driver's license</span>
+          </label>
         </div>
         <button type="submit" class="btn-primary full-width">Confirm Van Booking</button>
       </form>

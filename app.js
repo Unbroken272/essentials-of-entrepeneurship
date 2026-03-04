@@ -8,6 +8,7 @@ function updateNavAuth() {
   const user = Auth.currentUser();
   const navActions = document.getElementById('nav-actions');
   const mobileAuth = document.getElementById('nav-mobile-auth');
+  if (!navActions || !mobileAuth) return;
 
   if (user) {
     navActions.innerHTML = `
@@ -72,6 +73,7 @@ function openAuthGateModal(itemName) {
   // Show a friendly gate inside the login modal
   const modal = document.getElementById('login-modal');
   const err = document.getElementById('login-error');
+  if (!modal || !err) return;
   err.style.display = 'block';
   err.className = 'auth-gate-notice';
   err.innerHTML = `
@@ -123,23 +125,30 @@ function selectRole(role) {
 // ── Navbar Scroll ─────────────────────────────
 
 const navbar = document.getElementById('navbar');
-window.addEventListener('scroll', () => {
-  navbar.classList.toggle('scrolled', window.scrollY > 60);
-});
+if (navbar) {
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 60);
+  });
+}
 
 function toggleMenu() {
-  document.getElementById('nav-mobile').classList.toggle('open');
+  const navMobile = document.getElementById('nav-mobile');
+  if (navMobile) navMobile.classList.toggle('open');
 }
 
 // ── Modal System ──────────────────────────────
 
 function openModal(id) {
-  document.getElementById(id).classList.add('open');
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.add('open');
   document.body.style.overflow = 'hidden';
 }
 
 function closeModal(id) {
-  document.getElementById(id).classList.remove('open');
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.remove('open');
   document.body.style.overflow = '';
   // Clear errors
   const err = document.getElementById(id.replace('-modal', '-error'));
@@ -174,7 +183,7 @@ function handleWaitlist(e) {
 
   // Track the signup using the analytics script if available
   if (typeof Analytics !== 'undefined') {
-    Analytics.trackWaitlistSignup();
+    Analytics.trackWaitlistSignup(name, email);
   }
 
   showToast(`🎉 Thanks ${name.split(' ')[0]}! You're on the waitlist.`);
@@ -241,7 +250,8 @@ function handleLogOut() {
   updateNavAuth();
 
   // Hide dashboard if it was visible
-  document.getElementById('dashboard').style.display = 'none';
+  const dashEl = document.getElementById('dashboard');
+  if (dashEl) dashEl.style.display = 'none';
 
   showToast('👋 You have been logged out.');
 }
@@ -267,17 +277,21 @@ function goToDashboard() {
 
 function switchDashTab(tab, btn) {
   document.querySelectorAll('.dash-tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
+  if (btn) btn.classList.add('active');
 
-  document.querySelectorAll('.dash-panel').forEach(p => p.style.display = 'none');
-  document.getElementById(`dash-${tab}`).style.display = 'block';
+  document.querySelectorAll('.dash-pane').forEach(p => p.style.display = 'none');
+  const panel = document.getElementById(tab);
+  if (panel) panel.style.display = 'block';
 
+  // renderDashTab expects the short key (e.g. 'rentals'), strip 'dash-' prefix
+  const shortTab = tab.replace(/^dash-/, '');
   const user = Auth.refreshSession();
-  if (user) renderDashTab(tab, user);
+  if (user) renderDashTab(shortTab, user);
 }
 
 function renderDashTab(tab, user) {
   const panel = document.getElementById(`dash-${tab}`);
+  if (!panel) return;
   const items = user[tab] || [];
 
   if (items.length === 0) {
@@ -288,6 +302,7 @@ function renderDashTab(tab, user) {
       donations: { icon: '❤️', title: 'No donations yet', desc: 'Schedule a donation and it will appear here.' },
     };
     const m = emptyMessages[tab];
+    if (!m) return;
     panel.innerHTML = `
       <div class="dash-empty">
         <div class="dash-empty-icon">${m.icon}</div>
@@ -530,6 +545,7 @@ function filterItems(category, btnEl) {
   document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
   if (btnEl) btnEl.classList.add('active');
 
+  let visibleCount = 0;
   document.querySelectorAll('.item-card').forEach(card => {
     const cat = card.dataset.category;
     const urgency = card.dataset.urgency;
@@ -538,13 +554,21 @@ function filterItems(category, btnEl) {
         : category === 'week' ? urgency === 'week'
           : cat === category;
     card.classList.toggle('hidden', !show);
+    if (show) visibleCount++;
   });
+
+  // Show/hide empty state
+  const emptyState = document.getElementById('empty-state');
+  if (emptyState) {
+    emptyState.style.display = visibleCount === 0 ? 'block' : 'none';
+  }
 }
 
 // ── Item Sorting ──────────────────────────────
 
 function sortItems(sortBy) {
   const grid = document.getElementById('items-grid');
+  if (!grid) return;
   const cards = Array.from(grid.querySelectorAll('.item-card'));
   const urgencyOrder = { today: 0, week: 1 };
 
@@ -573,9 +597,10 @@ const extraItems = [
 let extraLoaded = false;
 function loadMore() {
   if (extraLoaded) return;
-  extraLoaded = true;
   const grid = document.getElementById('items-grid');
   const btn = document.getElementById('load-more-btn');
+  if (!grid || !btn) return;
+  extraLoaded = true;
 
   extraItems.forEach(item => {
     const card = document.createElement('div');
@@ -616,6 +641,7 @@ function loadMore() {
 
 function generateSlots() {
   const row = document.getElementById('slots-row');
+  if (!row) return;
   const days = ['Mon Feb 24', 'Tue Feb 25', 'Wed Feb 26', 'Thu Feb 27', 'Fri Feb 28', 'Sat Mar 1'];
   const times = ['09:00', '13:00', '17:00'];
   const taken = [0, 3, 7];
@@ -747,6 +773,7 @@ document.addEventListener('click', (e) => {
 function showToast(message) {
   const toast = document.getElementById('toast');
   const msg = document.getElementById('toast-msg');
+  if (!toast || !msg) return;
   msg.textContent = message;
   toast.classList.add('show');
   setTimeout(() => toast.classList.remove('show'), 3500);
@@ -818,7 +845,8 @@ updateNavAuth();
 
 // Skip onboarding overlay if already logged in
 if (Auth.isLoggedIn()) {
-  document.getElementById('onboarding-overlay').classList.remove('active');
+  const onboardingEl = document.getElementById('onboarding-overlay');
+  if (onboardingEl) onboardingEl.classList.remove('active');
 }
 
 console.log('🌿 SwapNest — auth-enabled app loaded');

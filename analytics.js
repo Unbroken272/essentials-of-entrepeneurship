@@ -1,10 +1,38 @@
 /*
  * SwapNest Analytics Script
+ * Sends data both to localStorage (for admin-metrics page)
+ * AND to a Google Apps Script webhook (for global data collection).
  */
 
 const Analytics = (() => {
     const STORAGE_KEY = 'swapnest_metrics';
     let currentSession = null;
+
+    // ── Google Apps Script Webhook ───────────────────────────────
+    // Replace this URL with your deployed Apps Script web app URL.
+    // To set up: Google Sheets → Extensions → Apps Script → deploy doPost()
+    const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbwxjgO0YsbHI3v2Qgspr2p3jyhhzAYGikBtXGHRrteG8ITmsRF_rKd3n92R9qPyZOvb6Q/exec';
+
+    function sendToSheet(payload) {
+        if (!WEBHOOK_URL || WEBHOOK_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') return;
+        try {
+            fetch(WEBHOOK_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    ...payload,
+                    timestamp: new Date().toISOString(),
+                    page: window.location.pathname.split('/').pop() || 'index.html',
+                    referrer: currentSession ? currentSession.referrer : 'unknown'
+                })
+            });
+        } catch (e) {
+            // Silently fail — don't break the site if webhook is down
+        }
+    }
+
+    // ── localStorage helpers (kept for admin-metrics) ───────────
 
     function generateSessionId() {
         return 'sess_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now();
@@ -42,6 +70,8 @@ const Analytics = (() => {
         metrics.push(currentSession);
         saveMetrics(metrics);
 
+        // Also log session start to webhook
+        sendToSheet({ action: 'session_start', sessionId: currentSession.id });
         // Update time spent every 5 seconds
         setInterval(updateTimeSpent, 5000);
     }
@@ -50,12 +80,12 @@ const Analytics = (() => {
         if (!currentSession) return;
         const metrics = getMetrics();
         const sessionIndex = metrics.findIndex(s => s.id === currentSession.id);
-        
+
         if (sessionIndex !== -1) {
             const now = new Date().getTime();
             metrics[sessionIndex].timeSpentMs += (now - metrics[sessionIndex].lastActive);
             metrics[sessionIndex].lastActive = now;
-            
+
             // Keep current session in sync
             currentSession = metrics[sessionIndex];
             saveMetrics(metrics);
@@ -66,7 +96,7 @@ const Analytics = (() => {
         if (!currentSession) return;
         const metrics = getMetrics();
         const sessionIndex = metrics.findIndex(s => s.id === currentSession.id);
-        
+
         if (sessionIndex !== -1) {
             metrics[sessionIndex].pageViews.push(page);
             currentSession = metrics[sessionIndex];
@@ -78,7 +108,7 @@ const Analytics = (() => {
         if (!currentSession) return;
         const metrics = getMetrics();
         const sessionIndex = metrics.findIndex(s => s.id === currentSession.id);
-        
+
         if (sessionIndex !== -1) {
             metrics[sessionIndex].clicks.push({
                 label,
@@ -87,13 +117,16 @@ const Analytics = (() => {
             currentSession = metrics[sessionIndex];
             saveMetrics(metrics);
         }
+
+        // Send click event to webhook
+        sendToSheet({ action: 'click', label: label });
     }
 
-    function trackWaitlistSignup() {
-         if (!currentSession) return;
+    function trackWaitlistSignup(name, email) {
+        if (!currentSession) return;
         const metrics = getMetrics();
         const sessionIndex = metrics.findIndex(s => s.id === currentSession.id);
-        
+
         if (sessionIndex !== -1) {
             metrics[sessionIndex].waitlistSignups += 1;
             metrics[sessionIndex].clicks.push({
@@ -103,6 +136,9 @@ const Analytics = (() => {
             currentSession = metrics[sessionIndex];
             saveMetrics(metrics);
         }
+
+        // Send waitlist signup to webhook (this is the key data for the smoke test!)
+        sendToSheet({ action: 'waitlist_signup', name: name || '', email: email || '' });
     }
 
     // Auto-start session if not already running in this tab
@@ -126,9 +162,9 @@ document.addEventListener('click', (e) => {
     if (btn) {
         const text = btn.innerText.trim();
         if (text) {
-             Analytics.trackClick(`Button: ${text}`);
+            Analytics.trackClick(`Button: ${text}`);
         } else if (btn.id) {
-             Analytics.trackClick(`Button ID: ${btn.id}`);
+            Analytics.trackClick(`Button ID: ${btn.id}`);
         }
     }
 });
