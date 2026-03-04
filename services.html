@@ -47,115 +47,268 @@
     </div>
   </nav>
 
-  <!-- ─── HERO ─── -->
-  <section class="hero" id="home">
-    <div class="hero-bg-orbs">
-      <div class="orb orb-1"></div>
-      <div class="orb orb-2"></div>
-      <div class="orb orb-3"></div>
-    </div>
-    <div class="hero-content">
-      <div class="hero-badge">🌱 Circular Economy · Zero Waste Moving</div>
-      <h1 class="hero-title">
-        Move Smarter.<br />
-        <span class="gradient-text">Live Greener.</span>
-      </h1>
-      <p class="hero-desc">
-        Our SwapNest platform is the only student-focused moving service that offers complete and convenient moving
-        solutions, providing a fast, simple, and stress-free moving experience to students.
-      </p>
-      <div class="hero-waitlist"
-        style="background: rgba(255,255,255,0.05); padding: 24px; border-radius: var(--radius); border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); margin-bottom: 30px;">
-        <h3 style="color: white; margin-bottom: 16px;">Join the SwapNest Waitlist</h3>
-        <form onsubmit="handleWaitlist(event)" style="display: flex; gap: 10px; flex-wrap: wrap;">
-          <input type="text" id="waitlist-name" placeholder="Your Name" required
-            style="flex: 1; min-width: 150px; padding: 12px 16px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.2); color: white;" />
-          <input type="email" id="waitlist-email" placeholder="Your Email" required
-            style="flex: 1; min-width: 150px; padding: 12px 16px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.2); color: white;" />
-          <button type="submit" class="btn-hero-primary" style="padding: 12px 24px; white-space: nowrap;">Join Waitlist
-            →</button>
-        </form>
+  <!-- ─── STARTER PACKS ─── -->
+  <section class="starter-packs" id="starter-packs">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">Starter Packs & Box Rental</div>
+        <h2>Everything you need <span class="gradient-text">from day one</span></h2>
+        <p>Curated rental packs for students and expats — delivered to your door</p>
+      </div>
+      <div class="packs-grid">
+
+        <div class="pack-card featured">
+          <div class="pack-badge">Most Popular</div>
+          <div class="pack-icon">🍳</div>
+          <h3>Kitchen Starter Pack</h3>
+          <div class="pack-price"><span>€35</span>/week</div>
+          <ul class="pack-contents">
+            <li>✓ 2 pots + 2 pans</li>
+            <li>✓ Knife block (5 knives)</li>
+            <li>✓ Cutting board</li>
+            <li>✓ Full utensil set</li>
+            <li>✓ 4 plates, 4 bowls, 4 mugs</li>
+            <li>✓ Cutlery for 4</li>
+          </ul>
+          <div class="pack-meta">
+            <span>📦 Delivered in 24h</span>
+            <span>🔄 Free return pickup</span>
+          </div>
+          <button class="btn-primary" onclick="openBookingModal('Kitchen Starter Pack', '€35/week')">Book Now</button>
+        </div>
+
+        <div class="pack-card">
+          <div class="pack-icon">🛏️</div>
+          <h3>Bedroom Starter Pack</h3>
+          <div class="pack-price"><span>€45</span>/week</div>
+          <ul class="pack-contents">
+            <li>✓ Duvet + cover (single or double)</li>
+            <li>✓ 2 pillows + pillowcases</li>
+            <li>✓ 2 bedsheets (fitted + flat)</li>
+            <li>✓ Towel set (bath + hand)</li>
+            <li>✓ Bed lamp</li>
+          </ul>
+          <div class="pack-meta">
+            <span>📦 Delivered in 24h</span>
+            <span>🔄 Free return pickup</span>
+          </div>
+          <button class="btn-primary" onclick="openBookingModal('Bedroom Starter Pack', '€45/week')">Book Now</button>
+        </div>
+
+        <div class="pack-card">
+          <div class="pack-icon">🏠</div>
+          <h3>Full Home Pack</h3>
+          <div class="pack-price"><span>€75</span>/week</div>
+          <ul class="pack-contents">
+            <li>✓ Everything in Kitchen Pack</li>
+            <li>✓ Everything in Bedroom Pack</li>
+            <li>✓ Iron + ironing board</li>
+            <li>✓ Vacuum cleaner</li>
+            <li>✓ Cleaning supplies set</li>
+          </ul>
+          <div class="pack-meta">
+            <span>📦 Delivered in 48h</span>
+            <span>🔄 Free return pickup</span>
+          </div>
+          <button class="btn-primary" onclick="openBookingModal('Full Home Pack', '€75/week')">Book Now</button>
+        </div>
+
       </div>
 
-      <div class="trust-signals"
-        style="display: flex; gap: 16px; align-items: center; color: rgba(255,255,255,0.8); font-size: 0.9rem;">
-        <span style="display: flex; align-items: center; gap: 6px;">✨ <strong style="color: white;">Cleanliness
-            Guarantee</strong> - Bedbug Free</span>
-        <span>|</span>
-        <span style="display: flex; align-items: center; gap: 6px;">🤝 For students, by students</span>
-      </div>
-    </div>
-    <div class="hero-visual">
-      <div class="hero-card-stack">
-        <div class="hero-phone-mock" style="position: relative; right: auto; top: auto; width: 280px;">
-          <div class="phone-screen"
-            style="height: 500px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; background: var(--green-50);">
-            <img src="logo.png" alt="SwapNest Logo" style="width: 80px; margin-bottom: 20px;">
-            <h3 style="color: var(--green-800); margin-bottom: 10px;">Swap, donate, move smarter</h3>
-            <p style="font-size: 0.9rem; color: var(--slate-600); padding: 0 20px;">The ultimate student moving
-              ecosystem is coming soon.</p>
+      <!-- Moving Box Rental -->
+      <div class="box-rental">
+        <div class="box-rental-text">
+          <div class="section-tag" style="justify-content:flex-start; display:inline-flex">Moving Boxes</div>
+          <h3>Reusable Moving Boxes</h3>
+          <p>Forget cardboard. Our heavy-duty plastic boxes are stackable, weather-resistant and come in 3 sizes. We
+            deliver, you fill, we pick up — no waste, no hassle.</p>
+          <ul class="box-features">
+            <li>✓ Small (30L) · Medium (50L) · Large (70L)</li>
+            <li>✓ Delivered & collected for free (within Amsterdam)</li>
+            <li>✓ Includes lids, straps & labels</li>
+            <li>✓ From €2/box/week</li>
+          </ul>
+          <button class="btn-primary" onclick="openBoxModal()">Order Boxes</button>
+        </div>
+        <div class="box-rental-visual">
+          <div class="box-stack">
+            <div class="box large">70L</div>
+            <div class="box medium">50L</div>
+            <div class="box small">30L</div>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ─── ABOUT US (GROUP 6) ─── -->
-  <section class="about-us" style="padding: 80px 24px; background: white;">
-    <div class="container" style="max-width: 800px; text-align: center;">
-      <div class="section-tag">About Us</div>
-      <h2 style="margin-bottom: 20px;">Meet <span class="gradient-text">Group 6</span></h2>
-      <p style="font-size: 1.1rem; color: var(--slate-600); margin-bottom: 40px; line-height: 1.8;">
-        We are a passionate team of students on a mission to revolutionize how students move.
-        We experienced firsthand how stressful, expensive, and wasteful moving out can be.
-        That's why we created SwapNest: a platform designed specifically for our peers to easily swap furniture, rent
-        starter packs, and book affordable vans all in one place.
-      </p>
-
-      <div
-        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 24px; text-align: left;">
-        <div
-          style="background: var(--slate-50); padding: 24px; border-radius: var(--radius); border: 1px solid var(--slate-200);">
-          <div style="font-size: 2rem; margin-bottom: 12px;">🌍</div>
-          <h4 style="margin-bottom: 8px;">Accessibility</h4>
-          <p style="font-size: 0.85rem; color: var(--slate-500);">Making moving affordable and easy for every student.
-          </p>
-        </div>
-        <div
-          style="background: var(--slate-50); padding: 24px; border-radius: var(--radius); border: 1px solid var(--slate-200);">
-          <div style="font-size: 2rem; margin-bottom: 12px;">⚙️</div>
-          <h4 style="margin-bottom: 8px;">Functionality</h4>
-          <p style="font-size: 0.85rem; color: var(--slate-500);">A seamless, one-stop-shop for all your moving needs.
-          </p>
-        </div>
-        <div
-          style="background: var(--slate-50); padding: 24px; border-radius: var(--radius); border: 1px solid var(--slate-200);">
-          <div style="font-size: 2rem; margin-bottom: 12px;">🛡️</div>
-          <h4 style="margin-bottom: 8px;">Responsibility</h4>
-          <p style="font-size: 0.85rem; color: var(--slate-500);">Ensuring safe, clean, and reliable transactions.</p>
-        </div>
-        <div
-          style="background: var(--slate-50); padding: 24px; border-radius: var(--radius); border: 1px solid var(--slate-200);">
-          <div style="font-size: 2rem; margin-bottom: 12px;">🤝</div>
-          <h4 style="margin-bottom: 8px;">Collaboration</h4>
-          <p style="font-size: 0.85rem; color: var(--slate-500);">Built by students, powered by the campus community.
-          </p>
-        </div>
-        <div
-          style="background: var(--slate-50); padding: 24px; border-radius: var(--radius); border: 1px solid var(--slate-200);">
-          <div style="font-size: 2rem; margin-bottom: 12px;">🌱</div>
-          <h4 style="margin-bottom: 8px;">Sustainability</h4>
-          <p style="font-size: 0.85rem; color: var(--slate-500);">Reducing furniture waste through a circular economy.
-          </p>
-        </div>
+  <!-- ─── LOGISTICS ─── -->
+  <section class="logistics" id="logistics">
+    <div class="container">
+      <div class="section-header light">
+        <div class="section-tag light">Van Rental</div>
+        <h2>Get it all home, <span class="gradient-text">in one trip</span></h2>
+        <p>Book an electric van directly in the app — no phone calls, no queues</p>
       </div>
+      <div class="van-options">
+
+        <div class="van-card">
+          <div class="van-img van-img-1">🚐</div>
+          <div class="van-info">
+            <h3>Cargo Van</h3>
+            <div class="van-specs">
+              <span>👥 1 driver</span>
+              <span>📦 8 m³</span>
+              <span>⚡ Electric</span>
+            </div>
+            <p>Perfect for a studio apartment or a few large items. Easy to park in the city.</p>
+            <div class="van-price-row">
+              <div class="van-price"><strong>€29</strong><small>/4 hours</small></div>
+              <button class="btn-primary" onclick="openVanModal('Cargo Van', '€29/4h')">Book Van</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="van-card featured-van">
+          <div class="van-badge">Best Value</div>
+          <div class="van-img van-img-2">🚛</div>
+          <div class="van-info">
+            <h3>Medium Truck</h3>
+            <div class="van-specs">
+              <span>👥 1–2 people</span>
+              <span>📦 15 m³</span>
+              <span>⚡ Hybrid</span>
+            </div>
+            <p>Ideal for a 1–2 bedroom apartment. With tailgate lift for heavy items. Valid Driver's License Required.
+            </p>
+            <div class="van-price-row">
+              <div class="van-price"><strong>€49</strong><small>/4 hours</small></div>
+              <button class="btn-primary" onclick="openVanModal('Medium Truck', '€49/4h')">Book Van</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="van-card">
+          <div class="van-img van-img-3">🏗️</div>
+          <div class="van-info">
+            <h3>Large Mover</h3>
+            <div class="van-specs">
+              <span>👥 1–3 people</span>
+              <span>📦 25 m³</span>
+              <span>⚡ Hybrid</span>
+            </div>
+            <p>Full apartment or house move. Includes moving blankets and straps. Valid Driver's License Required.</p>
+            <div class="van-price-row">
+              <div class="van-price"><strong>€75</strong><small>/4 hours</small></div>
+              <button class="btn-primary" onclick="openVanModal('Large Mover', '€75/4h')">Book Van</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Availability Calendar -->
+      <div class="availability-strip">
+        <h4>Available Slots This Week</h4>
+        <div class="slots-row" id="slots-row"></div>
+      </div>
+
     </div>
   </section>
 
+  <!-- ─── DONATE ─── -->
+  <section class="donate" id="donate">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">Donation Hub</div>
+        <h2>Give it a <span class="gradient-text">second life</span></h2>
+        <p>Don't throw it — donate it. Find drop-off points and charities near you</p>
+      </div>
 
+      <div class="donate-grid">
+        <div class="donate-stats-panel">
+          <h3>Community Impact</h3>
+          <div class="impact-stats">
+            <div class="impact-stat">
+              <div class="impact-num">2,840</div>
+              <div class="impact-label">Items donated</div>
+            </div>
+            <div class="impact-stat">
+              <div class="impact-num">14.2 t</div>
+              <div class="impact-label">CO₂ saved</div>
+            </div>
+            <div class="impact-stat">
+              <div class="impact-num">12</div>
+              <div class="impact-label">Partner charities</div>
+            </div>
+          </div>
+          <div class="impact-bar-wrap">
+            <div class="impact-bar-label">Monthly donation goal</div>
+            <div class="impact-bar">
+              <div class="impact-bar-fill" style="width: 73%"></div>
+            </div>
+            <div class="impact-bar-pct">73% of 500 items</div>
+          </div>
+        </div>
 
+        <div class="donate-orgs">
+          <h3>Drop-off Partners Near You</h3>
+          <div class="org-list">
 
+            <div class="org-card">
+              <div class="org-icon">❤️</div>
+              <div class="org-info">
+                <h4>Salvation Army (Leger des Heils)</h4>
+                <p>Accepts furniture, clothing, kitchen items</p>
+                <span class="org-dist">📍 0.9 km · Mon–Sat 9:00–17:00</span>
+              </div>
+              <button class="btn-sm" onclick="openDonateModal('Salvation Army')">Schedule</button>
+            </div>
 
+            <div class="org-card">
+              <div class="org-icon">🏠</div>
+              <div class="org-info">
+                <h4>Humanitas Deventer</h4>
+                <p>Furniture for people starting fresh after crisis</p>
+                <span class="org-dist">📍 1.4 km · Mon–Fri 10:00–16:00</span>
+              </div>
+              <button class="btn-sm" onclick="openDonateModal('Humanitas Deventer')">Schedule</button>
+            </div>
+
+            <div class="org-card">
+              <div class="org-icon">🌍</div>
+              <div class="org-info">
+                <h4>Kledingbank Amsterdam</h4>
+                <p>Clothing, bedding & household textiles</p>
+                <span class="org-dist">📍 2.0 km · Tue & Thu 11:00–15:00</span>
+              </div>
+              <button class="btn-sm" onclick="openDonateModal('Kledingbank Amsterdam')">Schedule</button>
+            </div>
+
+            <div class="org-card">
+              <div class="org-icon">♻️</div>
+              <div class="org-info">
+                <h4>ReShare Amsterdam</h4>
+                <p>Electronics, small appliances, bikes</p>
+                <span class="org-dist">📍 2.6 km · Mon–Sat 10:00–18:00</span>
+              </div>
+              <button class="btn-sm" onclick="openDonateModal('ReShare Amsterdam')">Schedule</button>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <div class="donate-cta">
+        <div class="donate-cta-content">
+          <h3>Not sure what to do with your stuff?</h3>
+          <p>Take our 30-second quiz and we'll match your items with the best option: sell, rent, donate or recycle.</p>
+          <button class="btn-hero-primary" onclick="openQuizModal()">Take the Quiz →</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
 
   <!-- ─── FOOTER ─── -->
   <footer class="footer">

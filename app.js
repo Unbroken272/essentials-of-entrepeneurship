@@ -103,9 +103,19 @@ function selectRole(role) {
   setTimeout(() => {
     overlay.classList.remove('active');
     if (role === 'arriving') {
-      setTimeout(() => document.getElementById('starter-packs').scrollIntoView({ behavior: 'smooth' }), 300);
+      const el = document.getElementById('starter-packs');
+      if (el) {
+        setTimeout(() => el.scrollIntoView({ behavior: 'smooth' }), 300);
+      } else {
+        setTimeout(() => window.location.href = 'services.html#starter-packs', 300);
+      }
     } else {
-      setTimeout(() => document.getElementById('marketplace').scrollIntoView({ behavior: 'smooth' }), 300);
+      const el = document.getElementById('marketplace');
+      if (el) {
+        setTimeout(() => el.scrollIntoView({ behavior: 'smooth' }), 300);
+      } else {
+        setTimeout(() => window.location.href = 'marketplace.html', 300);
+      }
     }
   }, 500);
 }
@@ -155,6 +165,22 @@ function switchAuthModal(mode) {
   }
 }
 
+// ── Waitlist ───────────────────────────────────
+
+function handleWaitlist(e) {
+  e.preventDefault();
+  const name = document.getElementById('waitlist-name').value;
+  const email = document.getElementById('waitlist-email').value;
+
+  // Track the signup using the analytics script if available
+  if (typeof Analytics !== 'undefined') {
+    Analytics.trackWaitlistSignup();
+  }
+
+  showToast(`🎉 Thanks ${name.split(' ')[0]}! You're on the waitlist.`);
+  e.target.reset();
+}
+
 // ── Sign Up ───────────────────────────────────
 
 function handleSignUp(e) {
@@ -176,7 +202,7 @@ function handleSignUp(e) {
 
   closeModal('signup-modal');
   updateNavAuth();
-  showToast(`🎉 Welcome to The Sustainable Move, ${result.user.name.split(' ')[0]}!`);
+  showToast(`🎉 Welcome to SwapNest, ${result.user.name.split(' ')[0]}!`);
   document.getElementById('signup-form').reset();
 
   runPendingAction();
@@ -227,11 +253,16 @@ function goToDashboard() {
   if (!user) return;
 
   const dashEl = document.getElementById('dashboard');
-  dashEl.style.display = 'block';
-  document.getElementById('dash-name').textContent = user.name.split(' ')[0];
+  if (dashEl) {
+    dashEl.style.display = 'block';
+    const dashNameEl = document.getElementById('dash-name');
+    if (dashNameEl) dashNameEl.textContent = user.name.split(' ')[0];
 
-  renderDashTab('reservations', user);
-  dashEl.scrollIntoView({ behavior: 'smooth' });
+    renderDashTab('reservations', user);
+    dashEl.scrollIntoView({ behavior: 'smooth' });
+  } else {
+    window.location.href = 'dashboard.html';
+  }
 }
 
 function switchDashTab(tab, btn) {
@@ -790,4 +821,4 @@ if (Auth.isLoggedIn()) {
   document.getElementById('onboarding-overlay').classList.remove('active');
 }
 
-console.log('🌿 The Sustainable Move — auth-enabled app loaded');
+console.log('🌿 SwapNest — auth-enabled app loaded');

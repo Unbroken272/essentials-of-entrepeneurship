@@ -47,115 +47,189 @@
     </div>
   </nav>
 
-  <!-- ─── HERO ─── -->
-  <section class="hero" id="home">
-    <div class="hero-bg-orbs">
-      <div class="orb orb-1"></div>
-      <div class="orb orb-2"></div>
-      <div class="orb orb-3"></div>
-    </div>
-    <div class="hero-content">
-      <div class="hero-badge">🌱 Circular Economy · Zero Waste Moving</div>
-      <h1 class="hero-title">
-        Move Smarter.<br />
-        <span class="gradient-text">Live Greener.</span>
-      </h1>
-      <p class="hero-desc">
-        Our SwapNest platform is the only student-focused moving service that offers complete and convenient moving
-        solutions, providing a fast, simple, and stress-free moving experience to students.
-      </p>
-      <div class="hero-waitlist"
-        style="background: rgba(255,255,255,0.05); padding: 24px; border-radius: var(--radius); border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); margin-bottom: 30px;">
-        <h3 style="color: white; margin-bottom: 16px;">Join the SwapNest Waitlist</h3>
-        <form onsubmit="handleWaitlist(event)" style="display: flex; gap: 10px; flex-wrap: wrap;">
-          <input type="text" id="waitlist-name" placeholder="Your Name" required
-            style="flex: 1; min-width: 150px; padding: 12px 16px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.2); color: white;" />
-          <input type="email" id="waitlist-email" placeholder="Your Email" required
-            style="flex: 1; min-width: 150px; padding: 12px 16px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.2); color: white;" />
-          <button type="submit" class="btn-hero-primary" style="padding: 12px 24px; white-space: nowrap;">Join Waitlist
-            →</button>
-        </form>
+  <!-- ─── MARKETPLACE ─── -->
+  <section class="marketplace" id="marketplace">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">Circular Marketplace</div>
+        <h2>Items <span class="gradient-text">near you</span></h2>
+        <p>Secondhand furniture and household goods — local, fast, and sustainable</p>
       </div>
 
-      <div class="trust-signals"
-        style="display: flex; gap: 16px; align-items: center; color: rgba(255,255,255,0.8); font-size: 0.9rem;">
-        <span style="display: flex; align-items: center; gap: 6px;">✨ <strong style="color: white;">Cleanliness
-            Guarantee</strong> - Bedbug Free</span>
-        <span>|</span>
-        <span style="display: flex; align-items: center; gap: 6px;">🤝 For students, by students</span>
+      <!-- Filters -->
+      <div class="market-filters">
+        <div class="filter-tabs">
+          <button class="filter-tab active" id="tab-all" onclick="filterItems('all', this)">All Items</button>
+          <button class="filter-tab urgent" id="tab-today" onclick="filterItems('today', this)">🔥 Available
+            Today</button>
+          <button class="filter-tab" id="tab-week" onclick="filterItems('week', this)">📅 This Week</button>
+          <button class="filter-tab" id="tab-furniture" onclick="filterItems('furniture', this)">🪑 Furniture</button>
+          <button class="filter-tab" id="tab-kitchen" onclick="filterItems('kitchen', this)">🍳 Kitchen</button>
+          <button class="filter-tab" id="tab-bedroom" onclick="filterItems('bedroom', this)">🛏 Bedroom</button>
+        </div>
+        <div class="filter-sort">
+          <label for="sort-select">Sort:</label>
+          <select id="sort-select" onchange="sortItems(this.value)">
+            <option value="distance">Nearest First</option>
+            <option value="price-low">Price: Low → High</option>
+            <option value="price-high">Price: High → Low</option>
+            <option value="urgency">Most Urgent</option>
+          </select>
+        </div>
       </div>
-    </div>
-    <div class="hero-visual">
-      <div class="hero-card-stack">
-        <div class="hero-phone-mock" style="position: relative; right: auto; top: auto; width: 280px;">
-          <div class="phone-screen"
-            style="height: 500px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; background: var(--green-50);">
-            <img src="logo.png" alt="SwapNest Logo" style="width: 80px; margin-bottom: 20px;">
-            <h3 style="color: var(--green-800); margin-bottom: 10px;">Swap, donate, move smarter</h3>
-            <p style="font-size: 0.9rem; color: var(--slate-600); padding: 0 20px;">The ultimate student moving
-              ecosystem is coming soon.</p>
+
+      <!-- Urgency Banner -->
+      <div class="urgency-banner" id="urgency-banner">
+        <span class="pulse-dot"></span>
+        <strong>15 items</strong> must go this week — help prevent furniture waste!
+        <button onclick="filterItems('today', document.getElementById('tab-today'))">See urgent items →</button>
+      </div>
+
+      <!-- Item Grid -->
+      <div class="items-grid" id="items-grid">
+
+        <div class="item-card" data-category="furniture" data-urgency="today" data-price="45" data-distance="0.4">
+          <div class="item-img" style="background: linear-gradient(135deg, #a8d8a8, #5cb85c);">
+            <span class="item-emoji">🪑</span>
+          </div>
+          <div class="urgency-badge today">Available Today</div>
+          <div class="item-info">
+            <div class="item-header">
+              <h4>KALLAX Shelf Unit</h4>
+              <span class="item-price">€45</span>
+            </div>
+            <p class="item-desc">White IKEA KALLAX, 4 compartments. Great condition. Must go today!</p>
+            <div class="item-meta">
+              <span>📍 0.4 km · Oud-West</span>
+              <span>⭐ 4.8</span>
+            </div>
+            <div class="item-actions">
+              <button class="btn-reserve" onclick="openReserveModal('KALLAX Shelf Unit', '€45')">Reserve Now</button>
+              <button class="btn-wishlist" onclick="toggleWishlist(this)">♡</button>
+            </div>
           </div>
         </div>
+
+        <div class="item-card" data-category="furniture" data-urgency="today" data-price="85" data-distance="0.8">
+          <div class="item-img" style="background: linear-gradient(135deg, #d4a373, #a0522d);">
+            <span class="item-emoji">🍽️</span>
+          </div>
+          <div class="urgency-badge today">Available Today</div>
+          <div class="item-info">
+            <div class="item-header">
+              <h4>Dining Table + 4 Chairs</h4>
+              <span class="item-price">€85</span>
+            </div>
+            <p class="item-desc">Solid oak table with 4 matching chairs. Moving abroad tomorrow!</p>
+            <div class="item-meta">
+              <span>📍 0.8 km · De Pijp</span>
+              <span>⭐ 5.0</span>
+            </div>
+            <div class="item-actions">
+              <button class="btn-reserve" onclick="openReserveModal('Dining Table + 4 Chairs', '€85')">Reserve
+                Now</button>
+              <button class="btn-wishlist" onclick="toggleWishlist(this)">♡</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="item-card" data-category="bedroom" data-urgency="today" data-price="120" data-distance="1.2">
+          <div class="item-img" style="background: linear-gradient(135deg, #b8c0e0, #6c7fc4);">
+            <span class="item-emoji">🛋️</span>
+          </div>
+          <div class="urgency-badge today">Available Today</div>
+          <div class="item-info">
+            <div class="item-header">
+              <h4>2-Seat Sofa – Grey</h4>
+              <span class="item-price">€120</span>
+            </div>
+            <p class="item-desc">IKEA EKTORP 2-seat sofa, light grey, excellent condition. Pickup only.</p>
+            <div class="item-meta">
+              <span>📍 1.2 km · Jordaan</span>
+              <span>⭐ 4.7</span>
+            </div>
+            <div class="item-actions">
+              <button class="btn-reserve" onclick="openReserveModal('2-Seat Sofa – Grey', '€120')">Reserve Now</button>
+              <button class="btn-wishlist" onclick="toggleWishlist(this)">♡</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="item-card" data-category="kitchen" data-urgency="week" data-price="30" data-distance="0.6">
+          <div class="item-img" style="background: linear-gradient(135deg, #ffd6a5, #f4a261);">
+            <span class="item-emoji">🍳</span>
+          </div>
+          <div class="urgency-badge week">This Week</div>
+          <div class="item-info">
+            <div class="item-header">
+              <h4>Kitchen Essentials Set</h4>
+              <span class="item-price">€30</span>
+            </div>
+            <p class="item-desc">Pots, pans, knife block, cutting board, utensils. Complete starter kit.</p>
+            <div class="item-meta">
+              <span>📍 0.6 km · Bos en Lommer</span>
+              <span>⭐ 4.9</span>
+            </div>
+            <div class="item-actions">
+              <button class="btn-reserve" onclick="openReserveModal('Kitchen Essentials Set', '€30')">Reserve
+                Now</button>
+              <button class="btn-wishlist" onclick="toggleWishlist(this)">♡</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="item-card" data-category="bedroom" data-urgency="week" data-price="55" data-distance="1.5">
+          <div class="item-img" style="background: linear-gradient(135deg, #c9e4ca, #52b788);">
+            <span class="item-emoji">🛏️</span>
+          </div>
+          <div class="urgency-badge week">This Week</div>
+          <div class="item-info">
+            <div class="item-header">
+              <h4>Single Bed Frame + Mattress</h4>
+              <span class="item-price">€55</span>
+            </div>
+            <p class="item-desc">90x200 cm IKEA bed frame with clean mattress. Dismantled & ready.</p>
+            <div class="item-meta">
+              <span>📍 1.5 km · Oost</span>
+              <span>⭐ 4.6</span>
+            </div>
+            <div class="item-actions">
+              <button class="btn-reserve" onclick="openReserveModal('Single Bed Frame + Mattress', '€55')">Reserve
+                Now</button>
+              <button class="btn-wishlist" onclick="toggleWishlist(this)">♡</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="item-card" data-category="furniture" data-urgency="week" data-price="70" data-distance="2.1">
+          <div class="item-img" style="background: linear-gradient(135deg, #e0c3fc, #9b72cf);">
+            <span class="item-emoji">📺</span>
+          </div>
+          <div class="urgency-badge week">This Week</div>
+          <div class="item-info">
+            <div class="item-header">
+              <h4>TV Cabinet – Walnut</h4>
+              <span class="item-price">€70</span>
+            </div>
+            <p class="item-desc">Solid walnut veneer TV cabinet, 150 cm wide, 2 drawers. Stylish.</p>
+            <div class="item-meta">
+              <span>📍 2.1 km · Zuid</span>
+              <span>⭐ 4.8</span>
+            </div>
+            <div class="item-actions">
+              <button class="btn-reserve" onclick="openReserveModal('TV Cabinet – Walnut', '€70')">Reserve Now</button>
+              <button class="btn-wishlist" onclick="toggleWishlist(this)">♡</button>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /items-grid -->
+
+      <div class="load-more-wrap">
+        <button class="btn-outline" id="load-more-btn" onclick="loadMore()">Load 6 More Items</button>
       </div>
     </div>
   </section>
-
-  <!-- ─── ABOUT US (GROUP 6) ─── -->
-  <section class="about-us" style="padding: 80px 24px; background: white;">
-    <div class="container" style="max-width: 800px; text-align: center;">
-      <div class="section-tag">About Us</div>
-      <h2 style="margin-bottom: 20px;">Meet <span class="gradient-text">Group 6</span></h2>
-      <p style="font-size: 1.1rem; color: var(--slate-600); margin-bottom: 40px; line-height: 1.8;">
-        We are a passionate team of students on a mission to revolutionize how students move.
-        We experienced firsthand how stressful, expensive, and wasteful moving out can be.
-        That's why we created SwapNest: a platform designed specifically for our peers to easily swap furniture, rent
-        starter packs, and book affordable vans all in one place.
-      </p>
-
-      <div
-        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 24px; text-align: left;">
-        <div
-          style="background: var(--slate-50); padding: 24px; border-radius: var(--radius); border: 1px solid var(--slate-200);">
-          <div style="font-size: 2rem; margin-bottom: 12px;">🌍</div>
-          <h4 style="margin-bottom: 8px;">Accessibility</h4>
-          <p style="font-size: 0.85rem; color: var(--slate-500);">Making moving affordable and easy for every student.
-          </p>
-        </div>
-        <div
-          style="background: var(--slate-50); padding: 24px; border-radius: var(--radius); border: 1px solid var(--slate-200);">
-          <div style="font-size: 2rem; margin-bottom: 12px;">⚙️</div>
-          <h4 style="margin-bottom: 8px;">Functionality</h4>
-          <p style="font-size: 0.85rem; color: var(--slate-500);">A seamless, one-stop-shop for all your moving needs.
-          </p>
-        </div>
-        <div
-          style="background: var(--slate-50); padding: 24px; border-radius: var(--radius); border: 1px solid var(--slate-200);">
-          <div style="font-size: 2rem; margin-bottom: 12px;">🛡️</div>
-          <h4 style="margin-bottom: 8px;">Responsibility</h4>
-          <p style="font-size: 0.85rem; color: var(--slate-500);">Ensuring safe, clean, and reliable transactions.</p>
-        </div>
-        <div
-          style="background: var(--slate-50); padding: 24px; border-radius: var(--radius); border: 1px solid var(--slate-200);">
-          <div style="font-size: 2rem; margin-bottom: 12px;">🤝</div>
-          <h4 style="margin-bottom: 8px;">Collaboration</h4>
-          <p style="font-size: 0.85rem; color: var(--slate-500);">Built by students, powered by the campus community.
-          </p>
-        </div>
-        <div
-          style="background: var(--slate-50); padding: 24px; border-radius: var(--radius); border: 1px solid var(--slate-200);">
-          <div style="font-size: 2rem; margin-bottom: 12px;">🌱</div>
-          <h4 style="margin-bottom: 8px;">Sustainability</h4>
-          <p style="font-size: 0.85rem; color: var(--slate-500);">Reducing furniture waste through a circular economy.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-
-
-
-
 
   <!-- ─── FOOTER ─── -->
   <footer class="footer">

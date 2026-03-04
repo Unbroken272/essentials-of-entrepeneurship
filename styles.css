@@ -39,8 +39,8 @@
   --slate-900: #0f172a;
   --white: #ffffff;
 
-  --grad-main: linear-gradient(135deg, var(--green-500) 0%, var(--teal-500) 100%);
-  --grad-hero: linear-gradient(160deg, #0f172a 0%, #0d2818 50%, #0f172a 100%);
+  --grad-main: linear-gradient(135deg, var(--green-600) 0%, var(--green-400) 100%);
+  --grad-hero: linear-gradient(160deg, #064e3b 0%, #022c22 50%, #064e3b 100%);
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
   --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.18);
@@ -1515,7 +1515,7 @@ h3 {
   font-weight: 500;
   cursor: pointer;
   transition: var(--transition);
-  border: 1px solid transparent;
+  border: 1.5px solid transparent;
 }
 
 .slot.available {
