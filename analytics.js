@@ -141,10 +141,33 @@ const Analytics = (() => {
         sendToSheet({ action: 'waitlist_signup', name: name || '', email: email || '' });
     }
 
-    // Auto-start session if not already running in this tab
-    if (!currentSession) {
+    // ── Session persistence across page navigations ────────────
+    const SESSION_STORAGE_KEY = 'swapnest_active_session';
+
+    function resumeOrStartSession() {
+        const savedSessionId = sessionStorage.getItem(SESSION_STORAGE_KEY);
+
+        if (savedSessionId) {
+            // Try to resume the existing session from localStorage
+            const metrics = getMetrics();
+            const existingSession = metrics.find(s => s.id === savedSessionId);
+
+            if (existingSession) {
+                currentSession = existingSession;
+                const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+                trackPageView(currentPage);
+                // Restart the time-spent tracker
+                setInterval(updateTimeSpent, 5000);
+                return;
+            }
+        }
+
+        // No valid session found — start a fresh one
         startSession();
+        sessionStorage.setItem(SESSION_STORAGE_KEY, currentSession.id);
     }
+
+    resumeOrStartSession();
 
     // Export public methods
     return {
