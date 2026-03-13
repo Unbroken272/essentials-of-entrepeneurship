@@ -11,7 +11,7 @@ const Analytics = (() => {
     // ── Google Apps Script Webhook ───────────────────────────────
     // Replace this URL with your deployed Apps Script web app URL.
     // To set up: Google Sheets → Extensions → Apps Script → deploy doPost()
-    const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbwxjgO0YsbHI3v2Qgspr2p3jyhhzAYGikBtXGHRrteG8ITmsRF_rKd3n92R9qPyZOvb6Q/exec';
+    const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbw_a8LR94rnXzHI_8uyYRsJ4JYOjeTyOZBx75ecmEMAYXj2b16A0tCLH_Gr1J9WKhqD5w/exec';
 
     function sendToSheet(payload) {
         if (!WEBHOOK_URL || WEBHOOK_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') return;
