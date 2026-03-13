@@ -140,7 +140,13 @@
       font-weight: 500;
     }
 
-    .clear-btn {
+    .header-actions {
+      display: flex;
+      gap: 12px;
+      float: right;
+    }
+
+    .btn {
       background: transparent;
       border: 1px solid var(--slate-200);
       padding: 8px 16px;
@@ -148,11 +154,16 @@
       cursor: pointer;
       font-size: 0.875rem;
       color: var(--slate-600);
-      float: right;
     }
 
-    .clear-btn:hover {
+    .btn:hover {
       background: var(--slate-100);
+    }
+
+    #status-bar {
+      font-size: 0.8rem;
+      color: var(--slate-600);
+      margin-top: 8px;
     }
   </style>
 </head>
@@ -164,33 +175,36 @@
 
   <div class="container">
     <div class="header">
-      <button class="clear-btn" onclick="clearMetrics()">Clear Data</button>
+      <div class="header-actions">
+        <button class="btn" onclick="initDashboard()">Vernieuwen</button>
+      </div>
       <h1>Smoke Test Dashboard</h1>
-      <p>Real-time metrics overview</p>
+      <p>Live data van alle bezoekers — via Firebase</p>
+      <div id="status-bar">Laden…</div>
     </div>
 
     <div class="kpi-grid">
       <div class="card">
-        <div class="kpi-title">Total Visitors</div>
-        <div class="kpi-value" id="kpi-visitors">0</div>
+        <div class="kpi-title">Totaal Bezoekers</div>
+        <div class="kpi-value" id="kpi-visitors">—</div>
       </div>
       <div class="card">
         <div class="kpi-title">Waitlist Signups</div>
-        <div class="kpi-value" id="kpi-signups">0</div>
+        <div class="kpi-value" id="kpi-signups">—</div>
       </div>
       <div class="card">
-        <div class="kpi-title">Conversion Rate</div>
-        <div class="kpi-value" id="kpi-conversion">0%</div>
+        <div class="kpi-title">Conversieratio</div>
+        <div class="kpi-value" id="kpi-conversion">—</div>
       </div>
       <div class="card">
-        <div class="kpi-title">Avg. Time on Site</div>
-        <div class="kpi-value" id="kpi-time">0s</div>
+        <div class="kpi-title">Gem. Tijd op Site</div>
+        <div class="kpi-value" id="kpi-time">—</div>
       </div>
     </div>
 
     <div class="charts-grid">
       <div class="card">
-        <h3 style="margin-top:0; font-size:1rem; color:var(--slate-800);">Traffic Sources</h3>
+        <h3 style="margin-top:0; font-size:1rem; color:var(--slate-800);">Traffic Bronnen</h3>
         <div class="chart-container">
           <canvas id="trafficChart"></canvas>
         </div>
@@ -204,24 +218,24 @@
     </div>
 
     <div class="card" style="margin-bottom: 32px;">
-      <h3 style="margin-top:0; font-size:1rem; color:var(--slate-800);">User Flow — Top Navigation Paths</h3>
+      <h3 style="margin-top:0; font-size:1rem; color:var(--slate-800);">Gebruikersstroom — Top Navigatiepaden</h3>
       <div class="chart-container" style="height:280px;">
         <canvas id="flowChart"></canvas>
       </div>
     </div>
 
     <details>
-      <summary>View Raw Data Dump</summary>
+      <summary>Bekijk Ruwe Data</summary>
       <div style="overflow-x: auto;">
         <table>
           <thead>
             <tr>
-              <th>Session ID</th>
-              <th>Referrer</th>
-              <th>Time Spent</th>
-              <th>Waitlist Signups</th>
-              <th>Page Views</th>
-              <th>Actions</th>
+              <th>Sessie ID</th>
+              <th>Bron</th>
+              <th>Tijd op Site</th>
+              <th>Signups</th>
+              <th>Pagina's Bezocht</th>
+              <th>Acties</th>
             </tr>
           </thead>
           <tbody id="raw-table-body">
@@ -233,9 +247,6 @@
 
   <script src="analytics.js"></script>
   <script>
-    // Same webhook URL as analytics.js — GET returns all sessions as JSON.
-    const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwxjgO0YsbHI3v2Qgspr2p3jyhhzAYGikBtXGHRrteG8ITmsRF_rKd3n92R9qPyZOvb6Q/exec';
-
     function formatTime(ms) {
       if (!ms) return '0s';
       const totalSeconds = Math.round(ms / 1000);
@@ -245,42 +256,39 @@
       return `${s}s`;
     }
 
-    // Merge local sessions (by id) into the Google Sheets sessions so we
-    // always have the most up-to-date view of the current browser's data too.
-    function mergeSessions(sheetsData, localData) {
-      const map = new Map();
-      sheetsData.forEach(s => map.set(s.id, s));
-      localData.forEach(s => {
-        const existing = map.get(s.id);
-        // Prefer whichever copy has more time spent (most recently synced)
-        if (!existing || (s.timeSpentMs || 0) > (existing.timeSpentMs || 0)) {
-          map.set(s.id, s);
-        }
-      });
-      return Array.from(map.values());
+    function setStatus(msg) {
+      document.getElementById('status-bar').innerText = msg;
     }
 
     async function loadAllMetrics() {
-      const localMetrics = (typeof Analytics !== 'undefined') ? Analytics.getMetrics() : [];
-      try {
-        const res = await fetch(SHEETS_URL);
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        const sheetsData = await res.json();
-        if (Array.isArray(sheetsData)) {
-          return mergeSessions(sheetsData, localMetrics);
-        }
-      } catch (_) {
-        // Google Sheets unreachable — fall back to localStorage only
+      const firebaseUrl = (typeof Analytics !== 'undefined') ? Analytics.FIREBASE_URL : null;
+
+      if (!firebaseUrl || firebaseUrl.includes('JOUW_PROJECT')) {
+        setStatus('Firebase nog niet geconfigureerd. Vul FIREBASE_URL in analytics.js in.');
+        return [];
       }
-      return localMetrics;
+
+      try {
+        const res = await fetch(`${firebaseUrl}/sessions.json`);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+        if (!data) {
+          setStatus('Geen sessies gevonden in Firebase.');
+          return [];
+        }
+        const sessions = Object.values(data);
+        setStatus(`Laatste update: ${new Date().toLocaleTimeString('nl-NL')} — ${sessions.length} sessies geladen uit Firebase`);
+        return sessions;
+      } catch (err) {
+        setStatus('Fout bij laden uit Firebase: ' + err.message);
+        return [];
+      }
     }
 
     function renderDashboard(metrics) {
-      // 1. Calculate KPIs
       const totalVisitors = metrics.length;
       let totalSignups = 0;
       let totalTimeSpent = 0;
-
       const trafficSources = {};
       const eventsCount = {};
 
@@ -302,13 +310,11 @@
       const conversionRate = totalVisitors > 0 ? ((totalSignups / totalVisitors) * 100).toFixed(1) : 0;
       const avgTimeMs = totalVisitors > 0 ? totalTimeSpent / totalVisitors : 0;
 
-      // Update DOM
       document.getElementById('kpi-visitors').innerText = totalVisitors;
       document.getElementById('kpi-signups').innerText = totalSignups;
       document.getElementById('kpi-conversion').innerText = conversionRate + '%';
       document.getElementById('kpi-time').innerText = formatTime(avgTimeMs);
 
-      // 2. Navigation transitions
       const transitions = {};
       metrics.forEach(session => {
         if (session.pageViews && session.pageViews.length > 1) {
@@ -319,12 +325,9 @@
         }
       });
 
-      // 3. Charts
       renderTrafficChart(trafficSources);
       renderEventsChart(eventsCount);
       renderFlowChart(transitions);
-
-      // 4. Raw Data
       renderRawTable(metrics);
     }
 
@@ -333,27 +336,21 @@
       const ctx = document.getElementById('trafficChart').getContext('2d');
       const labels = Object.keys(dataObj);
       const data = Object.values(dataObj);
-
       if (trafficChartInstance) trafficChartInstance.destroy();
-
       trafficChartInstance = new Chart(ctx, {
         type: 'pie',
         data: {
-          labels: labels.length ? labels : ['No Data'],
+          labels: labels.length ? labels : ['Geen data'],
           datasets: [{
             data: data.length ? data : [1],
-            backgroundColor: [
-              '#22c55e', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#e2e8f0'
-            ],
+            backgroundColor: ['#22c55e', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#e2e8f0'],
             borderWidth: 1
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: {
-            legend: { position: 'right' }
-          }
+          plugins: { legend: { position: 'right' } }
         }
       });
     }
@@ -361,20 +358,17 @@
     let eventsChartInstance = null;
     function renderEventsChart(dataObj) {
       const ctx = document.getElementById('eventsChart').getContext('2d');
-      // Sort descending
-      const sortedEvents = Object.keys(dataObj).map(k => ({ label: k, count: dataObj[k] }))
+      const sortedEvents = Object.keys(dataObj)
+        .map(k => ({ label: k, count: dataObj[k] }))
         .sort((a, b) => b.count - a.count)
-        .slice(0, 10); // top 10
-
+        .slice(0, 10);
       const labels = sortedEvents.map(e => e.label);
       const data = sortedEvents.map(e => e.count);
-
       if (eventsChartInstance) eventsChartInstance.destroy();
-
       eventsChartInstance = new Chart(ctx, {
         type: 'bar',
         data: {
-          labels: labels.length ? labels : ['No Data'],
+          labels: labels.length ? labels : ['Geen data'],
           datasets: [{
             label: 'Clicks',
             data: data.length ? data : [0],
@@ -385,12 +379,8 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false }
-          },
-          scales: {
-            y: { beginAtZero: true, ticks: { stepSize: 1 } }
-          }
+          plugins: { legend: { display: false } },
+          scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
         }
       });
     }
@@ -402,18 +392,15 @@
         .map(k => ({ label: k, count: dataObj[k] }))
         .sort((a, b) => b.count - a.count)
         .slice(0, 10);
-
       const labels = sorted.map(e => e.label);
       const data = sorted.map(e => e.count);
-
       if (flowChartInstance) flowChartInstance.destroy();
-
       flowChartInstance = new Chart(ctx, {
         type: 'bar',
         data: {
-          labels: labels.length ? labels : ['No navigation data yet'],
+          labels: labels.length ? labels : ['Nog geen navigatiedata'],
           datasets: [{
-            label: 'Transitions',
+            label: 'Overgangen',
             data: data.length ? data : [0],
             backgroundColor: '#3b82f6',
             borderRadius: 4
@@ -424,9 +411,7 @@
           maintainAspectRatio: false,
           indexAxis: 'y',
           plugins: { legend: { display: false } },
-          scales: {
-            x: { beginAtZero: true, ticks: { stepSize: 1 } }
-          }
+          scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } } }
         }
       });
     }
@@ -434,42 +419,31 @@
     function renderRawTable(metrics) {
       const tbody = document.getElementById('raw-table-body');
       if (!metrics || metrics.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No session data yet.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Nog geen sessiedata.</td></tr>';
         return;
       }
-
-      tbody.innerHTML = metrics.map(session => {
-        const timeStr = formatTime(session.timeSpentMs);
+      // Meest recente sessies bovenaan
+      const sorted = [...metrics].sort((a, b) => (b.startedAt || 0) - (a.startedAt || 0));
+      tbody.innerHTML = sorted.map(session => {
         const views = session.pageViews ? session.pageViews.join(', ') : '';
         const clicks = session.clicks ? session.clicks.length + ' clicks' : '0 clicks';
-
         return `
           <tr>
-              <td style="font-family: monospace;" title="${session.id}">${session.id.substring(0, 12)}...</td>
-              <td>${session.referrer || 'direct'}</td>
-              <td>${timeStr}</td>
-              <td><strong>${session.waitlistSignups || 0}</strong></td>
-              <td style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${views}">${views}</td>
-              <td><span style="color: var(--slate-500);">${clicks}</span></td>
+            <td style="font-family: monospace;" title="${session.id}">${String(session.id).substring(0, 16)}…</td>
+            <td>${session.referrer || 'direct'}</td>
+            <td>${formatTime(session.timeSpentMs)}</td>
+            <td><strong>${session.waitlistSignups || 0}</strong></td>
+            <td style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${views}">${views}</td>
+            <td style="color: var(--slate-600);">${clicks}</td>
           </tr>
         `;
-      }).reverse().join('');
+      }).join('');
     }
 
     async function initDashboard() {
-      document.getElementById('kpi-visitors').innerText = '…';
-      document.getElementById('kpi-signups').innerText = '…';
-      document.getElementById('kpi-conversion').innerText = '…';
-      document.getElementById('kpi-time').innerText = '…';
+      setStatus('Laden…');
       const metrics = await loadAllMetrics();
       renderDashboard(metrics);
-    }
-
-    function clearMetrics() {
-      if (confirm("Are you sure you want to clear all local analytics data?\n\nNote: data stored in Google Sheets is not affected.")) {
-        localStorage.removeItem('swapnest_metrics');
-        initDashboard();
-      }
     }
 
     document.addEventListener('DOMContentLoaded', initDashboard);
