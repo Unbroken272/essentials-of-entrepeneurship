@@ -1,70 +1,40 @@
 /*
- * SwapNest Analytics Script
- * Sends data both to localStorage (for admin-metrics page)
- * AND to a Google Apps Script webhook (for global data collection).
+ * SwapNest Analytics
+ * Slaat sessie-data op in Firebase Realtime Database zodat alle apparaten
+ * dezelfde data zien. Geen localStorage, geen Google Sheets.
+ *
+ * ── SETUP ──────────────────────────────────────────────────────────────────
+ * 1. Ga naar https://console.firebase.google.com
+ * 2. Maak een nieuw project aan (gratis Spark-plan is genoeg)
+ * 3. Klik op "Realtime Database" → "Create database" → start in testmodus
+ * 4. Kopieer de database URL (ziet eruit als:
+ *    https://jouw-project-default-rtdb.firebaseio.com)
+ * 5. Plak die URL hieronder bij FIREBASE_URL
+ * ───────────────────────────────────────────────────────────────────────────
  */
 
 const Analytics = (() => {
-    const STORAGE_KEY = 'swapnest_metrics';
+    // ▼▼▼ Vervang dit met jouw Firebase Realtime Database URL ▼▼▼
+    const FIREBASE_URL = 'https://console.firebase.google.com/u/1/project/swapnest-20fe9/database/swapnest-20fe9-default-rtdb/data/~2F';
+    // ▲▲▲ ─────────────────────────────────────────────────────── ▲▲▲
+
     let currentSession = null;
 
-    // ── Google Apps Script Webhook ───────────────────────────────
-    // Replace this URL with your deployed Apps Script web app URL.
-    // To set up: Google Sheets → Extensions → Apps Script → deploy doPost()
-    const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbw_a8LR94rnXzHI_8uyYRsJ4JYOjeTyOZBx75ecmEMAYXj2b16A0tCLH_Gr1J9WKhqD5w/exec';
+    // ── Firebase helpers ─────────────────────────────────────────────────────
 
-    function sendToSheet(payload) {
-        if (!WEBHOOK_URL || WEBHOOK_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') return;
-        try {
-            fetch(WEBHOOK_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    ...payload,
-                    timestamp: new Date().toISOString(),
-                    page: window.location.pathname.split('/').pop() || 'index.html',
-                    referrer: currentSession ? currentSession.referrer : 'unknown'
-                })
-            });
-        } catch (e) {
-            // Silently fail — don't break the site if webhook is down
-        }
+    function saveSession(session) {
+        if (!FIREBASE_URL || FIREBASE_URL.includes('JOUW_PROJECT')) return;
+        fetch(`${FIREBASE_URL}/sessions/${session.id}.json`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(session)
+        }).catch(() => {}); // Silently fail — breekt de site niet
     }
 
-    // Sends the full current session object as a snapshot so every device's
-    // data is visible in Google Sheets and the admin-metrics dashboard.
-    function syncSessionSnapshot() {
-        if (!WEBHOOK_URL || WEBHOOK_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') return;
-        if (!currentSession) return;
-        try {
-            fetch(WEBHOOK_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ action: 'session_snapshot', session: currentSession })
-            });
-        } catch (e) {
-            // Silently fail
-        }
-    }
-
-    // ── localStorage helpers (kept for admin-metrics) ───────────
+    // ── Sessie beheer ────────────────────────────────────────────────────────
 
     function generateSessionId() {
         return 'sess_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now();
-    }
-
-    function getMetrics() {
-        try {
-            return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-        } catch {
-            return [];
-        }
-    }
-
-    function saveMetrics(metrics) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(metrics));
     }
 
     function startSession() {
@@ -74,8 +44,8 @@ const Analytics = (() => {
 
         currentSession = {
             id: generateSessionId(),
-            startedAt: new Date().getTime(),
-            lastActive: new Date().getTime(),
+            startedAt: Date.now(),
+            lastActive: Date.now(),
             timeSpentMs: 0,
             referrer: referrer,
             pageViews: [window.location.pathname.split('/').pop() || 'index.html'],
@@ -83,127 +53,98 @@ const Analytics = (() => {
             waitlistSignups: 0
         };
 
-        const metrics = getMetrics();
-        metrics.push(currentSession);
-        saveMetrics(metrics);
-
-        // Log session start and push initial snapshot
-        sendToSheet({ action: 'session_start', sessionId: currentSession.id });
-        syncSessionSnapshot();
-        // Update time spent every 5 seconds; sync snapshot every 30 seconds
+        saveSession(currentSession);
         setInterval(updateTimeSpent, 5000);
-        setInterval(syncSessionSnapshot, 30000);
+        setInterval(() => saveSession(currentSession), 30000);
     }
 
     function updateTimeSpent() {
         if (!currentSession) return;
-        const metrics = getMetrics();
-        const sessionIndex = metrics.findIndex(s => s.id === currentSession.id);
-
-        if (sessionIndex !== -1) {
-            const now = new Date().getTime();
-            metrics[sessionIndex].timeSpentMs += (now - metrics[sessionIndex].lastActive);
-            metrics[sessionIndex].lastActive = now;
-
-            // Keep current session in sync
-            currentSession = metrics[sessionIndex];
-            saveMetrics(metrics);
-        }
+        const now = Date.now();
+        currentSession.timeSpentMs += now - currentSession.lastActive;
+        currentSession.lastActive = now;
     }
 
     function trackPageView(page) {
         if (!currentSession) return;
-        const metrics = getMetrics();
-        const sessionIndex = metrics.findIndex(s => s.id === currentSession.id);
-
-        if (sessionIndex !== -1) {
-            metrics[sessionIndex].pageViews.push(page);
-            currentSession = metrics[sessionIndex];
-            saveMetrics(metrics);
-        }
+        currentSession.pageViews.push(page);
+        saveSession(currentSession);
     }
 
     function trackClick(label) {
         if (!currentSession) return;
-        const metrics = getMetrics();
-        const sessionIndex = metrics.findIndex(s => s.id === currentSession.id);
-
-        if (sessionIndex !== -1) {
-            metrics[sessionIndex].clicks.push({
-                label,
-                time: new Date().toISOString()
-            });
-            currentSession = metrics[sessionIndex];
-            saveMetrics(metrics);
-        }
-
-        // Send click event and sync full snapshot
-        sendToSheet({ action: 'click', label: label });
-        syncSessionSnapshot();
+        currentSession.clicks.push({ label, time: new Date().toISOString() });
+        saveSession(currentSession);
     }
 
     function trackWaitlistSignup(name, email) {
         if (!currentSession) return;
-        const metrics = getMetrics();
-        const sessionIndex = metrics.findIndex(s => s.id === currentSession.id);
-
-        if (sessionIndex !== -1) {
-            metrics[sessionIndex].waitlistSignups += 1;
-            metrics[sessionIndex].clicks.push({
-                label: 'waitlist_signup',
-                time: new Date().toISOString()
-            });
-            currentSession = metrics[sessionIndex];
-            saveMetrics(metrics);
-        }
-
-        // Send waitlist signup and sync full snapshot
-        sendToSheet({ action: 'waitlist_signup', name: name || '', email: email || '' });
-        syncSessionSnapshot();
+        currentSession.waitlistSignups += 1;
+        currentSession.clicks.push({ label: 'waitlist_signup', time: new Date().toISOString() });
+        saveSession(currentSession);
     }
 
-    // ── Session persistence across page navigations ────────────
+    // ── Sessie herstel bij navigatie ─────────────────────────────────────────
     const SESSION_STORAGE_KEY = 'swapnest_active_session';
 
     function resumeOrStartSession() {
-        const savedSessionId = sessionStorage.getItem(SESSION_STORAGE_KEY);
+        // sessionStorage (tab-scoped, niet persistent tussen tabs/apparaten)
+        // gebruiken we alleen om de sessie-ID bij te houden tijdens navigatie
+        // binnen dezelfde browsertab.
+        const savedId = sessionStorage.getItem(SESSION_STORAGE_KEY);
 
-        if (savedSessionId) {
-            // Try to resume the existing session from localStorage
-            const metrics = getMetrics();
-            const existingSession = metrics.find(s => s.id === savedSessionId);
+        if (savedId) {
+            // Herstel sessie in geheugen — haal huidige state op uit Firebase
+            currentSession = {
+                id: savedId,
+                startedAt: Date.now(),
+                lastActive: Date.now(),
+                timeSpentMs: 0,
+                referrer: 'direct',
+                pageViews: [window.location.pathname.split('/').pop() || 'index.html'],
+                clicks: [],
+                waitlistSignups: 0
+            };
 
-            if (existingSession) {
-                currentSession = existingSession;
-                const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-                trackPageView(currentPage);
-                // Restart timers
-                setInterval(updateTimeSpent, 5000);
-                setInterval(syncSessionSnapshot, 30000);
-                syncSessionSnapshot();
-                return;
+            if (!FIREBASE_URL.includes('JOUW_PROJECT')) {
+                // Laad bestaande sessie uit Firebase en merge
+                fetch(`${FIREBASE_URL}/sessions/${savedId}.json`)
+                    .then(r => r.json())
+                    .then(existing => {
+                        if (existing && existing.id) {
+                            existing.lastActive = Date.now();
+                            existing.pageViews = existing.pageViews || [];
+                            existing.pageViews.push(
+                                window.location.pathname.split('/').pop() || 'index.html'
+                            );
+                            currentSession = existing;
+                            saveSession(currentSession);
+                        }
+                    })
+                    .catch(() => {});
             }
+
+            setInterval(updateTimeSpent, 5000);
+            setInterval(() => saveSession(currentSession), 30000);
+            return;
         }
 
-        // No valid session found — start a fresh one
         startSession();
         sessionStorage.setItem(SESSION_STORAGE_KEY, currentSession.id);
     }
 
     resumeOrStartSession();
 
-    // Export public methods
     return {
         trackClick,
         trackPageView,
         trackWaitlistSignup,
-        getMetrics // useful for admin page
+        FIREBASE_URL // Beschikbaar voor admin-metrics.html
     };
 })();
 
-// Global click tracker for important buttons
+// Globale click-tracker voor alle knoppen
 document.addEventListener('click', (e) => {
-    // Specifically track the Waitlist / Sign Up button
     const btn = e.target.closest('button');
     if (btn) {
         const text = btn.innerText.trim();
