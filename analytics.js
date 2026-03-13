@@ -15,20 +15,24 @@
 
 const Analytics = (() => {
     // ▼▼▼ Vervang dit met jouw Firebase Realtime Database URL ▼▼▼
-    const FIREBASE_URL = 'https://console.firebase.google.com/u/1/project/swapnest-20fe9/database/swapnest-20fe9-default-rtdb/data/~2F';
+    const FIREBASE_URL = 'https://swapnest-20fe9-default-rtdb.firebaseio.com';
     // ▲▲▲ ─────────────────────────────────────────────────────── ▲▲▲
 
-    let currentSession = null;
+    const SESSION_STORAGE_KEY = 'swapnest_active_session';
+    const isAdminPage = window.location.pathname.includes('admin-metrics');
+    const isConfigured = !FIREBASE_URL.includes('JOUW_PROJECT');
+
+    let currentSession = null; // null = sessie nog niet klaar (laden of niet geconfigureerd)
 
     // ── Firebase helpers ─────────────────────────────────────────────────────
 
     function saveSession(session) {
-        if (!FIREBASE_URL || FIREBASE_URL.includes('JOUW_PROJECT')) return;
+        if (!isConfigured || !session) return;
         fetch(`${FIREBASE_URL}/sessions/${session.id}.json`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(session)
-        }).catch(() => {}); // Silently fail — breekt de site niet
+        }).catch(err => console.error('[Analytics] Firebase write fout:', err));
     }
 
     // ── Sessie beheer ────────────────────────────────────────────────────────
@@ -37,12 +41,12 @@ const Analytics = (() => {
         return 'sess_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now();
     }
 
-    function startSession() {
+    function createNewSession() {
         const urlParams = new URLSearchParams(window.location.search);
         let referrer = urlParams.get('ref') || document.referrer || 'direct';
         if (referrer === '') referrer = 'direct';
 
-        currentSession = {
+        return {
             id: generateSessionId(),
             startedAt: Date.now(),
             lastActive: Date.now(),
@@ -52,10 +56,6 @@ const Analytics = (() => {
             clicks: [],
             waitlistSignups: 0
         };
-
-        saveSession(currentSession);
-        setInterval(updateTimeSpent, 5000);
-        setInterval(() => saveSession(currentSession), 30000);
     }
 
     function updateTimeSpent() {
@@ -84,53 +84,60 @@ const Analytics = (() => {
         saveSession(currentSession);
     }
 
-    // ── Sessie herstel bij navigatie ─────────────────────────────────────────
-    const SESSION_STORAGE_KEY = 'swapnest_active_session';
+    // ── Sessie starten / hervatten ───────────────────────────────────────────
+
+    function startIntervals() {
+        setInterval(updateTimeSpent, 5000);
+        setInterval(() => { if (currentSession) saveSession(currentSession); }, 30000);
+    }
 
     function resumeOrStartSession() {
-        // sessionStorage (tab-scoped, niet persistent tussen tabs/apparaten)
-        // gebruiken we alleen om de sessie-ID bij te houden tijdens navigatie
-        // binnen dezelfde browsertab.
+        if (isAdminPage) return; // Admin-pagina telt niet mee als bezoeker
+
+        const currentPage = window.location.pathname.split('/').pop() || 'index.html';
         const savedId = sessionStorage.getItem(SESSION_STORAGE_KEY);
 
-        if (savedId) {
-            // Herstel sessie in geheugen — haal huidige state op uit Firebase
-            currentSession = {
-                id: savedId,
-                startedAt: Date.now(),
-                lastActive: Date.now(),
-                timeSpentMs: 0,
-                referrer: 'direct',
-                pageViews: [window.location.pathname.split('/').pop() || 'index.html'],
-                clicks: [],
-                waitlistSignups: 0
-            };
+        startIntervals();
 
-            if (!FIREBASE_URL.includes('JOUW_PROJECT')) {
-                // Laad bestaande sessie uit Firebase en merge
-                fetch(`${FIREBASE_URL}/sessions/${savedId}.json`)
-                    .then(r => r.json())
-                    .then(existing => {
-                        if (existing && existing.id) {
-                            existing.lastActive = Date.now();
-                            existing.pageViews = existing.pageViews || [];
-                            existing.pageViews.push(
-                                window.location.pathname.split('/').pop() || 'index.html'
-                            );
-                            currentSession = existing;
-                            saveSession(currentSession);
+        if (savedId && isConfigured) {
+            // Haal bestaande sessie op uit Firebase VOORDAT we iets opslaan.
+            // currentSession blijft null totdat Firebase antwoord geeft,
+            // zodat er geen lege data kan worden weggeschreven (race condition fix).
+            fetch(`${FIREBASE_URL}/sessions/${savedId}.json`)
+                .then(r => {
+                    if (!r.ok) throw new Error('HTTP ' + r.status);
+                    return r.json();
+                })
+                .then(existing => {
+                    if (existing && existing.id) {
+                        // Bestaande sessie gevonden — voeg huidige pagina toe
+                        existing.lastActive = Date.now();
+                        existing.pageViews = existing.pageViews || [];
+                        if (!existing.pageViews.includes(currentPage)) {
+                            existing.pageViews.push(currentPage);
                         }
-                    })
-                    .catch(() => {});
-            }
-
-            setInterval(updateTimeSpent, 5000);
-            setInterval(() => saveSession(currentSession), 30000);
+                        currentSession = existing;
+                    } else {
+                        // Sessie bestaat niet meer in Firebase — begin opnieuw
+                        currentSession = createNewSession();
+                        sessionStorage.setItem(SESSION_STORAGE_KEY, currentSession.id);
+                    }
+                    saveSession(currentSession);
+                })
+                .catch(err => {
+                    console.error('[Analytics] Kon sessie niet laden uit Firebase:', err);
+                    // Fallback: begin nieuwe sessie
+                    currentSession = createNewSession();
+                    sessionStorage.setItem(SESSION_STORAGE_KEY, currentSession.id);
+                    saveSession(currentSession);
+                });
             return;
         }
 
-        startSession();
+        // Geen opgeslagen sessie → maak nieuwe aan
+        currentSession = createNewSession();
         sessionStorage.setItem(SESSION_STORAGE_KEY, currentSession.id);
+        saveSession(currentSession);
     }
 
     resumeOrStartSession();
@@ -139,7 +146,7 @@ const Analytics = (() => {
         trackClick,
         trackPageView,
         trackWaitlistSignup,
-        FIREBASE_URL // Beschikbaar voor admin-metrics.html
+        FIREBASE_URL
     };
 })();
 
