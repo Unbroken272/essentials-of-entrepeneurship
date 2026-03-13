@@ -15,7 +15,7 @@
 
 const Analytics = (() => {
     // ▼▼▼ Vervang dit met jouw Firebase Realtime Database URL ▼▼▼
-    const FIREBASE_URL = 'https://JOUW_PROJECT-default-rtdb.firebaseio.com';
+    const FIREBASE_URL = 'https://console.firebase.google.com/u/1/project/swapnest-20fe9/database/swapnest-20fe9-default-rtdb/data/~2F';
     // ▲▲▲ ─────────────────────────────────────────────────────── ▲▲▲
 
     let currentSession = null;
