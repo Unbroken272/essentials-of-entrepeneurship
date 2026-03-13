@@ -233,6 +233,9 @@
 
   <script src="analytics.js"></script>
   <script>
+    // Same webhook URL as analytics.js — GET returns all sessions as JSON.
+    const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwxjgO0YsbHI3v2Qgspr2p3jyhhzAYGikBtXGHRrteG8ITmsRF_rKd3n92R9qPyZOvb6Q/exec';
+
     function formatTime(ms) {
       if (!ms) return '0s';
       const totalSeconds = Math.round(ms / 1000);
@@ -242,9 +245,37 @@
       return `${s}s`;
     }
 
-    function renderDashboard() {
-      const metrics = (typeof Analytics !== 'undefined') ? Analytics.getMetrics() : [];
+    // Merge local sessions (by id) into the Google Sheets sessions so we
+    // always have the most up-to-date view of the current browser's data too.
+    function mergeSessions(sheetsData, localData) {
+      const map = new Map();
+      sheetsData.forEach(s => map.set(s.id, s));
+      localData.forEach(s => {
+        const existing = map.get(s.id);
+        // Prefer whichever copy has more time spent (most recently synced)
+        if (!existing || (s.timeSpentMs || 0) > (existing.timeSpentMs || 0)) {
+          map.set(s.id, s);
+        }
+      });
+      return Array.from(map.values());
+    }
 
+    async function loadAllMetrics() {
+      const localMetrics = (typeof Analytics !== 'undefined') ? Analytics.getMetrics() : [];
+      try {
+        const res = await fetch(SHEETS_URL);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const sheetsData = await res.json();
+        if (Array.isArray(sheetsData)) {
+          return mergeSessions(sheetsData, localMetrics);
+        }
+      } catch (_) {
+        // Google Sheets unreachable — fall back to localStorage only
+      }
+      return localMetrics;
+    }
+
+    function renderDashboard(metrics) {
       // 1. Calculate KPIs
       const totalVisitors = metrics.length;
       let totalSignups = 0;
@@ -254,15 +285,12 @@
       const eventsCount = {};
 
       metrics.forEach(session => {
-        // KPIs
         totalSignups += (session.waitlistSignups || 0);
         totalTimeSpent += (session.timeSpentMs || 0);
 
-        // Sources
-        const ref = session.referrer && session.referrer.trim() ? session.referrer : "direct";
+        const ref = session.referrer && session.referrer.trim() ? session.referrer : 'direct';
         trafficSources[ref] = (trafficSources[ref] || 0) + 1;
 
-        // Events
         if (session.clicks) {
           session.clicks.forEach(click => {
             const label = click.label || 'Unknown Click';
@@ -428,14 +456,23 @@
       }).reverse().join('');
     }
 
+    async function initDashboard() {
+      document.getElementById('kpi-visitors').innerText = '…';
+      document.getElementById('kpi-signups').innerText = '…';
+      document.getElementById('kpi-conversion').innerText = '…';
+      document.getElementById('kpi-time').innerText = '…';
+      const metrics = await loadAllMetrics();
+      renderDashboard(metrics);
+    }
+
     function clearMetrics() {
-      if (confirm("Are you sure you want to clear all analytics data?")) {
+      if (confirm("Are you sure you want to clear all local analytics data?\n\nNote: data stored in Google Sheets is not affected.")) {
         localStorage.removeItem('swapnest_metrics');
-        renderDashboard();
+        initDashboard();
       }
     }
 
-    document.addEventListener('DOMContentLoaded', renderDashboard);
+    document.addEventListener('DOMContentLoaded', initDashboard);
   </script>
 </body>
 

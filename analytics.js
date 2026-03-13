@@ -32,6 +32,23 @@ const Analytics = (() => {
         }
     }
 
+    // Sends the full current session object as a snapshot so every device's
+    // data is visible in Google Sheets and the admin-metrics dashboard.
+    function syncSessionSnapshot() {
+        if (!WEBHOOK_URL || WEBHOOK_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') return;
+        if (!currentSession) return;
+        try {
+            fetch(WEBHOOK_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'session_snapshot', session: currentSession })
+            });
+        } catch (e) {
+            // Silently fail
+        }
+    }
+
     // ── localStorage helpers (kept for admin-metrics) ───────────
 
     function generateSessionId() {
@@ -70,10 +87,12 @@ const Analytics = (() => {
         metrics.push(currentSession);
         saveMetrics(metrics);
 
-        // Also log session start to webhook
+        // Log session start and push initial snapshot
         sendToSheet({ action: 'session_start', sessionId: currentSession.id });
-        // Update time spent every 5 seconds
+        syncSessionSnapshot();
+        // Update time spent every 5 seconds; sync snapshot every 30 seconds
         setInterval(updateTimeSpent, 5000);
+        setInterval(syncSessionSnapshot, 30000);
     }
 
     function updateTimeSpent() {
@@ -118,8 +137,9 @@ const Analytics = (() => {
             saveMetrics(metrics);
         }
 
-        // Send click event to webhook
+        // Send click event and sync full snapshot
         sendToSheet({ action: 'click', label: label });
+        syncSessionSnapshot();
     }
 
     function trackWaitlistSignup(name, email) {
@@ -137,8 +157,9 @@ const Analytics = (() => {
             saveMetrics(metrics);
         }
 
-        // Send waitlist signup to webhook (this is the key data for the smoke test!)
+        // Send waitlist signup and sync full snapshot
         sendToSheet({ action: 'waitlist_signup', name: name || '', email: email || '' });
+        syncSessionSnapshot();
     }
 
     // ── Session persistence across page navigations ────────────
@@ -156,8 +177,10 @@ const Analytics = (() => {
                 currentSession = existingSession;
                 const currentPage = window.location.pathname.split('/').pop() || 'index.html';
                 trackPageView(currentPage);
-                // Restart the time-spent tracker
+                // Restart timers
                 setInterval(updateTimeSpent, 5000);
+                setInterval(syncSessionSnapshot, 30000);
+                syncSessionSnapshot();
                 return;
             }
         }
