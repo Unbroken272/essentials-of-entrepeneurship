@@ -1,20 +1,20 @@
 /*
  * SwapNest Analytics
- * Slaat sessie-data op in Firebase Realtime Database zodat alle apparaten
- * dezelfde data zien. Geen localStorage, geen Google Sheets.
+ * Stores session data in Firebase Realtime Database so all devices
+ * see the same data. No localStorage, no Google Sheets.
  *
  * ── SETUP ──────────────────────────────────────────────────────────────────
- * 1. Ga naar https://console.firebase.google.com
- * 2. Maak een nieuw project aan (gratis Spark-plan is genoeg)
- * 3. Klik op "Realtime Database" → "Create database" → start in testmodus
- * 4. Kopieer de database URL (ziet eruit als:
- *    https://jouw-project-default-rtdb.firebaseio.com)
- * 5. Plak die URL hieronder bij FIREBASE_URL
+ * 1. Go to https://console.firebase.google.com
+ * 2. Create a new project (the free Spark plan is sufficient)
+ * 3. Click "Realtime Database" → "Create database" → start in test mode
+ * 4. Copy the database URL (looks like:
+ *    https://your-project-default-rtdb.firebaseio.com)
+ * 5. Paste that URL below at FIREBASE_URL
  * ───────────────────────────────────────────────────────────────────────────
  */
 
 const Analytics = (() => {
-    // ▼▼▼ Vervang dit met jouw Firebase Realtime Database URL ▼▼▼
+    // ▼▼▼ Replace this with your Firebase Realtime Database URL ▼▼▼
     const FIREBASE_URL = 'https://swapnest-20fe9-default-rtdb.europe-west1.firebasedatabase.app';
     // ▲▲▲ ─────────────────────────────────────────────────────── ▲▲▲
 
@@ -23,9 +23,9 @@ const Analytics = (() => {
     const isAdminPage = window.location.pathname.includes('admin-metrics');
     const isConfigured = !FIREBASE_URL.includes('JOUW_PROJECT');
 
-    let currentSession = null; // null = sessie nog niet klaar (laden of niet geconfigureerd)
+    let currentSession = null; // null = session not ready yet (loading or not configured)
 
-    // Rage click tracking: element label -> tijdstempels van recente clicks
+    // Rage click tracking: element label -> timestamps of recent clicks
     const recentClickTimes = new Map();
 
     // ── Firebase helpers ─────────────────────────────────────────────────────
@@ -37,10 +37,10 @@ const Analytics = (() => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(session),
             keepalive: !!keepalive
-        }).catch(err => console.error('[Analytics] Firebase write fout:', err));
+        }).catch(err => console.error('[Analytics] Firebase write error:', err));
     }
 
-    // ── Device detectie ──────────────────────────────────────────────────────
+    // ── Device detection ─────────────────────────────────────────────────────
 
     function getDevice() {
         const w = window.screen.width;
@@ -49,7 +49,7 @@ const Analytics = (() => {
         return 'desktop';
     }
 
-    // ── Sessie aanmaken ──────────────────────────────────────────────────────
+    // ── Session creation ─────────────────────────────────────────────────────
 
     function generateSessionId() {
         return 'sess_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now();
@@ -65,7 +65,7 @@ const Analytics = (() => {
         try {
             returningVisitor = !!localStorage.getItem(RETURNING_VISITOR_KEY);
             localStorage.setItem(RETURNING_VISITOR_KEY, '1');
-        } catch (_) { /* Private browsing kan localStorage blokkeren */ }
+        } catch (_) { /* Private browsing may block localStorage */ }
 
         return {
             id: generateSessionId(),
@@ -157,7 +157,7 @@ const Analytics = (() => {
             const isDuplicate = last && last.element === label && (now - new Date(last.timestamp).getTime()) < 2000;
             if (!isDuplicate) {
                 currentSession.rageClicks.push({ element: label, timestamp: new Date().toISOString() });
-                recentClickTimes.set(label, []); // reset teller na detectie
+                recentClickTimes.set(label, []); // reset counter after detection
                 saveSession(currentSession);
             }
         }
@@ -170,10 +170,10 @@ const Analytics = (() => {
         updateTimeSpent();
         const views = currentSession.pageViews || [];
         currentSession.exitPage = views.length > 0 ? views[views.length - 1] : null;
-        saveSession(currentSession, true); // keepalive: true voor betrouwbaarheid bij unload
+        saveSession(currentSession, true); // keepalive: true for reliability on unload
     });
 
-    // ── Sessie starten / hervatten ───────────────────────────────────────────
+    // ── Session start / resume ───────────────────────────────────────────────
 
     function startIntervals() {
         setInterval(updateTimeSpent, 5000);
@@ -181,7 +181,7 @@ const Analytics = (() => {
     }
 
     function resumeOrStartSession() {
-        if (isAdminPage) return; // Admin-pagina telt niet mee als bezoeker
+        if (isAdminPage) return; // Admin page does not count as a visitor
 
         const currentPage = window.location.pathname.split('/').pop() || 'index.html';
         const savedId = sessionStorage.getItem(SESSION_STORAGE_KEY);
@@ -189,7 +189,9 @@ const Analytics = (() => {
         startIntervals();
 
         if (savedId && isConfigured) {
-            // Haal bestaande sessie op uit Firebase VOORDAT we iets opslaan.
+            // Fetch existing session from Firebase BEFORE writing anything.
+            // currentSession stays null until Firebase responds,
+            // to prevent empty data from being written (race condition fix).
             fetch(`${FIREBASE_URL}/sessions/${savedId}.json`)
                 .then(r => {
                     if (!r.ok) throw new Error('HTTP ' + r.status);
@@ -202,18 +204,20 @@ const Analytics = (() => {
                         if (!existing.pageViews.includes(currentPage)) {
                             existing.pageViews.push(currentPage);
                         }
-                        // Zorg dat nieuwe velden bestaan op oude sessies
+                        // Ensure new fields exist on old sessions
                         if (existing.rageClicks === undefined) existing.rageClicks = [];
                         if (existing.scrollDepth === undefined) existing.scrollDepth = 0;
                         currentSession = existing;
                     } else {
+                        // Session no longer exists in Firebase — start fresh
                         currentSession = createNewSession();
                         sessionStorage.setItem(SESSION_STORAGE_KEY, currentSession.id);
                     }
                     saveSession(currentSession);
                 })
                 .catch(err => {
-                    console.error('[Analytics] Kon sessie niet laden uit Firebase:', err);
+                    console.error('[Analytics] Could not load session from Firebase:', err);
+                    // Fallback: start new session
                     currentSession = createNewSession();
                     sessionStorage.setItem(SESSION_STORAGE_KEY, currentSession.id);
                     saveSession(currentSession);
@@ -221,7 +225,7 @@ const Analytics = (() => {
             return;
         }
 
-        // Geen opgeslagen sessie → maak nieuwe aan
+        // No saved session → create new one
         currentSession = createNewSession();
         sessionStorage.setItem(SESSION_STORAGE_KEY, currentSession.id);
         saveSession(currentSession);
@@ -237,7 +241,7 @@ const Analytics = (() => {
     };
 })();
 
-// Globale click-tracker voor alle knoppen
+// Global click tracker for all buttons
 document.addEventListener('click', (e) => {
     const btn = e.target.closest('button');
     if (btn) {
