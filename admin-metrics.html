@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="en">
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Smoke Test Dashboard - SwapNest</title>
+  <title>Analytics Dashboard - SwapNest</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
@@ -232,20 +232,20 @@
   <div class="container">
     <div class="header">
       <div class="header-actions">
-        <button class="btn" onclick="initDashboard()">Vernieuwen</button>
+        <button class="btn" onclick="initDashboard()">Refresh</button>
       </div>
       <h1>Smoke Test Dashboard</h1>
-      <p>Live data van alle bezoekers — via Firebase</p>
-      <div id="status-bar">Laden…</div>
+      <p>Live data from all visitors — via Firebase</p>
+      <div id="status-bar">Loading…</div>
     </div>
 
-    <!-- Rage click waarschuwing -->
+    <!-- Rage click warning banner -->
     <div id="rage-banner"></div>
 
-    <!-- KPI kaarten -->
+    <!-- KPI cards -->
     <div class="kpi-grid">
       <div class="card">
-        <div class="kpi-title">Totaal Bezoekers</div>
+        <div class="kpi-title">Total Visitors</div>
         <div class="kpi-value" id="kpi-visitors">—</div>
       </div>
       <div class="card">
@@ -253,11 +253,11 @@
         <div class="kpi-value" id="kpi-signups">—</div>
       </div>
       <div class="card">
-        <div class="kpi-title">Conversieratio</div>
+        <div class="kpi-title">Conversion Rate</div>
         <div class="kpi-value" id="kpi-conversion">—</div>
       </div>
       <div class="card">
-        <div class="kpi-title">Gem. Tijd op Site</div>
+        <div class="kpi-title">Avg. Time on Site</div>
         <div class="kpi-value" id="kpi-time">—</div>
       </div>
       <div class="card">
@@ -265,36 +265,36 @@
         <div class="kpi-value" id="kpi-bounce">—</div>
       </div>
       <div class="card">
-        <div class="kpi-title">Gem. Scroll Diepte</div>
+        <div class="kpi-title">Avg. Scroll Depth</div>
         <div class="kpi-value" id="kpi-scroll">—</div>
       </div>
       <div class="card">
-        <div class="kpi-title">Mobiel</div>
+        <div class="kpi-title">Mobile</div>
         <div class="kpi-value" id="kpi-mobile">—</div>
       </div>
       <div class="card">
-        <div class="kpi-title">Terugkerende Bezoekers</div>
+        <div class="kpi-title">Returning Visitors</div>
         <div class="kpi-value" id="kpi-returning">—</div>
       </div>
     </div>
 
-    <!-- Traffic bronnen + Apparaat -->
+    <!-- Traffic sources + Device breakdown -->
     <div class="charts-grid">
       <div class="card">
-        <h3 style="margin-top:0; font-size:1rem; color:var(--slate-800);">Traffic Bronnen</h3>
+        <h3 style="margin-top:0; font-size:1rem; color:var(--slate-800);">Traffic Sources</h3>
         <div class="chart-container">
           <canvas id="trafficChart"></canvas>
         </div>
       </div>
       <div class="card">
-        <h3 style="margin-top:0; font-size:1rem; color:var(--slate-800);">Apparaat Verdeling</h3>
+        <h3 style="margin-top:0; font-size:1rem; color:var(--slate-800);">Device Breakdown</h3>
         <div class="chart-container">
           <canvas id="deviceChart"></canvas>
         </div>
       </div>
     </div>
 
-    <!-- Top clicks + Scroll diepte -->
+    <!-- Top clicks + Scroll depth -->
     <div class="charts-grid">
       <div class="card">
         <h3 style="margin-top:0; font-size:1rem; color:var(--slate-800);">Top Events / Clicks</h3>
@@ -303,7 +303,7 @@
         </div>
       </div>
       <div class="card">
-        <h3 style="margin-top:0; font-size:1rem; color:var(--slate-800);">Scroll Diepte Verdeling</h3>
+        <h3 style="margin-top:0; font-size:1rem; color:var(--slate-800);">Scroll Depth Distribution</h3>
         <div class="chart-container">
           <canvas id="scrollChart"></canvas>
         </div>
@@ -312,21 +312,21 @@
 
     <!-- Funnel -->
     <div class="card" style="margin-bottom: 32px;">
-      <h3 style="margin-top:0; font-size:1rem; color:var(--slate-800);">Conversie Funnel</h3>
+      <h3 style="margin-top:0; font-size:1rem; color:var(--slate-800);">Conversion Funnel</h3>
       <div class="chart-container" style="height:240px;">
         <canvas id="funnelChart"></canvas>
       </div>
     </div>
 
-    <!-- Conversies per bron -->
+    <!-- Conversions by source -->
     <div class="card" style="margin-bottom: 32px;">
-      <h3 style="margin-top:0; font-size:1rem; color:var(--slate-800);">Conversies per Bron</h3>
+      <h3 style="margin-top:0; font-size:1rem; color:var(--slate-800);">Conversions by Source</h3>
       <div style="overflow-x: auto;">
         <table class="source-table">
           <thead>
             <tr>
-              <th>Bron</th>
-              <th>Bezoekers</th>
+              <th>Source</th>
+              <th>Visitors</th>
               <th>Signups</th>
               <th>CVR%</th>
             </tr>
@@ -336,31 +336,31 @@
       </div>
     </div>
 
-    <!-- Gebruikersstroom -->
+    <!-- User flow -->
     <div class="card" style="margin-bottom: 32px;">
-      <h3 style="margin-top:0; font-size:1rem; color:var(--slate-800);">Gebruikersstroom — Top Navigatiepaden</h3>
+      <h3 style="margin-top:0; font-size:1rem; color:var(--slate-800);">User Flow — Top Navigation Paths</h3>
       <div class="chart-container" style="height:280px;">
         <canvas id="flowChart"></canvas>
       </div>
     </div>
 
-    <!-- Ruwe data -->
+    <!-- Raw data -->
     <details>
-      <summary>Bekijk Ruwe Data</summary>
+      <summary>View Raw Data</summary>
       <div style="overflow-x: auto;">
         <table>
           <thead>
             <tr>
-              <th>Sessie ID</th>
-              <th>Bron</th>
+              <th>Session ID</th>
+              <th>Source</th>
               <th>Ref</th>
-              <th>Apparaat</th>
+              <th>Device</th>
               <th>Scroll</th>
-              <th>Exit Pagina</th>
-              <th>Tijd op Site</th>
+              <th>Exit Page</th>
+              <th>Time on Site</th>
               <th>Signups</th>
-              <th>Pagina's Bezocht</th>
-              <th>Acties</th>
+              <th>Pages Visited</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody id="raw-table-body"></tbody>
@@ -392,7 +392,7 @@
     async function loadAllMetrics() {
       const firebaseUrl = (typeof Analytics !== 'undefined') ? Analytics.FIREBASE_URL : null;
       if (!firebaseUrl || firebaseUrl.includes('JOUW_PROJECT')) {
-        setStatus('Firebase nog niet geconfigureerd. Vul FIREBASE_URL in analytics.js in.');
+        setStatus('Firebase not configured yet. Fill in FIREBASE_URL in analytics.js.');
         return [];
       }
       try {
@@ -400,14 +400,14 @@
         if (!res.ok) throw new Error('HTTP ' + res.status);
         const data = await res.json();
         if (!data) {
-          setStatus('Geen sessies gevonden in Firebase.');
+          setStatus('No sessions found in Firebase.');
           return [];
         }
         const sessions = Object.values(data);
-        setStatus(`Laatste update: ${new Date().toLocaleTimeString('nl-NL')} — ${sessions.length} sessies geladen uit Firebase`);
+        setStatus(`Last updated: ${new Date().toLocaleTimeString('en-GB')} — ${sessions.length} sessions loaded from Firebase`);
         return sessions;
       } catch (err) {
-        setStatus('Fout bij laden uit Firebase: ' + err.message);
+        setStatus('Error loading from Firebase: ' + err.message);
         return [];
       }
     }
@@ -432,7 +432,7 @@
       const eventsCount = {};
       const scrollBuckets = { '0–25%': 0, '26–50%': 0, '51–75%': 0, '76–100%': 0 };
       const deviceCounts = { mobile: 0, tablet: 0, desktop: 0 };
-      const sourceMap = {}; // for conversions by source table
+      const sourceMap = {};
       const allRageElements = new Set();
 
       metrics.forEach(session => {
@@ -454,11 +454,11 @@
 
         if (session.returningVisitor) returningCount++;
 
-        // Traffic bronnen: gebruik HTTP referrer
+        // Traffic sources: use HTTP referrer
         const src = session.referrer && session.referrer.trim() ? session.referrer : 'direct';
         trafficSources[src] = (trafficSources[src] || 0) + 1;
 
-        // Conversies per bron: ref first, then referrer
+        // Conversions by source: ref first, then referrer
         const convSrc = session.ref || (session.referrer && session.referrer !== 'direct' ? session.referrer : null) || 'direct';
         if (!sourceMap[convSrc]) sourceMap[convSrc] = { visitors: 0, signups: 0 };
         sourceMap[convSrc].visitors++;
@@ -466,7 +466,7 @@
 
         if (session.clicks) {
           session.clicks.forEach(click => {
-            const label = click.label || 'Onbekend';
+            const label = click.label || 'Unknown';
             eventsCount[label] = (eventsCount[label] || 0) + 1;
           });
         }
@@ -496,13 +496,13 @@
       const banner = document.getElementById('rage-banner');
       if (allRageElements.size > 0) {
         const names = Array.from(allRageElements).join(', ');
-        banner.innerHTML = `⚠️ <strong>Rage clicks gedetecteerd op:</strong> ${names}`;
+        banner.innerHTML = `⚠️ <strong>Rage clicks detected on:</strong> ${names}`;
         banner.style.display = 'block';
       } else {
         banner.style.display = 'none';
       }
 
-      // Navigatiepaden
+      // Navigation paths
       const transitions = {};
       metrics.forEach(session => {
         if (session.pageViews && session.pageViews.length > 1) {
@@ -519,7 +519,7 @@
         { label: 'services.html', page: 'services.html' },
         { label: 'about.html', page: 'about.html' },
         { label: 'marketplace.html', page: 'marketplace.html' },
-        { label: 'Signup', page: null } // special: waitlistSignups > 0
+        { label: 'Signup', page: null }
       ];
       const funnelCounts = funnelSteps.map(step => {
         if (step.page === null) {
@@ -550,7 +550,7 @@
       trafficChartInstance = new Chart(ctx, {
         type: 'pie',
         data: {
-          labels: labels.length ? labels : ['Geen data'],
+          labels: labels.length ? labels : ['No data'],
           datasets: [{
             data: data.length ? data : [1],
             backgroundColor: ['#22c55e','#3b82f6','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#e2e8f0'],
@@ -572,7 +572,7 @@
       deviceChartInstance = new Chart(ctx, {
         type: 'doughnut',
         data: {
-          labels: ['Mobiel', 'Tablet', 'Desktop'],
+          labels: ['Mobile', 'Tablet', 'Desktop'],
           datasets: [{
             data: [counts.mobile || 0, counts.tablet || 0, counts.desktop || 0],
             backgroundColor: ['#f59e0b','#3b82f6','#22c55e'],
@@ -598,7 +598,7 @@
       eventsChartInstance = new Chart(ctx, {
         type: 'bar',
         data: {
-          labels: sorted.length ? sorted.map(e => e.label) : ['Geen data'],
+          labels: sorted.length ? sorted.map(e => e.label) : ['No data'],
           datasets: [{
             label: 'Clicks',
             data: sorted.length ? sorted.map(e => e.count) : [0],
@@ -624,7 +624,7 @@
         data: {
           labels: Object.keys(buckets),
           datasets: [{
-            label: 'Sessies',
+            label: 'Sessions',
             data: Object.values(buckets),
             backgroundColor: ['#ef4444','#f59e0b','#3b82f6','#22c55e'],
             borderRadius: 4
@@ -649,7 +649,7 @@
         data: {
           labels: labels,
           datasets: [{
-            label: '% van bezoekers',
+            label: '% of visitors',
             data: pcts,
             backgroundColor: '#22c55e',
             borderRadius: 4
@@ -663,7 +663,7 @@
             legend: { display: false },
             tooltip: {
               callbacks: {
-                label: ctx => ` ${ctx.parsed.x}% van bezoekers`
+                label: ctx => ` ${ctx.parsed.x}% of visitors`
               }
             }
           },
@@ -689,9 +689,9 @@
       flowChartInstance = new Chart(ctx, {
         type: 'bar',
         data: {
-          labels: sorted.length ? sorted.map(e => e.label) : ['Nog geen navigatiedata'],
+          labels: sorted.length ? sorted.map(e => e.label) : ['No navigation data yet'],
           datasets: [{
-            label: 'Overgangen',
+            label: 'Transitions',
             data: sorted.length ? sorted.map(e => e.count) : [0],
             backgroundColor: '#3b82f6',
             borderRadius: 4
@@ -707,7 +707,7 @@
       });
     }
 
-    // ── Conversies per bron tabel ─────────────────────────────────────────────
+    // ── Conversions by source table ───────────────────────────────────────────
 
     function renderSourceTable(sourceMap) {
       const tbody = document.getElementById('source-table-body');
@@ -721,7 +721,7 @@
         .sort((a, b) => b.cvr - a.cvr);
 
       if (rows.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Geen data.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">No data.</td></tr>';
         return;
       }
 
@@ -741,12 +741,12 @@
       `).join('');
     }
 
-    // ── Ruwe data tabel ───────────────────────────────────────────────────────
+    // ── Raw data table ────────────────────────────────────────────────────────
 
     function renderRawTable(metrics) {
       const tbody = document.getElementById('raw-table-body');
       if (!metrics || metrics.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;">Nog geen sessiedata.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;">No session data yet.</td></tr>';
         return;
       }
       const sorted = [...metrics].sort((a, b) => (b.startedAt || 0) - (a.startedAt || 0));
@@ -777,7 +777,7 @@
     // ── Init ──────────────────────────────────────────────────────────────────
 
     async function initDashboard() {
-      setStatus('Laden…');
+      setStatus('Loading…');
       const metrics = await loadAllMetrics();
       renderDashboard(metrics);
     }
