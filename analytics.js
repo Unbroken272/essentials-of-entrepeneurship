@@ -15,7 +15,7 @@
 
 const Analytics = (() => {
     // ▼▼▼ Vervang dit met jouw Firebase Realtime Database URL ▼▼▼
-    const FIREBASE_URL = 'https://swapnest-20fe9-default-rtdb.firebaseio.com';
+    const FIREBASE_URL = 'https://swapnest-20fe9-default-rtdb.europe-west1.firebasedatabase.app';
     // ▲▲▲ ─────────────────────────────────────────────────────── ▲▲▲
 
     const SESSION_STORAGE_KEY = 'swapnest_active_session';
