@@ -83,7 +83,7 @@
       <!-- Urgency Banner -->
       <div class="urgency-banner" id="urgency-banner">
         <span class="pulse-dot"></span>
-        <strong>15 items</strong> must go this week — help prevent furniture waste!
+        <strong>12 items</strong> available now — help prevent furniture waste!
         <button onclick="filterItems('today', document.getElementById('tab-today'))">See urgent items →</button>
       </div>
 
@@ -100,136 +100,277 @@
             onclick="filterItems('all', document.getElementById('tab-all'))">Show All Items</button>
         </div>
 
-        <div class="item-card" data-category="furniture" data-urgency="today" data-price="45" data-distance="0.4">
-          <div class="item-img" style="background: linear-gradient(135deg, #a8d8a8, #5cb85c);">
-            <span class="item-emoji">🪑</span>
+        <!-- Vase -->
+        <div class="item-card" data-category="bedroom" data-urgency="today" data-price="2" data-distance="0.3">
+          <div class="item-img">
+            <img src="images/products/WhatsApp Image 2026-03-11 at 18.18.19.jpeg" alt="Glass Vase" style="width:100%;height:100%;object-fit:cover;">
           </div>
           <div class="urgency-badge today">Available Today</div>
           <div class="item-info">
             <div class="item-header">
-              <h4>KALLAX Shelf Unit</h4>
-              <span class="item-price">€45</span>
+              <h4>Clear Glass Vase</h4>
+              <span class="item-price">€2</span>
             </div>
-            <p class="item-desc">White IKEA KALLAX, 4 compartments. Great condition. Must go today!</p>
+            <p class="item-desc">A Dutch flower market visit is basically mandatory. This simple clear glass vase fits any room and makes your place feel a little more like home. Good condition.</p>
             <div class="item-meta">
-              <span>📍 0.4 km · Oud-West</span>
-              <span>⭐ 4.8</span>
-            </div>
-            <div class="item-actions">
-              <button class="btn-reserve" onclick="openReserveModal('KALLAX Shelf Unit', '€45')">Reserve Now</button>
-              <button class="btn-wishlist" onclick="toggleWishlist(this)">♡</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="item-card" data-category="furniture" data-urgency="today" data-price="85" data-distance="0.8">
-          <div class="item-img" style="background: linear-gradient(135deg, #d4a373, #a0522d);">
-            <span class="item-emoji">🍽️</span>
-          </div>
-          <div class="urgency-badge today">Available Today</div>
-          <div class="item-info">
-            <div class="item-header">
-              <h4>Dining Table + 4 Chairs</h4>
-              <span class="item-price">€85</span>
-            </div>
-            <p class="item-desc">Solid oak table with 4 matching chairs. Moving abroad tomorrow!</p>
-            <div class="item-meta">
-              <span>📍 0.8 km · De Pijp</span>
-              <span>⭐ 5.0</span>
-            </div>
-            <div class="item-actions">
-              <button class="btn-reserve" onclick="openReserveModal('Dining Table + 4 Chairs', '€85')">Reserve
-                Now</button>
-              <button class="btn-wishlist" onclick="toggleWishlist(this)">♡</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="item-card" data-category="bedroom" data-urgency="today" data-price="120" data-distance="1.2">
-          <div class="item-img" style="background: linear-gradient(135deg, #b8c0e0, #6c7fc4);">
-            <span class="item-emoji">🛋️</span>
-          </div>
-          <div class="urgency-badge today">Available Today</div>
-          <div class="item-info">
-            <div class="item-header">
-              <h4>2-Seat Sofa – Grey</h4>
-              <span class="item-price">€120</span>
-            </div>
-            <p class="item-desc">IKEA EKTORP 2-seat sofa, light grey, excellent condition. Pickup only.</p>
-            <div class="item-meta">
-              <span>📍 1.2 km · Jordaan</span>
-              <span>⭐ 4.7</span>
-            </div>
-            <div class="item-actions">
-              <button class="btn-reserve" onclick="openReserveModal('2-Seat Sofa – Grey', '€120')">Reserve Now</button>
-              <button class="btn-wishlist" onclick="toggleWishlist(this)">♡</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="item-card" data-category="kitchen" data-urgency="week" data-price="30" data-distance="0.6">
-          <div class="item-img" style="background: linear-gradient(135deg, #ffd6a5, #f4a261);">
-            <span class="item-emoji">🍳</span>
-          </div>
-          <div class="urgency-badge week">This Week</div>
-          <div class="item-info">
-            <div class="item-header">
-              <h4>Kitchen Essentials Set</h4>
-              <span class="item-price">€30</span>
-            </div>
-            <p class="item-desc">Pots, pans, knife block, cutting board, utensils. Complete starter kit.</p>
-            <div class="item-meta">
-              <span>📍 0.6 km · Bos en Lommer</span>
+              <span>📍 0.3 km · Centrum</span>
               <span>⭐ 4.9</span>
             </div>
             <div class="item-actions">
-              <button class="btn-reserve" onclick="openReserveModal('Kitchen Essentials Set', '€30')">Reserve
-                Now</button>
+              <button class="btn-reserve" onclick="openReserveModal('Clear Glass Vase', '€2')">Reserve Now</button>
               <button class="btn-wishlist" onclick="toggleWishlist(this)">♡</button>
             </div>
           </div>
         </div>
 
-        <div class="item-card" data-category="bedroom" data-urgency="week" data-price="55" data-distance="1.5">
-          <div class="item-img" style="background: linear-gradient(135deg, #c9e4ca, #52b788);">
-            <span class="item-emoji">🛏️</span>
+        <!-- Folding Chair -->
+        <div class="item-card" data-category="furniture" data-urgency="today" data-price="3" data-distance="0.5">
+          <div class="item-img">
+            <img src="images/products/WhatsApp Image 2026-03-11 at 18.21.11.jpeg" alt="Folding Chair" style="width:100%;height:100%;object-fit:cover;">
           </div>
-          <div class="urgency-badge week">This Week</div>
+          <div class="urgency-badge today">Available Today</div>
           <div class="item-info">
             <div class="item-header">
-              <h4>Single Bed Frame + Mattress</h4>
-              <span class="item-price">€55</span>
+              <h4>Folding Chair</h4>
+              <span class="item-price">€3</span>
             </div>
-            <p class="item-desc">90x200 cm IKEA bed frame with clean mattress. Dismantled & ready.</p>
+            <p class="item-desc">Sometimes your room has one chair and three friends. Lightweight, easy to fold and tuck away — perfect as a spare seat for studying, hosting, or not sitting on your bed for once. Used but sturdy.</p>
             <div class="item-meta">
-              <span>📍 1.5 km · Oost</span>
-              <span>⭐ 4.6</span>
+              <span>📍 0.5 km · De Pijp</span>
+              <span>⭐ 4.7</span>
             </div>
             <div class="item-actions">
-              <button class="btn-reserve" onclick="openReserveModal('Single Bed Frame + Mattress', '€55')">Reserve
-                Now</button>
+              <button class="btn-reserve" onclick="openReserveModal('Folding Chair', '€3')">Reserve Now</button>
               <button class="btn-wishlist" onclick="toggleWishlist(this)">♡</button>
             </div>
           </div>
         </div>
 
-        <div class="item-card" data-category="furniture" data-urgency="week" data-price="70" data-distance="2.1">
-          <div class="item-img" style="background: linear-gradient(135deg, #e0c3fc, #9b72cf);">
-            <span class="item-emoji">📺</span>
+        <!-- Hangers -->
+        <div class="item-card" data-category="bedroom" data-urgency="today" data-price="2" data-distance="0.7">
+          <div class="item-img">
+            <img src="images/products/WhatsApp Image 2026-03-11 at 18.27.57.jpeg" alt="Black Hangers" style="width:100%;height:100%;object-fit:cover;">
           </div>
-          <div class="urgency-badge week">This Week</div>
+          <div class="urgency-badge today">Available Today</div>
           <div class="item-info">
             <div class="item-header">
-              <h4>TV Cabinet – Walnut</h4>
-              <span class="item-price">€70</span>
+              <h4>Black Hangers — Set of 5</h4>
+              <span class="item-price">€2</span>
             </div>
-            <p class="item-desc">Solid walnut veneer TV cabinet, 150 cm wide, 2 drawers. Stylish.</p>
+            <p class="item-desc">Arrived with no hangers? Classic exchange student move. This set of 5 sleek black hangers will keep your clothes off the floor and your wardrobe in order. Simple and essential.</p>
             <div class="item-meta">
-              <span>📍 2.1 km · Zuid</span>
+              <span>📍 0.7 km · Jordaan</span>
+              <span>⭐ 5.0</span>
+            </div>
+            <div class="item-actions">
+              <button class="btn-reserve" onclick="openReserveModal('Black Hangers — Set of 5', '€2')">Reserve Now</button>
+              <button class="btn-wishlist" onclick="toggleWishlist(this)">♡</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Nespresso -->
+        <div class="item-card" data-category="kitchen" data-urgency="today" data-price="25" data-distance="1.0">
+          <div class="item-img">
+            <img src="images/products/WhatsApp Image 2026-03-11 at 18.34.25.jpeg" alt="Nespresso Machine" style="width:100%;height:100%;object-fit:cover;">
+          </div>
+          <div class="urgency-badge today">Available Today</div>
+          <div class="item-info">
+            <div class="item-header">
+              <h4>Nespresso Coffee Machine</h4>
+              <span class="item-price">€25</span>
+            </div>
+            <p class="item-desc">Coffee before your 9am lecture isn't optional — it's survival. This compact Nespresso machine brews the perfect espresso in seconds. Fits neatly on any student desk or kitchen counter. Works great.</p>
+            <div class="item-meta">
+              <span>📍 1.0 km · Oud-West</span>
               <span>⭐ 4.8</span>
             </div>
             <div class="item-actions">
-              <button class="btn-reserve" onclick="openReserveModal('TV Cabinet – Walnut', '€70')">Reserve Now</button>
+              <button class="btn-reserve" onclick="openReserveModal('Nespresso Coffee Machine', '€25')">Reserve Now</button>
+              <button class="btn-wishlist" onclick="toggleWishlist(this)">♡</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sofa Chair -->
+        <div class="item-card" data-category="furniture" data-urgency="week" data-price="25" data-distance="1.3">
+          <div class="item-img">
+            <img src="images/products/WhatsApp Image 2026-03-11 at 19.09.50.jpeg" alt="Sofa Chair" style="width:100%;height:100%;object-fit:cover;">
+          </div>
+          <div class="urgency-badge week">This Week</div>
+          <div class="item-info">
+            <div class="item-header">
+              <h4>Comfortable Sofa Chair</h4>
+              <span class="item-price">€25</span>
+            </div>
+            <p class="item-desc">A cosy seat that actually feels like home. Compact enough for a student room, comfortable enough for long Netflix sessions or reading marathons. Good condition.</p>
+            <div class="item-meta">
+              <span>📍 1.3 km · Oost</span>
+              <span>⭐ 4.8</span>
+            </div>
+            <div class="item-actions">
+              <button class="btn-reserve" onclick="openReserveModal('Comfortable Sofa Chair', '€25')">Reserve Now</button>
+              <button class="btn-wishlist" onclick="toggleWishlist(this)">♡</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Desk -->
+        <div class="item-card" data-category="furniture" data-urgency="week" data-price="30" data-distance="1.6">
+          <div class="item-img">
+            <img src="images/products/WhatsApp Image 2026-03-11 at 19.11.59.jpeg" alt="Study Desk" style="width:100%;height:100%;object-fit:cover;">
+          </div>
+          <div class="urgency-badge week">This Week</div>
+          <div class="item-info">
+            <div class="item-header">
+              <h4>Study Desk</h4>
+              <span class="item-price">€30</span>
+            </div>
+            <p class="item-desc">Enough surface for your laptop, notes, coffee, and whatever else you're juggling this semester. A solid, practical desk that fits well in any student room. Well-maintained and ready to go.</p>
+            <div class="item-meta">
+              <span>📍 1.6 km · Zuid</span>
+              <span>⭐ 4.9</span>
+            </div>
+            <div class="item-actions">
+              <button class="btn-reserve" onclick="openReserveModal('Study Desk', '€30')">Reserve Now</button>
+              <button class="btn-wishlist" onclick="toggleWishlist(this)">♡</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Office Chair -->
+        <div class="item-card" data-category="furniture" data-urgency="week" data-price="18" data-distance="1.8">
+          <div class="item-img">
+            <img src="images/products/WhatsApp Image 2026-03-11 at 19.13.04.jpeg" alt="Office Chair" style="width:100%;height:100%;object-fit:cover;">
+          </div>
+          <div class="urgency-badge week">This Week</div>
+          <div class="item-info">
+            <div class="item-header">
+              <h4>Adjustable Office Chair</h4>
+              <span class="item-price">€18</span>
+            </div>
+            <p class="item-desc">Your back deserves better than a kitchen chair during a 3-hour study session. Adjustable height, comfortable seat, and fully functional. Used but works perfectly.</p>
+            <div class="item-meta">
+              <span>📍 1.8 km · Bos en Lommer</span>
+              <span>⭐ 4.6</span>
+            </div>
+            <div class="item-actions">
+              <button class="btn-reserve" onclick="openReserveModal('Adjustable Office Chair', '€18')">Reserve Now</button>
+              <button class="btn-wishlist" onclick="toggleWishlist(this)">♡</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Kitchen Starter Pack -->
+        <div class="item-card" data-category="kitchen" data-urgency="week" data-price="6" data-distance="0.4">
+          <div class="item-img">
+            <img src="images/products/WhatsApp Image 2026-03-11 at 19.53.14.jpeg" alt="Kitchen Starter Pack" style="width:100%;height:100%;object-fit:cover;">
+          </div>
+          <div class="urgency-badge week">Rental</div>
+          <div class="item-info">
+            <div class="item-header">
+              <h4>Kitchen Starter Pack</h4>
+              <span class="item-price">€6/mo</span>
+            </div>
+            <p class="item-desc">Move in and start cooking from day one. Includes cutlery for 4, a pot, pan, ladle, kitchen knife, cutting board, 4 glasses, 2 cups, 4 dinner plates, 4 soup plates, and a baking dish. Everything you need, nothing you don't.</p>
+            <div class="item-meta">
+              <span>📍 0.4 km · Centrum</span>
+              <span>⭐ 5.0</span>
+            </div>
+            <div class="item-actions">
+              <button class="btn-reserve" onclick="openReserveModal('Kitchen Starter Pack', '€6/month')">Rent Now</button>
+              <button class="btn-wishlist" onclick="toggleWishlist(this)">♡</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Wall Reading Lamp -->
+        <div class="item-card" data-category="bedroom" data-urgency="week" data-price="2" data-distance="0.9">
+          <div class="item-img">
+            <img src="images/products/WhatsApp Image 2026-03-11 at 20.18.14.jpeg" alt="Wall Reading Lamp" style="width:100%;height:100%;object-fit:cover;">
+          </div>
+          <div class="urgency-badge week">Rental</div>
+          <div class="item-info">
+            <div class="item-header">
+              <h4>Wall Reading Lamp</h4>
+              <span class="item-price">€2/mo</span>
+            </div>
+            <p class="item-desc">A modern wall-mounted spotlight with an adjustable head — perfect for bedside reading or setting the right mood. Easy to install and easy on the eye.</p>
+            <div class="item-meta">
+              <span>📍 0.9 km · Oud-West</span>
+              <span>⭐ 4.7</span>
+            </div>
+            <div class="item-actions">
+              <button class="btn-reserve" onclick="openReserveModal('Wall Reading Lamp', '€2/month')">Rent Now</button>
+              <button class="btn-wishlist" onclick="toggleWishlist(this)">♡</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Floor Lamp -->
+        <div class="item-card" data-category="bedroom" data-urgency="week" data-price="3" data-distance="1.1">
+          <div class="item-img">
+            <img src="images/products/WhatsApp Image 2026-03-11 at 20.18.51.jpeg" alt="Floor Lamp" style="width:100%;height:100%;object-fit:cover;">
+          </div>
+          <div class="urgency-badge week">Rental</div>
+          <div class="item-info">
+            <div class="item-header">
+              <h4>Minimalist Floor Lamp</h4>
+              <span class="item-price">€3/mo</span>
+            </div>
+            <p class="item-desc">A sleek black floor lamp with two adjustable heads — lights up your room and your desk at the same time. Looks great, works even better. The kind of lamp that makes a student room feel like an actual apartment.</p>
+            <div class="item-meta">
+              <span>📍 1.1 km · Jordaan</span>
+              <span>⭐ 4.9</span>
+            </div>
+            <div class="item-actions">
+              <button class="btn-reserve" onclick="openReserveModal('Minimalist Floor Lamp', '€3/month')">Rent Now</button>
+              <button class="btn-wishlist" onclick="toggleWishlist(this)">♡</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Drying Rack -->
+        <div class="item-card" data-category="bedroom" data-urgency="week" data-price="2" data-distance="1.4">
+          <div class="item-img">
+            <img src="images/products/WhatsApp Image 2026-03-11 at 20.19.19.jpeg" alt="Foldable Drying Rack" style="width:100%;height:100%;object-fit:cover;">
+          </div>
+          <div class="urgency-badge week">Rental</div>
+          <div class="item-info">
+            <div class="item-header">
+              <h4>Foldable Drying Rack</h4>
+              <span class="item-price">€2/mo</span>
+            </div>
+            <p class="item-desc">No tumble dryer? No problem. This lightweight metal rack folds flat when you don't need it and holds a full load of laundry when you do. Space-saving and practical — built for student rooms.</p>
+            <div class="item-meta">
+              <span>📍 1.4 km · De Pijp</span>
+              <span>⭐ 4.8</span>
+            </div>
+            <div class="item-actions">
+              <button class="btn-reserve" onclick="openReserveModal('Foldable Drying Rack', '€2/month')">Rent Now</button>
+              <button class="btn-wishlist" onclick="toggleWishlist(this)">♡</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Plates -->
+        <div class="item-card" data-category="kitchen" data-urgency="week" data-price="2" data-distance="0.6">
+          <div class="item-img">
+            <img src="images/products/WhatsApp Image 2026-03-11 at 20.26.22.jpeg" alt="Dinner Plates" style="width:100%;height:100%;object-fit:cover;">
+          </div>
+          <div class="urgency-badge week">Rental</div>
+          <div class="item-info">
+            <div class="item-header">
+              <h4>Dinner Plates — Set of 4</h4>
+              <span class="item-price">€2/mo</span>
+            </div>
+            <p class="item-desc">Because eating straight from the pan gets old fast. A simple, clean set of 4 dinner plates — the kind of small thing that makes your new place feel like home. Practical and ready to use.</p>
+            <div class="item-meta">
+              <span>📍 0.6 km · Oost</span>
+              <span>⭐ 4.8</span>
+            </div>
+            <div class="item-actions">
+              <button class="btn-reserve" onclick="openReserveModal('Dinner Plates — Set of 4', '€2/month')">Rent Now</button>
               <button class="btn-wishlist" onclick="toggleWishlist(this)">♡</button>
             </div>
           </div>
