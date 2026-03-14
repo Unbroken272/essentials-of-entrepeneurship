@@ -358,6 +358,283 @@
     </div>
   </section>
 
+  <!-- ─── PRODUCT DETAIL MODAL ─── -->
+  <div class="modal-overlay" id="product-modal" onclick="closeModal('product-modal')">
+    <div class="modal modal-product" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeModal('product-modal')">✕</button>
+      <div class="product-modal-inner">
+        <!-- Left: image -->
+        <div class="product-modal-img-wrap">
+          <img id="pm-img" src="" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:12px 0 0 12px;">
+          <div class="product-modal-badge" id="pm-badge"></div>
+        </div>
+        <!-- Right: details -->
+        <div class="product-modal-details">
+          <div class="pm-header">
+            <div>
+              <p class="pm-cat" id="pm-cat"></p>
+              <h2 class="pm-title" id="pm-title"></h2>
+            </div>
+            <div class="pm-price-block">
+              <span class="pm-price" id="pm-price"></span>
+            </div>
+          </div>
+
+          <div class="pm-chips">
+            <span class="pm-chip pm-chip-rating">⭐ <span id="pm-rating"></span></span>
+            <span class="pm-chip" id="pm-condition-chip"></span>
+            <span class="pm-chip pm-chip-type" id="pm-type-chip"></span>
+          </div>
+
+          <p class="pm-desc" id="pm-desc"></p>
+
+          <div class="pm-info-rows">
+            <div class="pm-info-row">
+              <span class="pm-info-icon">📍</span>
+              <div>
+                <strong>Location</strong>
+                <span id="pm-location"></span>
+              </div>
+            </div>
+            <div class="pm-info-row">
+              <span class="pm-info-icon">🚲</span>
+              <div>
+                <strong>Getting there</strong>
+                <span id="pm-distance"></span>
+              </div>
+            </div>
+            <div class="pm-info-row">
+              <span class="pm-info-icon">🤝</span>
+              <div>
+                <strong>Pickup</strong>
+                <span>Arranged directly with seller · Cash or iDEAL</span>
+              </div>
+            </div>
+            <div class="pm-info-row">
+              <span class="pm-info-icon">♻️</span>
+              <div>
+                <strong>Sustainability</strong>
+                <span>Giving this item a second life saves CO₂ and reduces waste</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="pm-actions">
+            <button class="btn-primary pm-cta" id="pm-cta-btn" onclick="pmReserve()">Reserve Now</button>
+            <button class="pm-save-btn" onclick="toggleWishlist(this)">♡ Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .modal-product {
+      max-width: 880px;
+      padding: 0;
+      overflow: hidden;
+    }
+    .product-modal-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 520px;
+    }
+    .product-modal-img-wrap {
+      position: relative;
+      min-height: 400px;
+      background: var(--slate-100);
+    }
+    .product-modal-img-wrap img {
+      border-radius: 12px 0 0 12px;
+    }
+    .product-modal-badge {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      background: white;
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--slate-800);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    .product-modal-details {
+      padding: 36px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      overflow-y: auto;
+      max-height: 90vh;
+    }
+    .pm-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .pm-cat {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--green-600);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin: 0 0 4px 0;
+    }
+    .pm-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--slate-800);
+      margin: 0;
+      line-height: 1.3;
+    }
+    .pm-price-block { flex-shrink: 0; }
+    .pm-price {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--green-600);
+    }
+    .pm-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .pm-chip {
+      background: var(--slate-100);
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--slate-700);
+    }
+    .pm-chip-rating { background: #fef9c3; color: #713f12; }
+    .pm-chip-type-buy { background: #dcfce7; color: #166534; }
+    .pm-chip-type-rent { background: #dbeafe; color: #1e40af; }
+    .pm-desc {
+      font-size: 0.95rem;
+      color: var(--slate-600);
+      line-height: 1.7;
+      margin: 0;
+    }
+    .pm-info-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      border-top: 1px solid var(--slate-200);
+      padding-top: 20px;
+    }
+    .pm-info-row {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .pm-info-icon { font-size: 1.1rem; margin-top: 1px; flex-shrink: 0; }
+    .pm-info-row strong {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--slate-500);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 2px;
+    }
+    .pm-info-row span {
+      font-size: 0.9rem;
+      color: var(--slate-700);
+    }
+    .pm-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: auto;
+      padding-top: 8px;
+    }
+    .pm-cta { flex: 1; }
+    .pm-save-btn {
+      background: white;
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius);
+      padding: 12px 20px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      color: var(--slate-600);
+      transition: all 0.2s;
+    }
+    .pm-save-btn:hover { background: var(--slate-50); border-color: var(--slate-300); }
+    @media (max-width: 680px) {
+      .product-modal-inner { grid-template-columns: 1fr; }
+      .product-modal-img-wrap { min-height: 240px; }
+      .product-modal-img-wrap img { border-radius: 12px 12px 0 0; }
+      .product-modal-details { padding: 24px 20px; }
+    }
+  </style>
+
+  <script>
+    let _pmCurrentItem = null;
+
+    function openProductModal(event, card) {
+      // Don't open if a child button was clicked
+      if (event.target.closest('button')) return;
+      _pmCurrentItem = {
+        title: card.dataset.title,
+        price: card.dataset.displayPrice,
+        img: card.dataset.img,
+        desc: card.dataset.desc,
+        location: card.dataset.location,
+        distance: card.dataset.distance + ' km away',
+        rating: card.dataset.rating,
+        condition: card.dataset.condition,
+        type: card.dataset.type,
+        catLabel: card.dataset.catLabel,
+        urgency: card.dataset.urgency,
+      };
+      const d = _pmCurrentItem;
+
+      document.getElementById('pm-img').src = d.img;
+      document.getElementById('pm-img').alt = d.title;
+      document.getElementById('pm-title').textContent = d.title;
+      document.getElementById('pm-cat').textContent = d.catLabel;
+      document.getElementById('pm-price').textContent = d.price;
+      document.getElementById('pm-rating').textContent = d.rating;
+      document.getElementById('pm-desc').textContent = d.desc;
+      document.getElementById('pm-location').textContent = d.location.replace(/^📍\s*/, '');
+      document.getElementById('pm-distance').textContent = d.distance;
+
+      const condChip = document.getElementById('pm-condition-chip');
+      condChip.textContent = d.condition;
+
+      const typeChip = document.getElementById('pm-type-chip');
+      if (d.type === 'rent') {
+        typeChip.textContent = '🔄 Rental';
+        typeChip.className = 'pm-chip pm-chip-type-rent';
+      } else {
+        typeChip.textContent = '🏷️ For sale';
+        typeChip.className = 'pm-chip pm-chip-type-buy';
+      }
+
+      const badge = document.getElementById('pm-badge');
+      if (d.urgency === 'today') {
+        badge.textContent = '🔥 Available Today';
+        badge.style.display = 'block';
+      } else if (d.urgency === 'week') {
+        badge.textContent = d.type === 'rent' ? '🔄 Rental' : '📅 This Week';
+        badge.style.display = 'block';
+      } else {
+        badge.style.display = 'none';
+      }
+
+      const cta = document.getElementById('pm-cta-btn');
+      cta.textContent = d.type === 'rent' ? 'Rent Now' : 'Reserve Now';
+
+      openModal('product-modal');
+    }
+
+    function pmReserve() {
+      if (!_pmCurrentItem) return;
+      closeModal('product-modal');
+      openReserveModal(_pmCurrentItem.title, _pmCurrentItem.price);
+    }
+  </script>
+
   <!-- ─── FOOTER ─── -->
   <footer class="footer">
     <div class="footer-inner">
