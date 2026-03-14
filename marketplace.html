@@ -33,18 +33,15 @@
         <li><a href="services.html#logistics" class="nav-link">Van Rental</a></li>
         <li><a href="services.html#donate" class="nav-link">Donate</a></li>
       </ul>
-      <!-- Auth-aware nav actions (updated by JS) -->
-      <div class="nav-actions" id="nav-actions">
-        <!-- Injected by updateNavAuth() in app.js -->
-      </div>
+      <div class="nav-actions" id="nav-actions"></div>
       <button class="hamburger" id="hamburger" onclick="toggleMenu()">☰</button>
     </div>
     <div class="nav-mobile" id="nav-mobile">
-      <a href="marketplace.html" onclick="toggleMenu()" href="marketplace.html">Marketplace</a>
+      <a href="marketplace.html" onclick="toggleMenu()">Marketplace</a>
       <a href="about.html" onclick="toggleMenu()">About Us</a>
-      <a href="services.html#starter-packs" onclick="toggleMenu()" href="services.html#starter-packs">Starter Packs</a>
-      <a href="services.html#logistics" onclick="toggleMenu()" href="services.html#logistics">Van Rental</a>
-      <a href="services.html#donate" onclick="toggleMenu()" href="services.html#donate">Donate</a>
+      <a href="services.html#starter-packs" onclick="toggleMenu()">Starter Packs</a>
+      <a href="services.html#logistics" onclick="toggleMenu()">Van Rental</a>
+      <a href="services.html#donate" onclick="toggleMenu()">Donate</a>
       <div class="nav-mobile-auth" id="nav-mobile-auth"></div>
     </div>
   </nav>
@@ -58,187 +55,305 @@
         <p>Secondhand furniture and household goods — local, fast, and sustainable</p>
       </div>
 
-      <!-- Filters -->
+      <!-- Filters + List CTA -->
       <div class="market-filters">
         <div class="filter-tabs">
           <button class="filter-tab active" id="tab-all" onclick="filterItems('all', this)">All Items</button>
-          <button class="filter-tab urgent" id="tab-today" onclick="filterItems('today', this)">🔥 Available
-            Today</button>
+          <button class="filter-tab urgent" id="tab-today" onclick="filterItems('today', this)">🔥 Available Today</button>
           <button class="filter-tab" id="tab-week" onclick="filterItems('week', this)">📅 This Week</button>
           <button class="filter-tab" id="tab-furniture" onclick="filterItems('furniture', this)">🪑 Furniture</button>
           <button class="filter-tab" id="tab-kitchen" onclick="filterItems('kitchen', this)">🍳 Kitchen</button>
           <button class="filter-tab" id="tab-bedroom" onclick="filterItems('bedroom', this)">🛏 Bedroom</button>
         </div>
-        <div class="filter-sort">
-          <label for="sort-select">Sort:</label>
-          <select id="sort-select" onchange="sortItems(this.value)">
-            <option value="distance">Nearest First</option>
-            <option value="price-low">Price: Low → High</option>
-            <option value="price-high">Price: High → Low</option>
-            <option value="urgency">Most Urgent</option>
-          </select>
+        <div style="display:flex; gap:12px; align-items:center;">
+          <div class="filter-sort">
+            <label for="sort-select">Sort:</label>
+            <select id="sort-select" onchange="sortItems(this.value)">
+              <option value="distance">Nearest First</option>
+              <option value="price-low">Price: Low → High</option>
+              <option value="price-high">Price: High → Low</option>
+              <option value="urgency">Most Urgent</option>
+            </select>
+          </div>
+          <button class="btn-primary" onclick="openListModal()" style="white-space:nowrap; padding: 10px 20px;">+ List an Item</button>
         </div>
       </div>
 
       <!-- Urgency Banner -->
       <div class="urgency-banner" id="urgency-banner">
         <span class="pulse-dot"></span>
-        <strong>15 items</strong> must go this week — help prevent furniture waste!
+        <strong>12 items</strong> available now — help prevent furniture waste!
         <button onclick="filterItems('today', document.getElementById('tab-today'))">See urgent items →</button>
       </div>
 
       <!-- Item Grid -->
       <div class="items-grid" id="items-grid">
 
-        <!-- Empty state (shown by JS when no items match filters) -->
         <div id="empty-state" style="display:none; grid-column: 1/-1; text-align:center; padding:60px 20px;">
           <div style="font-size:3rem; margin-bottom:16px;">🔍</div>
-          <p style="font-size:1.1rem; color:var(--slate-500);">
-            Oops! No items found matching these filters.
-          </p>
+          <p style="font-size:1.1rem; color:var(--slate-500);">No items found matching these filters.</p>
           <button class="btn-outline" style="margin-top:16px;"
             onclick="filterItems('all', document.getElementById('tab-all'))">Show All Items</button>
         </div>
 
-        <div class="item-card" data-category="furniture" data-urgency="today" data-price="45" data-distance="0.4">
-          <div class="item-img" style="background: linear-gradient(135deg, #a8d8a8, #5cb85c);">
-            <span class="item-emoji">🪑</span>
-          </div>
+        <!-- Clear Glass Vase -->
+        <div class="item-card" style="cursor:pointer;"
+          data-category="bedroom" data-urgency="today" data-price="2" data-distance="0.3"
+          data-title="Clear Glass Vase" data-display-price="€2"
+          data-img="images/products/WhatsApp Image 2026-03-11 at 18.18.19.jpeg"
+          data-desc="A Dutch flower market visit is basically mandatory. This simple clear glass vase fits any room and makes your place feel a little more like home. Good condition."
+          data-location="Centrum, Amsterdam" data-rating="4.9" data-condition="Good condition" data-type="buy" data-cat-label="Home & Decor"
+          onclick="openProductModal(event, this)">
+          <div class="item-img"><img src="images/products/WhatsApp Image 2026-03-11 at 18.18.19.jpeg" alt="Glass Vase" style="width:100%;height:100%;object-fit:cover;"></div>
           <div class="urgency-badge today">Available Today</div>
           <div class="item-info">
-            <div class="item-header">
-              <h4>KALLAX Shelf Unit</h4>
-              <span class="item-price">€45</span>
-            </div>
-            <p class="item-desc">White IKEA KALLAX, 4 compartments. Great condition. Must go today!</p>
-            <div class="item-meta">
-              <span>📍 0.4 km · Oud-West</span>
-              <span>⭐ 4.8</span>
-            </div>
+            <div class="item-header"><h4>Clear Glass Vase</h4><span class="item-price">€2</span></div>
+            <p class="item-desc">A Dutch flower market visit is basically mandatory. This simple clear glass vase fits any room.</p>
+            <div class="item-meta"><span>📍 0.3 km · Centrum</span><span>⭐ 4.9</span></div>
             <div class="item-actions">
-              <button class="btn-reserve" onclick="openReserveModal('KALLAX Shelf Unit', '€45')">Reserve Now</button>
-              <button class="btn-wishlist" onclick="toggleWishlist(this)">♡</button>
+              <button class="btn-reserve" onclick="event.stopPropagation(); openReserveModal('Clear Glass Vase', '€2')">Reserve Now</button>
+              <button class="btn-wishlist" onclick="event.stopPropagation(); toggleWishlist(this)">♡</button>
             </div>
           </div>
         </div>
 
-        <div class="item-card" data-category="furniture" data-urgency="today" data-price="85" data-distance="0.8">
-          <div class="item-img" style="background: linear-gradient(135deg, #d4a373, #a0522d);">
-            <span class="item-emoji">🍽️</span>
-          </div>
+        <!-- Folding Chair -->
+        <div class="item-card" style="cursor:pointer;"
+          data-category="furniture" data-urgency="today" data-price="3" data-distance="0.5"
+          data-title="Folding Chair" data-display-price="€3"
+          data-img="images/products/WhatsApp Image 2026-03-11 at 18.21.11.jpeg"
+          data-desc="Sometimes your room has one chair and three friends. Lightweight, easy to fold and tuck away — perfect as a spare seat for studying, hosting, or not sitting on your bed for once. Used but sturdy and fully functional."
+          data-location="De Pijp, Amsterdam" data-rating="4.7" data-condition="Used – sturdy" data-type="buy" data-cat-label="Furniture"
+          onclick="openProductModal(event, this)">
+          <div class="item-img"><img src="images/products/WhatsApp Image 2026-03-11 at 18.21.11.jpeg" alt="Folding Chair" style="width:100%;height:100%;object-fit:cover;"></div>
           <div class="urgency-badge today">Available Today</div>
           <div class="item-info">
-            <div class="item-header">
-              <h4>Dining Table + 4 Chairs</h4>
-              <span class="item-price">€85</span>
-            </div>
-            <p class="item-desc">Solid oak table with 4 matching chairs. Moving abroad tomorrow!</p>
-            <div class="item-meta">
-              <span>📍 0.8 km · De Pijp</span>
-              <span>⭐ 5.0</span>
-            </div>
+            <div class="item-header"><h4>Folding Chair</h4><span class="item-price">€3</span></div>
+            <p class="item-desc">Sometimes your room has one chair and three friends. Lightweight, foldable. Used but sturdy.</p>
+            <div class="item-meta"><span>📍 0.5 km · De Pijp</span><span>⭐ 4.7</span></div>
             <div class="item-actions">
-              <button class="btn-reserve" onclick="openReserveModal('Dining Table + 4 Chairs', '€85')">Reserve
-                Now</button>
-              <button class="btn-wishlist" onclick="toggleWishlist(this)">♡</button>
+              <button class="btn-reserve" onclick="event.stopPropagation(); openReserveModal('Folding Chair', '€3')">Reserve Now</button>
+              <button class="btn-wishlist" onclick="event.stopPropagation(); toggleWishlist(this)">♡</button>
             </div>
           </div>
         </div>
 
-        <div class="item-card" data-category="bedroom" data-urgency="today" data-price="120" data-distance="1.2">
-          <div class="item-img" style="background: linear-gradient(135deg, #b8c0e0, #6c7fc4);">
-            <span class="item-emoji">🛋️</span>
-          </div>
+        <!-- Black Hangers -->
+        <div class="item-card" style="cursor:pointer;"
+          data-category="bedroom" data-urgency="today" data-price="2" data-distance="0.7"
+          data-title="Black Hangers — Set of 5" data-display-price="€2"
+          data-img="images/products/WhatsApp Image 2026-03-11 at 18.27.57.jpeg"
+          data-desc="Arrived with no hangers? Classic exchange student move. This set of 5 sleek black hangers will keep your clothes off the floor and your wardrobe in order. Simple, functional, and exactly what you need."
+          data-location="Jordaan, Amsterdam" data-rating="5.0" data-condition="Good condition" data-type="buy" data-cat-label="Bedroom"
+          onclick="openProductModal(event, this)">
+          <div class="item-img"><img src="images/products/WhatsApp Image 2026-03-11 at 18.27.57.jpeg" alt="Black Hangers" style="width:100%;height:100%;object-fit:cover;"></div>
           <div class="urgency-badge today">Available Today</div>
           <div class="item-info">
-            <div class="item-header">
-              <h4>2-Seat Sofa – Grey</h4>
-              <span class="item-price">€120</span>
-            </div>
-            <p class="item-desc">IKEA EKTORP 2-seat sofa, light grey, excellent condition. Pickup only.</p>
-            <div class="item-meta">
-              <span>📍 1.2 km · Jordaan</span>
-              <span>⭐ 4.7</span>
-            </div>
+            <div class="item-header"><h4>Black Hangers — Set of 5</h4><span class="item-price">€2</span></div>
+            <p class="item-desc">5 sleek black hangers to keep your clothes off the floor. Simple and essential.</p>
+            <div class="item-meta"><span>📍 0.7 km · Jordaan</span><span>⭐ 5.0</span></div>
             <div class="item-actions">
-              <button class="btn-reserve" onclick="openReserveModal('2-Seat Sofa – Grey', '€120')">Reserve Now</button>
-              <button class="btn-wishlist" onclick="toggleWishlist(this)">♡</button>
+              <button class="btn-reserve" onclick="event.stopPropagation(); openReserveModal('Black Hangers — Set of 5', '€2')">Reserve Now</button>
+              <button class="btn-wishlist" onclick="event.stopPropagation(); toggleWishlist(this)">♡</button>
             </div>
           </div>
         </div>
 
-        <div class="item-card" data-category="kitchen" data-urgency="week" data-price="30" data-distance="0.6">
-          <div class="item-img" style="background: linear-gradient(135deg, #ffd6a5, #f4a261);">
-            <span class="item-emoji">🍳</span>
-          </div>
-          <div class="urgency-badge week">This Week</div>
+        <!-- Nespresso -->
+        <div class="item-card" style="cursor:pointer;"
+          data-category="kitchen" data-urgency="today" data-price="25" data-distance="1.0"
+          data-title="Nespresso Coffee Machine" data-display-price="€25"
+          data-img="images/products/WhatsApp Image 2026-03-11 at 18.34.25.jpeg"
+          data-desc="Coffee before your 9am lecture isn't optional — it's survival. This compact Nespresso machine brews the perfect espresso in seconds. Fits neatly on any student desk or kitchen counter. Used but works great."
+          data-location="Oud-West, Amsterdam" data-rating="4.8" data-condition="Used – works great" data-type="buy" data-cat-label="Kitchen"
+          onclick="openProductModal(event, this)">
+          <div class="item-img"><img src="images/products/WhatsApp Image 2026-03-11 at 18.34.25.jpeg" alt="Nespresso Machine" style="width:100%;height:100%;object-fit:cover;"></div>
+          <div class="urgency-badge today">Available Today</div>
           <div class="item-info">
-            <div class="item-header">
-              <h4>Kitchen Essentials Set</h4>
-              <span class="item-price">€30</span>
-            </div>
-            <p class="item-desc">Pots, pans, knife block, cutting board, utensils. Complete starter kit.</p>
-            <div class="item-meta">
-              <span>📍 0.6 km · Bos en Lommer</span>
-              <span>⭐ 4.9</span>
-            </div>
+            <div class="item-header"><h4>Nespresso Coffee Machine</h4><span class="item-price">€25</span></div>
+            <p class="item-desc">Coffee before 9am isn't optional — it's survival. Compact, fast, works great.</p>
+            <div class="item-meta"><span>📍 1.0 km · Oud-West</span><span>⭐ 4.8</span></div>
             <div class="item-actions">
-              <button class="btn-reserve" onclick="openReserveModal('Kitchen Essentials Set', '€30')">Reserve
-                Now</button>
-              <button class="btn-wishlist" onclick="toggleWishlist(this)">♡</button>
+              <button class="btn-reserve" onclick="event.stopPropagation(); openReserveModal('Nespresso Coffee Machine', '€25')">Reserve Now</button>
+              <button class="btn-wishlist" onclick="event.stopPropagation(); toggleWishlist(this)">♡</button>
             </div>
           </div>
         </div>
 
-        <div class="item-card" data-category="bedroom" data-urgency="week" data-price="55" data-distance="1.5">
-          <div class="item-img" style="background: linear-gradient(135deg, #c9e4ca, #52b788);">
-            <span class="item-emoji">🛏️</span>
-          </div>
+        <!-- Sofa Chair -->
+        <div class="item-card" style="cursor:pointer;"
+          data-category="furniture" data-urgency="week" data-price="25" data-distance="1.3"
+          data-title="Comfortable Sofa Chair" data-display-price="€25"
+          data-img="images/products/WhatsApp Image 2026-03-11 at 19.09.50.jpeg"
+          data-desc="A cosy seat that actually feels like home. Compact enough for a student room, comfortable enough for long Netflix sessions or reading marathons. Good condition."
+          data-location="Oost, Amsterdam" data-rating="4.8" data-condition="Good condition" data-type="buy" data-cat-label="Furniture"
+          onclick="openProductModal(event, this)">
+          <div class="item-img"><img src="images/products/WhatsApp Image 2026-03-11 at 19.09.50.jpeg" alt="Sofa Chair" style="width:100%;height:100%;object-fit:cover;"></div>
           <div class="urgency-badge week">This Week</div>
           <div class="item-info">
-            <div class="item-header">
-              <h4>Single Bed Frame + Mattress</h4>
-              <span class="item-price">€55</span>
-            </div>
-            <p class="item-desc">90x200 cm IKEA bed frame with clean mattress. Dismantled & ready.</p>
-            <div class="item-meta">
-              <span>📍 1.5 km · Oost</span>
-              <span>⭐ 4.6</span>
-            </div>
+            <div class="item-header"><h4>Comfortable Sofa Chair</h4><span class="item-price">€25</span></div>
+            <p class="item-desc">Compact enough for a student room, comfortable enough for long Netflix sessions. Good condition.</p>
+            <div class="item-meta"><span>📍 1.3 km · Oost</span><span>⭐ 4.8</span></div>
             <div class="item-actions">
-              <button class="btn-reserve" onclick="openReserveModal('Single Bed Frame + Mattress', '€55')">Reserve
-                Now</button>
-              <button class="btn-wishlist" onclick="toggleWishlist(this)">♡</button>
+              <button class="btn-reserve" onclick="event.stopPropagation(); openReserveModal('Comfortable Sofa Chair', '€25')">Reserve Now</button>
+              <button class="btn-wishlist" onclick="event.stopPropagation(); toggleWishlist(this)">♡</button>
             </div>
           </div>
         </div>
 
-        <div class="item-card" data-category="furniture" data-urgency="week" data-price="70" data-distance="2.1">
-          <div class="item-img" style="background: linear-gradient(135deg, #e0c3fc, #9b72cf);">
-            <span class="item-emoji">📺</span>
-          </div>
+        <!-- Desk -->
+        <div class="item-card" style="cursor:pointer;"
+          data-category="furniture" data-urgency="week" data-price="30" data-distance="1.6"
+          data-title="Study Desk" data-display-price="€30"
+          data-img="images/products/WhatsApp Image 2026-03-11 at 19.11.59.jpeg"
+          data-desc="Enough surface for your laptop, notes, coffee, and whatever else you're juggling this semester. A solid, practical desk that fits well in any student room. Well-maintained and ready to go."
+          data-location="Zuid, Amsterdam" data-rating="4.9" data-condition="Well-maintained" data-type="buy" data-cat-label="Furniture"
+          onclick="openProductModal(event, this)">
+          <div class="item-img"><img src="images/products/WhatsApp Image 2026-03-11 at 19.11.59.jpeg" alt="Study Desk" style="width:100%;height:100%;object-fit:cover;"></div>
           <div class="urgency-badge week">This Week</div>
           <div class="item-info">
-            <div class="item-header">
-              <h4>TV Cabinet – Walnut</h4>
-              <span class="item-price">€70</span>
-            </div>
-            <p class="item-desc">Solid walnut veneer TV cabinet, 150 cm wide, 2 drawers. Stylish.</p>
-            <div class="item-meta">
-              <span>📍 2.1 km · Zuid</span>
-              <span>⭐ 4.8</span>
-            </div>
+            <div class="item-header"><h4>Study Desk</h4><span class="item-price">€30</span></div>
+            <p class="item-desc">Enough surface for laptop, notes, coffee, and whatever else. Well-maintained.</p>
+            <div class="item-meta"><span>📍 1.6 km · Zuid</span><span>⭐ 4.9</span></div>
             <div class="item-actions">
-              <button class="btn-reserve" onclick="openReserveModal('TV Cabinet – Walnut', '€70')">Reserve Now</button>
-              <button class="btn-wishlist" onclick="toggleWishlist(this)">♡</button>
+              <button class="btn-reserve" onclick="event.stopPropagation(); openReserveModal('Study Desk', '€30')">Reserve Now</button>
+              <button class="btn-wishlist" onclick="event.stopPropagation(); toggleWishlist(this)">♡</button>
             </div>
           </div>
         </div>
+
+        <!-- Office Chair -->
+        <div class="item-card" style="cursor:pointer;"
+          data-category="furniture" data-urgency="week" data-price="18" data-distance="1.8"
+          data-title="Adjustable Office Chair" data-display-price="€18"
+          data-img="images/products/WhatsApp Image 2026-03-11 at 19.13.04.jpeg"
+          data-desc="Your back deserves better than a kitchen chair during a 3-hour study session. Adjustable height, comfortable seat, and fully functional. Used but works perfectly."
+          data-location="Bos en Lommer, Amsterdam" data-rating="4.6" data-condition="Used – works perfectly" data-type="buy" data-cat-label="Furniture"
+          onclick="openProductModal(event, this)">
+          <div class="item-img"><img src="images/products/WhatsApp Image 2026-03-11 at 19.13.04.jpeg" alt="Office Chair" style="width:100%;height:100%;object-fit:cover;"></div>
+          <div class="urgency-badge week">This Week</div>
+          <div class="item-info">
+            <div class="item-header"><h4>Adjustable Office Chair</h4><span class="item-price">€18</span></div>
+            <p class="item-desc">Your back deserves better than a kitchen chair. Adjustable height, comfortable. Works perfectly.</p>
+            <div class="item-meta"><span>📍 1.8 km · Bos en Lommer</span><span>⭐ 4.6</span></div>
+            <div class="item-actions">
+              <button class="btn-reserve" onclick="event.stopPropagation(); openReserveModal('Adjustable Office Chair', '€18')">Reserve Now</button>
+              <button class="btn-wishlist" onclick="event.stopPropagation(); toggleWishlist(this)">♡</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Kitchen Starter Pack -->
+        <div class="item-card" style="cursor:pointer;"
+          data-category="kitchen" data-urgency="week" data-price="6" data-distance="0.4"
+          data-title="Kitchen Starter Pack" data-display-price="€6 / month"
+          data-img="images/products/WhatsApp Image 2026-03-11 at 19.53.14.jpeg"
+          data-desc="Move in and start cooking from day one. Includes cutlery for 4, a pot, pan, ladle, kitchen knife, cutting board, 4 glasses, 2 cups, 4 dinner plates, 4 soup plates, and a baking dish. Everything you need, nothing you don't."
+          data-location="Centrum, Amsterdam" data-rating="5.0" data-condition="Rental item" data-type="rent" data-cat-label="Kitchen"
+          onclick="openProductModal(event, this)">
+          <div class="item-img"><img src="images/products/WhatsApp Image 2026-03-11 at 19.53.14.jpeg" alt="Kitchen Starter Pack" style="width:100%;height:100%;object-fit:cover;"></div>
+          <div class="urgency-badge week">Rental</div>
+          <div class="item-info">
+            <div class="item-header"><h4>Kitchen Starter Pack</h4><span class="item-price">€6/mo</span></div>
+            <p class="item-desc">Everything you need to start cooking from day one — plates, cutlery, pot, pan, glasses, and more.</p>
+            <div class="item-meta"><span>📍 0.4 km · Centrum</span><span>⭐ 5.0</span></div>
+            <div class="item-actions">
+              <button class="btn-reserve" onclick="event.stopPropagation(); openReserveModal('Kitchen Starter Pack', '€6/month')">Rent Now</button>
+              <button class="btn-wishlist" onclick="event.stopPropagation(); toggleWishlist(this)">♡</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Wall Reading Lamp -->
+        <div class="item-card" style="cursor:pointer;"
+          data-category="bedroom" data-urgency="week" data-price="2" data-distance="0.9"
+          data-title="Wall Reading Lamp" data-display-price="€2 / month"
+          data-img="images/products/WhatsApp Image 2026-03-11 at 20.18.14.jpeg"
+          data-desc="A modern wall-mounted spotlight with an adjustable head — perfect for bedside reading or setting the right mood. Easy to install and easy on the eye."
+          data-location="Oud-West, Amsterdam" data-rating="4.7" data-condition="Rental item" data-type="rent" data-cat-label="Lighting"
+          onclick="openProductModal(event, this)">
+          <div class="item-img"><img src="images/products/WhatsApp Image 2026-03-11 at 20.18.14.jpeg" alt="Wall Reading Lamp" style="width:100%;height:100%;object-fit:cover;"></div>
+          <div class="urgency-badge week">Rental</div>
+          <div class="item-info">
+            <div class="item-header"><h4>Wall Reading Lamp</h4><span class="item-price">€2/mo</span></div>
+            <p class="item-desc">Modern wall-mounted spotlight with adjustable direction. Perfect for bedside reading.</p>
+            <div class="item-meta"><span>📍 0.9 km · Oud-West</span><span>⭐ 4.7</span></div>
+            <div class="item-actions">
+              <button class="btn-reserve" onclick="event.stopPropagation(); openReserveModal('Wall Reading Lamp', '€2/month')">Rent Now</button>
+              <button class="btn-wishlist" onclick="event.stopPropagation(); toggleWishlist(this)">♡</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Floor Lamp -->
+        <div class="item-card" style="cursor:pointer;"
+          data-category="bedroom" data-urgency="week" data-price="3" data-distance="1.1"
+          data-title="Minimalist Floor Lamp" data-display-price="€3 / month"
+          data-img="images/products/WhatsApp Image 2026-03-11 at 20.18.51.jpeg"
+          data-desc="A sleek black floor lamp with two adjustable heads — lights up your room and your desk at the same time. Looks great, works even better. The kind of lamp that makes a student room feel like an actual apartment."
+          data-location="Jordaan, Amsterdam" data-rating="4.9" data-condition="Rental item" data-type="rent" data-cat-label="Lighting"
+          onclick="openProductModal(event, this)">
+          <div class="item-img"><img src="images/products/WhatsApp Image 2026-03-11 at 20.18.51.jpeg" alt="Floor Lamp" style="width:100%;height:100%;object-fit:cover;"></div>
+          <div class="urgency-badge week">Rental</div>
+          <div class="item-info">
+            <div class="item-header"><h4>Minimalist Floor Lamp</h4><span class="item-price">€3/mo</span></div>
+            <p class="item-desc">Sleek black lamp with two adjustable heads — lights up your room and desk at once.</p>
+            <div class="item-meta"><span>📍 1.1 km · Jordaan</span><span>⭐ 4.9</span></div>
+            <div class="item-actions">
+              <button class="btn-reserve" onclick="event.stopPropagation(); openReserveModal('Minimalist Floor Lamp', '€3/month')">Rent Now</button>
+              <button class="btn-wishlist" onclick="event.stopPropagation(); toggleWishlist(this)">♡</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Drying Rack -->
+        <div class="item-card" style="cursor:pointer;"
+          data-category="bedroom" data-urgency="week" data-price="2" data-distance="1.4"
+          data-title="Foldable Drying Rack" data-display-price="€2 / month"
+          data-img="images/products/WhatsApp Image 2026-03-11 at 20.19.19.jpeg"
+          data-desc="No tumble dryer? No problem. This lightweight metal rack folds flat when you don't need it and holds a full load of laundry when you do. Space-saving and practical — built for student rooms."
+          data-location="De Pijp, Amsterdam" data-rating="4.8" data-condition="Rental item" data-type="rent" data-cat-label="Home"
+          onclick="openProductModal(event, this)">
+          <div class="item-img"><img src="images/products/WhatsApp Image 2026-03-11 at 20.19.19.jpeg" alt="Foldable Drying Rack" style="width:100%;height:100%;object-fit:cover;"></div>
+          <div class="urgency-badge week">Rental</div>
+          <div class="item-info">
+            <div class="item-header"><h4>Foldable Drying Rack</h4><span class="item-price">€2/mo</span></div>
+            <p class="item-desc">No tumble dryer? No problem. Folds flat when not in use. Lightweight and space-saving.</p>
+            <div class="item-meta"><span>📍 1.4 km · De Pijp</span><span>⭐ 4.8</span></div>
+            <div class="item-actions">
+              <button class="btn-reserve" onclick="event.stopPropagation(); openReserveModal('Foldable Drying Rack', '€2/month')">Rent Now</button>
+              <button class="btn-wishlist" onclick="event.stopPropagation(); toggleWishlist(this)">♡</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Plates -->
+        <div class="item-card" style="cursor:pointer;"
+          data-category="kitchen" data-urgency="week" data-price="2" data-distance="0.6"
+          data-title="Dinner Plates — Set of 4" data-display-price="€2 / month"
+          data-img="images/products/WhatsApp Image 2026-03-11 at 20.26.22.jpeg"
+          data-desc="Because eating straight from the pan gets old fast. A simple, clean set of 4 dinner plates — the kind of small thing that makes your new place feel like home. Practical and ready to use."
+          data-location="Oost, Amsterdam" data-rating="4.8" data-condition="Rental item" data-type="rent" data-cat-label="Kitchen"
+          onclick="openProductModal(event, this)">
+          <div class="item-img"><img src="images/products/WhatsApp Image 2026-03-11 at 20.26.22.jpeg" alt="Dinner Plates" style="width:100%;height:100%;object-fit:cover;"></div>
+          <div class="urgency-badge week">Rental</div>
+          <div class="item-info">
+            <div class="item-header"><h4>Dinner Plates — Set of 4</h4><span class="item-price">€2/mo</span></div>
+            <p class="item-desc">Because eating straight from the pan gets old fast. Simple, clean set of 4 plates.</p>
+            <div class="item-meta"><span>📍 0.6 km · Oost</span><span>⭐ 4.8</span></div>
+            <div class="item-actions">
+              <button class="btn-reserve" onclick="event.stopPropagation(); openReserveModal('Dinner Plates — Set of 4', '€2/month')">Rent Now</button>
+              <button class="btn-wishlist" onclick="event.stopPropagation(); toggleWishlist(this)">♡</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- User-submitted listings rendered here by JS -->
 
       </div><!-- /items-grid -->
 
       <div class="load-more-wrap">
-        <button class="btn-outline" id="load-more-btn" onclick="loadMore()">Load 6 More Items</button>
+        <button class="btn-outline" id="load-more-btn" onclick="loadMore()">Load More Items</button>
       </div>
     </div>
   </section>
@@ -270,9 +385,157 @@
     </div>
   </footer>
 
-  <!-- ─── MODALS ─── -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- MODALS                                                                  -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
 
-  <!-- Sign Up Modal -->
+  <!-- ─── PRODUCT DETAIL MODAL ─── -->
+  <div class="modal-overlay" id="product-modal" onclick="closeModal('product-modal')">
+    <div class="modal modal-product" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeModal('product-modal')">✕</button>
+      <div class="product-modal-inner">
+        <div class="product-modal-img-wrap">
+          <img id="pm-img" src="" alt="">
+          <div class="product-modal-badge" id="pm-badge"></div>
+        </div>
+        <div class="product-modal-details">
+          <div class="pm-header">
+            <div>
+              <p class="pm-cat" id="pm-cat"></p>
+              <h2 class="pm-title" id="pm-title"></h2>
+            </div>
+            <span class="pm-price" id="pm-price"></span>
+          </div>
+          <div class="pm-chips">
+            <span class="pm-chip pm-chip-rating">⭐ <span id="pm-rating"></span></span>
+            <span class="pm-chip" id="pm-condition-chip"></span>
+            <span class="pm-chip" id="pm-type-chip"></span>
+          </div>
+          <p class="pm-desc" id="pm-desc"></p>
+          <div class="pm-info-rows">
+            <div class="pm-info-row">
+              <span class="pm-info-icon">📍</span>
+              <div><strong>Location</strong><span id="pm-location"></span></div>
+            </div>
+            <div class="pm-info-row">
+              <span class="pm-info-icon">🚲</span>
+              <div><strong>Distance</strong><span id="pm-distance"></span></div>
+            </div>
+            <div class="pm-info-row">
+              <span class="pm-info-icon">🤝</span>
+              <div><strong>Pickup</strong><span>Arranged directly with seller · Cash or iDEAL</span></div>
+            </div>
+            <div class="pm-info-row">
+              <span class="pm-info-icon">♻️</span>
+              <div><strong>Sustainability</strong><span>Giving this item a second life saves CO₂ and reduces waste</span></div>
+            </div>
+          </div>
+          <div class="pm-actions">
+            <button class="btn-primary pm-cta" id="pm-cta-btn" onclick="pmReserve()">Reserve Now</button>
+            <button class="pm-save-btn" onclick="event.stopPropagation(); toggleWishlist(this)">♡ Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── LIST ITEM MODAL ─── -->
+  <div class="modal-overlay" id="list-item-modal" onclick="closeModal('list-item-modal')">
+    <div class="modal modal-list" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeModal('list-item-modal')">✕</button>
+      <h2 class="modal-title">List Your Item</h2>
+      <p style="color:var(--slate-500); font-size:0.9rem; margin-bottom:24px;">Your listing will appear in the marketplace right away.</p>
+
+      <!-- Photo upload -->
+      <div class="photo-upload-area" id="photo-upload-area" onclick="document.getElementById('photo-input').click()"
+        ondragover="event.preventDefault(); this.classList.add('drag-over')"
+        ondragleave="this.classList.remove('drag-over')"
+        ondrop="handlePhotoDrop(event)">
+        <div class="photo-upload-placeholder" id="photo-placeholder">
+          <div style="font-size:2.5rem; margin-bottom:8px;">📷</div>
+          <strong>Click or drag to upload a photo</strong>
+          <p style="font-size:0.82rem; color:var(--slate-400); margin:4px 0 0;">JPG, PNG — max 10 MB</p>
+        </div>
+        <img id="photo-preview" src="" alt="" style="display:none; width:100%; height:100%; object-fit:cover; border-radius:10px;">
+        <input type="file" id="photo-input" accept="image/*" style="display:none" onchange="handlePhotoSelect(event)">
+      </div>
+      <p id="photo-error" style="color:#ef4444; font-size:0.82rem; margin-top:6px; display:none;">Please add a photo of your item.</p>
+
+      <form id="list-item-form" onsubmit="handleListItem(event)">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+          <div class="form-group" style="grid-column:1/-1;">
+            <label>Item Name</label>
+            <input type="text" id="li-title" placeholder="e.g. IKEA KALLAX shelf" required />
+          </div>
+          <div class="form-group">
+            <label>Category</label>
+            <select id="li-category">
+              <option value="furniture">🪑 Furniture</option>
+              <option value="kitchen">🍳 Kitchen</option>
+              <option value="bedroom">🛏 Bedroom</option>
+              <option value="other">📦 Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Type</label>
+            <select id="li-type" onchange="updatePriceLabel()">
+              <option value="buy">🏷️ For Sale</option>
+              <option value="rent">🔄 For Rent</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Price (€)</label>
+            <input type="number" id="li-price" placeholder="0" min="0" step="0.50" required />
+          </div>
+          <div class="form-group">
+            <label id="li-price-unit-label">Price type</label>
+            <select id="li-price-unit">
+              <option value="once">One-time</option>
+              <option value="month">Per month</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Condition</label>
+            <select id="li-condition">
+              <option>Good condition</option>
+              <option>Well-maintained</option>
+              <option>Used – works perfectly</option>
+              <option>Used – sturdy</option>
+              <option>Rental item</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Neighbourhood</label>
+            <select id="li-neighbourhood">
+              <option>Centrum</option>
+              <option>De Pijp</option>
+              <option>Jordaan</option>
+              <option>Oud-West</option>
+              <option>Oost</option>
+              <option>Zuid</option>
+              <option>Bos en Lommer</option>
+              <option>Noord</option>
+              <option>West</option>
+              <option>Nieuw-West</option>
+            </select>
+          </div>
+          <div class="form-group" style="grid-column:1/-1;">
+            <label>Description</label>
+            <textarea id="li-desc" placeholder="Describe the item — condition, dimensions, what's included, pickup notes..." rows="3" required></textarea>
+          </div>
+          <div class="form-group" style="grid-column:1/-1;">
+            <label>Your Email <small style="color:var(--slate-400); font-weight:400;">(shown to interested buyers)</small></label>
+            <input type="email" id="li-email" placeholder="you@email.com" required />
+          </div>
+        </div>
+        <button type="submit" class="btn-primary full-width" id="li-submit-btn" style="margin-top:8px;">
+          Publish Listing
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ─── SIGN UP MODAL ─── -->
   <div class="modal-overlay" id="signup-modal" onclick="closeModal('signup-modal')">
     <div class="modal" onclick="event.stopPropagation()">
       <button class="modal-close" onclick="closeModal('signup-modal')">✕</button>
@@ -283,14 +546,8 @@
       </div>
       <div id="signup-error" class="auth-error" style="display:none;"></div>
       <form id="signup-form" onsubmit="handleSignUp(event)">
-        <div class="form-group">
-          <label>Full Name</label>
-          <input type="text" id="signup-name" placeholder="Anna Müller" required />
-        </div>
-        <div class="form-group">
-          <label>Email Address</label>
-          <input type="email" id="signup-email" placeholder="anna@email.com" required />
-        </div>
+        <div class="form-group"><label>Full Name</label><input type="text" id="signup-name" placeholder="Anna Müller" required /></div>
+        <div class="form-group"><label>Email Address</label><input type="email" id="signup-email" placeholder="anna@email.com" required /></div>
         <div class="form-group">
           <label>Password <small style="color:var(--slate-400);">(min 6 characters)</small></label>
           <input type="password" id="signup-password" placeholder="••••••••" required />
@@ -305,12 +562,11 @@
         </div>
         <button type="submit" class="btn-primary full-width" id="signup-submit">Create Account</button>
       </form>
-      <p class="auth-switch">Already have an account? <button class="auth-link" onclick="switchAuthModal('login')">Log
-          in</button></p>
+      <p class="auth-switch">Already have an account? <button class="auth-link" onclick="switchAuthModal('login')">Log in</button></p>
     </div>
   </div>
 
-  <!-- Log In Modal -->
+  <!-- ─── LOG IN MODAL ─── -->
   <div class="modal-overlay" id="login-modal" onclick="closeModal('login-modal')">
     <div class="modal" onclick="event.stopPropagation()">
       <button class="modal-close" onclick="closeModal('login-modal')">✕</button>
@@ -321,36 +577,23 @@
       </div>
       <div id="login-error" class="auth-error" style="display:none;"></div>
       <form id="login-form" onsubmit="handleLogIn(event)">
-        <div class="form-group">
-          <label>Email Address</label>
-          <input type="email" id="login-email" placeholder="anna@email.com" required />
-        </div>
-        <div class="form-group">
-          <label>Password</label>
-          <input type="password" id="login-password" placeholder="••••••••" required />
-        </div>
+        <div class="form-group"><label>Email Address</label><input type="email" id="login-email" placeholder="anna@email.com" required /></div>
+        <div class="form-group"><label>Password</label><input type="password" id="login-password" placeholder="••••••••" required /></div>
         <button type="submit" class="btn-primary full-width" id="login-submit">Log In</button>
       </form>
-      <p class="auth-switch">Don't have an account? <button class="auth-link" onclick="switchAuthModal('signup')">Sign
-          up</button></p>
+      <p class="auth-switch">Don't have an account? <button class="auth-link" onclick="switchAuthModal('signup')">Sign up</button></p>
     </div>
   </div>
 
-  <!-- Reserve Modal -->
+  <!-- ─── RESERVE MODAL ─── -->
   <div class="modal-overlay" id="reserve-modal" onclick="closeModal('reserve-modal')">
     <div class="modal" onclick="event.stopPropagation()">
       <button class="modal-close" onclick="closeModal('reserve-modal')">✕</button>
       <h2 class="modal-title">Reserve Item</h2>
       <div id="reserve-item-info"></div>
       <form onsubmit="handleReserve(event)">
-        <div class="form-group">
-          <label>Preferred Pickup Date</label>
-          <input type="date" id="reserve-date" required />
-        </div>
-        <div class="form-group">
-          <label>Message to Seller (optional)</label>
-          <textarea id="reserve-msg" placeholder="I can pick up anytime after 5pm..." rows="2"></textarea>
-        </div>
+        <div class="form-group"><label>Preferred Pickup Date</label><input type="date" id="reserve-date" required /></div>
+        <div class="form-group"><label>Message to Seller (optional)</label><textarea id="reserve-msg" placeholder="I can pick up anytime after 5pm..." rows="2"></textarea></div>
         <div class="form-group">
           <label>Payment Method</label>
           <div class="payment-options">
@@ -364,36 +607,18 @@
     </div>
   </div>
 
-  <!-- Booking Modal (Packs) -->
+  <!-- ─── OTHER MODALS ─── -->
   <div class="modal-overlay" id="booking-modal" onclick="closeModal('booking-modal')">
     <div class="modal" onclick="event.stopPropagation()">
       <button class="modal-close" onclick="closeModal('booking-modal')">✕</button>
       <h2 class="modal-title">Book Starter Pack</h2>
       <div id="booking-item-info"></div>
       <form onsubmit="handleBooking(event)">
-        <div class="form-group">
-          <label>Your Name</label>
-          <input type="text" placeholder="Anna Müller" required />
-        </div>
-        <div class="form-group">
-          <label>Delivery Address</label>
-          <input type="text" placeholder="Keizersgracht 123, Amsterdam" required />
-        </div>
-        <div class="form-group">
-          <label>Delivery Date</label>
-          <input type="date" required />
-        </div>
-        <div class="form-group">
-          <label>Rental Duration</label>
-          <select>
-            <option>1 week</option>
-            <option>2 weeks</option>
-            <option>1 month</option>
-            <option>3 months</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Payment Method</label>
+        <div class="form-group"><label>Your Name</label><input type="text" placeholder="Anna Müller" required /></div>
+        <div class="form-group"><label>Delivery Address</label><input type="text" placeholder="Keizersgracht 123, Amsterdam" required /></div>
+        <div class="form-group"><label>Delivery Date</label><input type="date" required /></div>
+        <div class="form-group"><label>Rental Duration</label><select><option>1 week</option><option>2 weeks</option><option>1 month</option><option>3 months</option></select></div>
+        <div class="form-group"><label>Payment Method</label>
           <div class="payment-options">
             <label class="pay-opt active"><input type="radio" name="pay2" value="card" checked /> 💳 Card</label>
             <label class="pay-opt"><input type="radio" name="pay2" value="ideal" /> 🏦 iDEAL</label>
@@ -405,182 +630,44 @@
     </div>
   </div>
 
-  <!-- Van Modal -->
-  <div class="modal-overlay" id="van-modal" onclick="closeModal('van-modal')">
-    <div class="modal" onclick="event.stopPropagation()">
-      <button class="modal-close" onclick="closeModal('van-modal')">✕</button>
-      <h2 class="modal-title">Book a Van</h2>
-      <div id="van-item-info"></div>
-      <form onsubmit="handleVanBooking(event)">
-        <div class="form-group">
-          <label>Your Name</label>
-          <input type="text" placeholder="Marco Rossi" required />
-        </div>
-        <div class="form-group">
-          <label>Pickup Address</label>
-          <input type="text" placeholder="Prinsengracht 456, Amsterdam" required />
-        </div>
-        <div class="form-group">
-          <label>Drop-off Address</label>
-          <input type="text" placeholder="Amstelveenseweg 789, Amsterdam" required />
-        </div>
-        <div class="form-group">
-          <label>Date & Time</label>
-          <input type="datetime-local" required />
-        </div>
-        <div class="form-group">
-          <label>Duration</label>
-          <select>
-            <option>4 hours</option>
-            <option>8 hours (full day)</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Payment Method</label>
-          <div class="payment-options">
-            <label class="pay-opt active"><input type="radio" name="pay3" value="card" checked /> 💳 Card</label>
-            <label class="pay-opt"><input type="radio" name="pay3" value="ideal" /> 🏦 iDEAL</label>
-          </div>
-        </div>
-        <div class="form-group">
-          <label style="display:flex; align-items:flex-start; gap:8px; cursor:pointer;">
-            <input type="checkbox" required style="margin-top:3px;" />
-            <span>I confirm I have a valid driver's license</span>
-          </label>
-        </div>
-        <button type="submit" class="btn-primary full-width">Confirm Van Booking</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- Donate Modal -->
   <div class="modal-overlay" id="donate-modal" onclick="closeModal('donate-modal')">
     <div class="modal" onclick="event.stopPropagation()">
       <button class="modal-close" onclick="closeModal('donate-modal')">✕</button>
       <h2 class="modal-title">Schedule a Donation</h2>
       <div id="donate-org-info"></div>
       <form onsubmit="handleDonate(event)">
-        <div class="form-group">
-          <label>Your Name</label>
-          <input type="text" placeholder="Sophie Janssen" required />
-        </div>
-        <div class="form-group">
-          <label>What would you like to donate?</label>
-          <textarea placeholder="e.g. sofa, kitchen items, clothing..." rows="3"></textarea>
-        </div>
-        <div class="form-group">
-          <label>Preferred Drop-off Date</label>
-          <input type="date" required />
-        </div>
+        <div class="form-group"><label>Your Name</label><input type="text" placeholder="Sophie Janssen" required /></div>
+        <div class="form-group"><label>What would you like to donate?</label><textarea placeholder="e.g. sofa, kitchen items, clothing..." rows="3"></textarea></div>
+        <div class="form-group"><label>Preferred Drop-off Date</label><input type="date" required /></div>
         <div class="form-group">
           <label>Need pickup? (€10 fee)</label>
-          <div class="toggle-row">
-            <span>Home pickup</span>
-            <label class="toggle">
-              <input type="checkbox" id="pickup-toggle" />
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
+          <div class="toggle-row"><span>Home pickup</span><label class="toggle"><input type="checkbox" id="pickup-toggle" /><span class="toggle-slider"></span></label></div>
         </div>
         <button type="submit" class="btn-primary full-width">Schedule Donation</button>
       </form>
     </div>
   </div>
 
-  <!-- Box Order Modal -->
   <div class="modal-overlay" id="box-modal" onclick="closeModal('box-modal')">
     <div class="modal" onclick="event.stopPropagation()">
       <button class="modal-close" onclick="closeModal('box-modal')">✕</button>
       <h2 class="modal-title">Order Moving Boxes</h2>
       <div class="box-order-form">
         <div class="box-qty-row">
-          <div class="box-qty-item">
-            <label>Small (30L) — €2/week</label>
-            <div class="qty-ctrl">
-              <button type="button" onclick="changeQty('sm', -1)">−</button>
-              <span id="qty-sm">0</span>
-              <button type="button" onclick="changeQty('sm', 1)">+</button>
-            </div>
-          </div>
-          <div class="box-qty-item">
-            <label>Medium (50L) — €3/week</label>
-            <div class="qty-ctrl">
-              <button type="button" onclick="changeQty('md', -1)">−</button>
-              <span id="qty-md">0</span>
-              <button type="button" onclick="changeQty('md', 1)">+</button>
-            </div>
-          </div>
-          <div class="box-qty-item">
-            <label>Large (70L) — €4/week</label>
-            <div class="qty-ctrl">
-              <button type="button" onclick="changeQty('lg', -1)">−</button>
-              <span id="qty-lg">0</span>
-              <button type="button" onclick="changeQty('lg', 1)">+</button>
-            </div>
-          </div>
+          <div class="box-qty-item"><label>Small (30L) — €2/week</label><div class="qty-ctrl"><button type="button" onclick="changeQty('sm', -1)">−</button><span id="qty-sm">0</span><button type="button" onclick="changeQty('sm', 1)">+</button></div></div>
+          <div class="box-qty-item"><label>Medium (50L) — €3/week</label><div class="qty-ctrl"><button type="button" onclick="changeQty('md', -1)">−</button><span id="qty-md">0</span><button type="button" onclick="changeQty('md', 1)">+</button></div></div>
+          <div class="box-qty-item"><label>Large (70L) — €4/week</label><div class="qty-ctrl"><button type="button" onclick="changeQty('lg', -1)">−</button><span id="qty-lg">0</span><button type="button" onclick="changeQty('lg', 1)">+</button></div></div>
         </div>
         <div class="box-total">Total: <strong id="box-total">€0</strong>/week</div>
         <form onsubmit="handleBoxOrder(event)">
-          <div class="form-group">
-            <label>Delivery Address</label>
-            <input type="text" placeholder="Herengracht 200, Amsterdam" required />
-          </div>
-          <div class="form-group">
-            <label>Delivery Date</label>
-            <input type="date" required />
-          </div>
+          <div class="form-group"><label>Delivery Address</label><input type="text" placeholder="Herengracht 200, Amsterdam" required /></div>
+          <div class="form-group"><label>Delivery Date</label><input type="date" required /></div>
           <button type="submit" class="btn-primary full-width">Order Boxes</button>
         </form>
       </div>
     </div>
   </div>
 
-  <!-- List Item Modal -->
-  <div class="modal-overlay" id="list-item-modal" onclick="closeModal('list-item-modal')">
-    <div class="modal" onclick="event.stopPropagation()">
-      <button class="modal-close" onclick="closeModal('list-item-modal')">✕</button>
-      <h2 class="modal-title">List an Item</h2>
-      <form onsubmit="handleListItem(event)">
-        <div class="form-group">
-          <label>Item Name</label>
-          <input type="text" placeholder="IKEA BILLY Bookcase" required />
-        </div>
-        <div class="form-group">
-          <label>Category</label>
-          <select>
-            <option>Furniture</option>
-            <option>Kitchen</option>
-            <option>Bedroom</option>
-            <option>Electronics</option>
-            <option>Other</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Price (€)</label>
-          <input type="number" placeholder="0" min="0" required />
-        </div>
-        <div class="form-group">
-          <label>Availability</label>
-          <select>
-            <option>Available Today</option>
-            <option>Available This Week</option>
-            <option>Flexible</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Description</label>
-          <textarea placeholder="Condition, dimensions, pickup notes..." rows="3"></textarea>
-        </div>
-        <div class="form-group">
-          <label>Your Email</label>
-          <input type="email" placeholder="you@email.com" required />
-        </div>
-        <button type="submit" class="btn-primary full-width">Publish Listing</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- Quiz Modal -->
   <div class="modal-overlay" id="quiz-modal" onclick="closeModal('quiz-modal')">
     <div class="modal" onclick="event.stopPropagation()">
       <button class="modal-close" onclick="closeModal('quiz-modal')">✕</button>
@@ -588,11 +675,334 @@
     </div>
   </div>
 
-  <!-- Success Toast -->
+  <!-- Toast -->
   <div class="toast" id="toast">
     <span class="toast-icon">✅</span>
     <span id="toast-msg">Done!</span>
   </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- STYLES                                                                  -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <style>
+    /* ── Product detail modal ── */
+    .modal-product { max-width: 880px; padding: 0; overflow: hidden; }
+    .product-modal-inner { display: grid; grid-template-columns: 1fr 1fr; min-height: 520px; }
+    .product-modal-img-wrap { position: relative; min-height: 400px; background: var(--slate-100); }
+    .product-modal-img-wrap img { width:100%; height:100%; object-fit:cover; border-radius:12px 0 0 12px; display:block; }
+    .product-modal-badge { position:absolute; top:16px; left:16px; background:white; border-radius:20px; padding:4px 12px; font-size:0.78rem; font-weight:600; color:var(--slate-800); box-shadow:0 2px 8px rgba(0,0,0,.15); }
+    .product-modal-details { padding:36px 32px; display:flex; flex-direction:column; gap:18px; overflow-y:auto; max-height:90vh; }
+    .pm-header { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
+    .pm-cat { font-size:0.78rem; font-weight:600; color:var(--green-600); text-transform:uppercase; letter-spacing:.06em; margin:0 0 4px; }
+    .pm-title { font-size:1.4rem; font-weight:700; color:var(--slate-800); margin:0; line-height:1.3; }
+    .pm-price { font-size:1.6rem; font-weight:800; color:var(--green-600); flex-shrink:0; }
+    .pm-chips { display:flex; flex-wrap:wrap; gap:8px; }
+    .pm-chip { background:var(--slate-100); border-radius:20px; padding:4px 12px; font-size:0.8rem; font-weight:500; color:var(--slate-700); }
+    .pm-chip-rating { background:#fef9c3; color:#713f12; }
+    .pm-chip-type-buy { background:#dcfce7; color:#166534; }
+    .pm-chip-type-rent { background:#dbeafe; color:#1e40af; }
+    .pm-desc { font-size:0.95rem; color:var(--slate-600); line-height:1.7; margin:0; }
+    .pm-info-rows { display:flex; flex-direction:column; gap:14px; border-top:1px solid var(--slate-200); padding-top:18px; }
+    .pm-info-row { display:flex; gap:12px; align-items:flex-start; }
+    .pm-info-icon { font-size:1.1rem; margin-top:1px; flex-shrink:0; }
+    .pm-info-row strong { display:block; font-size:0.78rem; font-weight:600; color:var(--slate-500); text-transform:uppercase; letter-spacing:.04em; margin-bottom:2px; }
+    .pm-info-row span { font-size:0.9rem; color:var(--slate-700); }
+    .pm-actions { display:flex; gap:12px; margin-top:auto; padding-top:8px; }
+    .pm-cta { flex:1; }
+    .pm-save-btn { background:white; border:1px solid var(--slate-200); border-radius:var(--radius); padding:12px 20px; font-size:0.9rem; cursor:pointer; color:var(--slate-600); transition:all .2s; }
+    .pm-save-btn:hover { background:var(--slate-50); }
+
+    /* ── List item modal ── */
+    .modal-list { max-width: 600px; }
+    .photo-upload-area {
+      border: 2px dashed var(--slate-300); border-radius: 12px; height: 180px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all .2s; overflow: hidden; margin-bottom: 4px;
+      background: var(--slate-50); position: relative;
+    }
+    .photo-upload-area:hover, .photo-upload-area.drag-over { border-color: var(--green-500); background: #f0fdf4; }
+    .photo-upload-placeholder { text-align: center; color: var(--slate-500); pointer-events: none; }
+    .photo-upload-area.has-photo { border-style: solid; border-color: var(--green-500); }
+
+    /* ── Responsive ── */
+    @media (max-width: 680px) {
+      .product-modal-inner { grid-template-columns: 1fr; }
+      .product-modal-img-wrap { min-height: 220px; }
+      .product-modal-img-wrap img { border-radius: 12px 12px 0 0; }
+      .product-modal-details { padding: 24px 20px; }
+    }
+  </style>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- SCRIPTS                                                                 -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <script>
+    const FIREBASE_URL = 'https://swapnest-20fe9-default-rtdb.europe-west1.firebasedatabase.app';
+
+    // ── Product Detail Modal ────────────────────────────────────────────────
+
+    let _pmCurrentItem = null;
+
+    function openProductModal(event, card) {
+      if (event.target.closest('button')) return;
+      _pmCurrentItem = {
+        title:    card.dataset.title,
+        price:    card.dataset.displayPrice,
+        img:      card.dataset.img,
+        desc:     card.dataset.desc,
+        location: card.dataset.location,
+        distance: card.dataset.distance + ' km away',
+        rating:   card.dataset.rating,
+        condition: card.dataset.condition,
+        type:     card.dataset.type,
+        catLabel: card.dataset.catLabel,
+        urgency:  card.dataset.urgency,
+      };
+      const d = _pmCurrentItem;
+      document.getElementById('pm-img').src = d.img;
+      document.getElementById('pm-img').alt = d.title;
+      document.getElementById('pm-title').textContent = d.title;
+      document.getElementById('pm-cat').textContent = d.catLabel;
+      document.getElementById('pm-price').textContent = d.price;
+      document.getElementById('pm-rating').textContent = d.rating;
+      document.getElementById('pm-desc').textContent = d.desc;
+      document.getElementById('pm-location').textContent = d.location;
+      document.getElementById('pm-distance').textContent = d.distance;
+      document.getElementById('pm-condition-chip').textContent = d.condition;
+
+      const typeChip = document.getElementById('pm-type-chip');
+      if (d.type === 'rent') {
+        typeChip.textContent = '🔄 Rental'; typeChip.className = 'pm-chip pm-chip-type-rent';
+      } else {
+        typeChip.textContent = '🏷️ For sale'; typeChip.className = 'pm-chip pm-chip-type-buy';
+      }
+
+      const badge = document.getElementById('pm-badge');
+      badge.style.display = 'block';
+      if (d.urgency === 'today') badge.textContent = '🔥 Available Today';
+      else if (d.type === 'rent') badge.textContent = '🔄 Rental';
+      else badge.textContent = '📅 This Week';
+
+      document.getElementById('pm-cta-btn').textContent = d.type === 'rent' ? 'Rent Now' : 'Reserve Now';
+      openModal('product-modal');
+    }
+
+    function pmReserve() {
+      if (!_pmCurrentItem) return;
+      closeModal('product-modal');
+      openReserveModal(_pmCurrentItem.title, _pmCurrentItem.price);
+    }
+
+    // ── List Item: photo handling ───────────────────────────────────────────
+
+    let _selectedImageDataUrl = null;
+
+    function handlePhotoSelect(event) {
+      const file = event.target.files[0];
+      if (file) processPhoto(file);
+    }
+
+    function handlePhotoDrop(event) {
+      event.preventDefault();
+      document.getElementById('photo-upload-area').classList.remove('drag-over');
+      const file = event.dataTransfer.files[0];
+      if (file && file.type.startsWith('image/')) processPhoto(file);
+    }
+
+    function processPhoto(file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        compressImage(e.target.result, 900, 0.75).then(compressed => {
+          _selectedImageDataUrl = compressed;
+          const preview = document.getElementById('photo-preview');
+          const placeholder = document.getElementById('photo-placeholder');
+          preview.src = compressed;
+          preview.style.display = 'block';
+          placeholder.style.display = 'none';
+          document.getElementById('photo-upload-area').classList.add('has-photo');
+          document.getElementById('photo-error').style.display = 'none';
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function compressImage(dataUrl, maxSize, quality) {
+      return new Promise(resolve => {
+        const img = new Image();
+        img.onload = () => {
+          const ratio = Math.min(maxSize / img.width, maxSize / img.height, 1);
+          const canvas = document.createElement('canvas');
+          canvas.width  = Math.round(img.width  * ratio);
+          canvas.height = Math.round(img.height * ratio);
+          canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        };
+        img.src = dataUrl;
+      });
+    }
+
+    // ── List Item: price label helper ───────────────────────────────────────
+
+    function updatePriceLabel() {
+      const type = document.getElementById('li-type').value;
+      const unitSelect = document.getElementById('li-price-unit');
+      if (type === 'rent') {
+        unitSelect.value = 'month';
+      }
+    }
+
+    // ── List Item: submit ───────────────────────────────────────────────────
+
+    async function handleListItem(event) {
+      event.preventDefault();
+
+      if (!_selectedImageDataUrl) {
+        document.getElementById('photo-error').style.display = 'block';
+        return;
+      }
+
+      const btn = document.getElementById('li-submit-btn');
+      btn.disabled = true;
+      btn.textContent = 'Publishing…';
+
+      const title       = document.getElementById('li-title').value.trim();
+      const category    = document.getElementById('li-category').value;
+      const type        = document.getElementById('li-type').value;
+      const price       = parseFloat(document.getElementById('li-price').value) || 0;
+      const priceUnit   = document.getElementById('li-price-unit').value;
+      const condition   = document.getElementById('li-condition').value;
+      const neighbourhood = document.getElementById('li-neighbourhood').value;
+      const desc        = document.getElementById('li-desc').value.trim();
+      const email       = document.getElementById('li-email').value.trim();
+
+      const displayPrice = type === 'rent'
+        ? `€${price} / ${priceUnit === 'month' ? 'month' : 'week'}`
+        : `€${price}`;
+
+      const listing = {
+        id:           'li_' + Math.random().toString(36).slice(2) + '_' + Date.now(),
+        title,
+        category,
+        type,
+        price,
+        displayPrice,
+        condition,
+        neighbourhood,
+        desc,
+        email,
+        img:          _selectedImageDataUrl,
+        rating:       '5.0',
+        distance:     (Math.random() * 1.5 + 0.2).toFixed(1),
+        urgency:      'today',
+        createdAt:    Date.now(),
+      };
+
+      // Save to Firebase
+      try {
+        await fetch(`${FIREBASE_URL}/listings/${listing.id}.json`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(listing),
+        });
+      } catch (err) {
+        console.warn('[SwapNest] Firebase save failed, showing locally only:', err);
+      }
+
+      // Render immediately in grid
+      renderListingCard(listing);
+
+      // Reset form
+      closeModal('list-item-modal');
+      _selectedImageDataUrl = null;
+      document.getElementById('photo-preview').style.display = 'none';
+      document.getElementById('photo-placeholder').style.display = 'block';
+      document.getElementById('photo-upload-area').classList.remove('has-photo');
+      document.getElementById('photo-input').value = '';
+      document.getElementById('list-item-form').reset();
+      btn.disabled = false;
+      btn.textContent = 'Publish Listing';
+
+      if (typeof showToast === 'function') showToast('Your item is now live! 🎉');
+    }
+
+    // ── Render a listing card (used for both new + loaded from Firebase) ────
+
+    function renderListingCard(listing) {
+      const catLabels = { furniture:'Furniture', kitchen:'Kitchen', bedroom:'Bedroom', other:'Other' };
+      const catLabel = catLabels[listing.category] || 'Other';
+      const displayPrice = listing.displayPrice || `€${listing.price}`;
+      const location = `${listing.neighbourhood}, Amsterdam`;
+
+      const card = document.createElement('div');
+      card.className = 'item-card';
+      card.style.cursor = 'pointer';
+      card.dataset.category  = listing.category;
+      card.dataset.urgency   = listing.urgency || 'today';
+      card.dataset.price     = listing.price;
+      card.dataset.distance  = listing.distance || '0.5';
+      card.dataset.title     = listing.title;
+      card.dataset.displayPrice = displayPrice;
+      card.dataset.img       = listing.img;
+      card.dataset.desc      = listing.desc;
+      card.dataset.location  = location;
+      card.dataset.rating    = listing.rating || '5.0';
+      card.dataset.condition = listing.condition;
+      card.dataset.type      = listing.type;
+      card.dataset.catLabel  = catLabel;
+
+      const badgeText = listing.type === 'rent' ? 'Rental' : 'Available Today';
+      const badgeClass = listing.urgency === 'today' ? 'today' : 'week';
+      const ctaText = listing.type === 'rent' ? 'Rent Now' : 'Reserve Now';
+
+      card.innerHTML = `
+        <div class="item-img">
+          <img src="${listing.img}" alt="${listing.title}" style="width:100%;height:100%;object-fit:cover;">
+        </div>
+        <div class="urgency-badge ${badgeClass}">${badgeText}</div>
+        <div class="item-info">
+          <div class="item-header">
+            <h4>${listing.title}</h4>
+            <span class="item-price">${displayPrice}</span>
+          </div>
+          <p class="item-desc">${listing.desc.length > 80 ? listing.desc.slice(0, 80) + '…' : listing.desc}</p>
+          <div class="item-meta">
+            <span>📍 ${listing.distance} km · ${listing.neighbourhood}</span>
+            <span>⭐ ${listing.rating || '5.0'}</span>
+          </div>
+          <div class="item-actions">
+            <button class="btn-reserve" onclick="event.stopPropagation(); openReserveModal('${listing.title.replace(/'/g,"\\'")}', '${displayPrice.replace(/'/g,"\\'")}')">
+              ${ctaText}
+            </button>
+            <button class="btn-wishlist" onclick="event.stopPropagation(); toggleWishlist(this)">♡</button>
+          </div>
+        </div>
+      `;
+
+      card.addEventListener('click', (e) => openProductModal(e, card));
+
+      // Insert before the comment marker, or just append
+      const grid = document.getElementById('items-grid');
+      grid.appendChild(card);
+    }
+
+    // ── Load listings from Firebase on page load ────────────────────────────
+
+    async function loadFirebaseListings() {
+      try {
+        const res = await fetch(`${FIREBASE_URL}/listings.json`);
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!data) return;
+        // Sort by createdAt descending (newest first)
+        const listings = Object.values(data).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+        listings.forEach(listing => renderListingCard(listing));
+      } catch (err) {
+        console.warn('[SwapNest] Could not load listings from Firebase:', err);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadFirebaseListings);
+  </script>
 
   <script src="app.js"></script>
 </body>
