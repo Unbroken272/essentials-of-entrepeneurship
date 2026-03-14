@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
 
 <head>
   <meta charset="UTF-8" />
@@ -68,9 +68,22 @@
       color: var(--slate-600);
     }
 
+    /* ── Rage click banner ─────────────────────────────────────────────────── */
+    #rage-banner {
+      display: none;
+      background: #fef9c3;
+      border: 1px solid #fde047;
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      margin-bottom: 24px;
+      font-size: 0.9rem;
+      color: #713f12;
+    }
+
+    /* ── KPI grid ───────────────────────────────────────────────────────────── */
     .kpi-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 24px;
       margin-bottom: 32px;
     }
@@ -96,6 +109,7 @@
       color: var(--slate-800);
     }
 
+    /* ── Charts ─────────────────────────────────────────────────────────────── */
     .charts-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
@@ -108,6 +122,48 @@
       height: 300px;
     }
 
+    .chart-container-sm {
+      position: relative;
+      height: 220px;
+    }
+
+    /* ── Conversions table ──────────────────────────────────────────────────── */
+    .source-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+
+    .source-table th,
+    .source-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--slate-100);
+      text-align: left;
+    }
+
+    .source-table th {
+      color: var(--slate-600);
+      font-weight: 500;
+    }
+
+    .source-table tbody tr:hover {
+      background: var(--slate-50);
+    }
+
+    .cvr-bar-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .cvr-bar {
+      height: 8px;
+      background: var(--green-500);
+      border-radius: 4px;
+      min-width: 2px;
+    }
+
+    /* ── Raw data table ─────────────────────────────────────────────────────── */
     details {
       background: white;
       border-radius: var(--radius);
@@ -183,6 +239,10 @@
       <div id="status-bar">Laden…</div>
     </div>
 
+    <!-- Rage click waarschuwing -->
+    <div id="rage-banner"></div>
+
+    <!-- KPI kaarten -->
     <div class="kpi-grid">
       <div class="card">
         <div class="kpi-title">Totaal Bezoekers</div>
@@ -200,8 +260,25 @@
         <div class="kpi-title">Gem. Tijd op Site</div>
         <div class="kpi-value" id="kpi-time">—</div>
       </div>
+      <div class="card">
+        <div class="kpi-title">Bounce Rate</div>
+        <div class="kpi-value" id="kpi-bounce">—</div>
+      </div>
+      <div class="card">
+        <div class="kpi-title">Gem. Scroll Diepte</div>
+        <div class="kpi-value" id="kpi-scroll">—</div>
+      </div>
+      <div class="card">
+        <div class="kpi-title">Mobiel</div>
+        <div class="kpi-value" id="kpi-mobile">—</div>
+      </div>
+      <div class="card">
+        <div class="kpi-title">Terugkerende Bezoekers</div>
+        <div class="kpi-value" id="kpi-returning">—</div>
+      </div>
     </div>
 
+    <!-- Traffic bronnen + Apparaat -->
     <div class="charts-grid">
       <div class="card">
         <h3 style="margin-top:0; font-size:1rem; color:var(--slate-800);">Traffic Bronnen</h3>
@@ -210,13 +287,56 @@
         </div>
       </div>
       <div class="card">
+        <h3 style="margin-top:0; font-size:1rem; color:var(--slate-800);">Apparaat Verdeling</h3>
+        <div class="chart-container">
+          <canvas id="deviceChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top clicks + Scroll diepte -->
+    <div class="charts-grid">
+      <div class="card">
         <h3 style="margin-top:0; font-size:1rem; color:var(--slate-800);">Top Events / Clicks</h3>
         <div class="chart-container">
           <canvas id="eventsChart"></canvas>
         </div>
       </div>
+      <div class="card">
+        <h3 style="margin-top:0; font-size:1rem; color:var(--slate-800);">Scroll Diepte Verdeling</h3>
+        <div class="chart-container">
+          <canvas id="scrollChart"></canvas>
+        </div>
+      </div>
     </div>
 
+    <!-- Funnel -->
+    <div class="card" style="margin-bottom: 32px;">
+      <h3 style="margin-top:0; font-size:1rem; color:var(--slate-800);">Conversie Funnel</h3>
+      <div class="chart-container" style="height:240px;">
+        <canvas id="funnelChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Conversies per bron -->
+    <div class="card" style="margin-bottom: 32px;">
+      <h3 style="margin-top:0; font-size:1rem; color:var(--slate-800);">Conversies per Bron</h3>
+      <div style="overflow-x: auto;">
+        <table class="source-table">
+          <thead>
+            <tr>
+              <th>Bron</th>
+              <th>Bezoekers</th>
+              <th>Signups</th>
+              <th>CVR%</th>
+            </tr>
+          </thead>
+          <tbody id="source-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Gebruikersstroom -->
     <div class="card" style="margin-bottom: 32px;">
       <h3 style="margin-top:0; font-size:1rem; color:var(--slate-800);">Gebruikersstroom — Top Navigatiepaden</h3>
       <div class="chart-container" style="height:280px;">
@@ -224,6 +344,7 @@
       </div>
     </div>
 
+    <!-- Ruwe data -->
     <details>
       <summary>Bekijk Ruwe Data</summary>
       <div style="overflow-x: auto;">
@@ -232,14 +353,17 @@
             <tr>
               <th>Sessie ID</th>
               <th>Bron</th>
+              <th>Ref</th>
+              <th>Apparaat</th>
+              <th>Scroll</th>
+              <th>Exit Pagina</th>
               <th>Tijd op Site</th>
               <th>Signups</th>
               <th>Pagina's Bezocht</th>
               <th>Acties</th>
             </tr>
           </thead>
-          <tbody id="raw-table-body">
-          </tbody>
+          <tbody id="raw-table-body"></tbody>
         </table>
       </div>
     </details>
@@ -256,18 +380,21 @@
       return `${s}s`;
     }
 
+    function pct(n, total) {
+      if (!total) return '0%';
+      return ((n / total) * 100).toFixed(1) + '%';
+    }
+
     function setStatus(msg) {
       document.getElementById('status-bar').innerText = msg;
     }
 
     async function loadAllMetrics() {
       const firebaseUrl = (typeof Analytics !== 'undefined') ? Analytics.FIREBASE_URL : null;
-
       if (!firebaseUrl || firebaseUrl.includes('JOUW_PROJECT')) {
         setStatus('Firebase nog niet geconfigureerd. Vul FIREBASE_URL in analytics.js in.');
         return [];
       }
-
       try {
         const res = await fetch(`${firebaseUrl}/sessions.json`);
         if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -286,35 +413,96 @@
     }
 
     function renderDashboard(metrics) {
-      const totalVisitors = metrics.length;
+      const total = metrics.length;
+      if (total === 0) {
+        ['kpi-visitors','kpi-signups','kpi-conversion','kpi-time',
+         'kpi-bounce','kpi-scroll','kpi-mobile','kpi-returning'].forEach(id => {
+          document.getElementById(id).innerText = '0';
+        });
+        return;
+      }
+
       let totalSignups = 0;
       let totalTimeSpent = 0;
+      let bounceCount = 0;
+      let scrollSum = 0;
+      let mobileCount = 0;
+      let returningCount = 0;
       const trafficSources = {};
       const eventsCount = {};
+      const scrollBuckets = { '0–25%': 0, '26–50%': 0, '51–75%': 0, '76–100%': 0 };
+      const deviceCounts = { mobile: 0, tablet: 0, desktop: 0 };
+      const sourceMap = {}; // for conversions by source table
+      const allRageElements = new Set();
 
       metrics.forEach(session => {
         totalSignups += (session.waitlistSignups || 0);
         totalTimeSpent += (session.timeSpentMs || 0);
 
-        const ref = session.referrer && session.referrer.trim() ? session.referrer : 'direct';
-        trafficSources[ref] = (trafficSources[ref] || 0) + 1;
+        if ((session.pageViews || []).length <= 1) bounceCount++;
+
+        const depth = session.scrollDepth || 0;
+        scrollSum += depth;
+        if (depth <= 25) scrollBuckets['0–25%']++;
+        else if (depth <= 50) scrollBuckets['26–50%']++;
+        else if (depth <= 75) scrollBuckets['51–75%']++;
+        else scrollBuckets['76–100%']++;
+
+        const dev = session.device || 'unknown';
+        if (dev === 'mobile') mobileCount++;
+        if (deviceCounts[dev] !== undefined) deviceCounts[dev]++;
+
+        if (session.returningVisitor) returningCount++;
+
+        // Traffic bronnen: gebruik HTTP referrer
+        const src = session.referrer && session.referrer.trim() ? session.referrer : 'direct';
+        trafficSources[src] = (trafficSources[src] || 0) + 1;
+
+        // Conversies per bron: ref first, then referrer
+        const convSrc = session.ref || (session.referrer && session.referrer !== 'direct' ? session.referrer : null) || 'direct';
+        if (!sourceMap[convSrc]) sourceMap[convSrc] = { visitors: 0, signups: 0 };
+        sourceMap[convSrc].visitors++;
+        sourceMap[convSrc].signups += (session.waitlistSignups || 0);
 
         if (session.clicks) {
           session.clicks.forEach(click => {
-            const label = click.label || 'Unknown Click';
+            const label = click.label || 'Onbekend';
             eventsCount[label] = (eventsCount[label] || 0) + 1;
           });
         }
+
+        if (session.rageClicks && session.rageClicks.length > 0) {
+          session.rageClicks.forEach(rc => allRageElements.add(rc.element));
+        }
       });
 
-      const conversionRate = totalVisitors > 0 ? ((totalSignups / totalVisitors) * 100).toFixed(1) : 0;
-      const avgTimeMs = totalVisitors > 0 ? totalTimeSpent / totalVisitors : 0;
+      const conversionRate = total > 0 ? ((totalSignups / total) * 100).toFixed(1) : 0;
+      const avgTimeMs = total > 0 ? totalTimeSpent / total : 0;
+      const bounceRate = ((bounceCount / total) * 100).toFixed(1);
+      const avgScroll = (scrollSum / total).toFixed(0);
+      const mobilePct = ((mobileCount / total) * 100).toFixed(1);
+      const returningPct = ((returningCount / total) * 100).toFixed(1);
 
-      document.getElementById('kpi-visitors').innerText = totalVisitors;
+      document.getElementById('kpi-visitors').innerText = total;
       document.getElementById('kpi-signups').innerText = totalSignups;
       document.getElementById('kpi-conversion').innerText = conversionRate + '%';
       document.getElementById('kpi-time').innerText = formatTime(avgTimeMs);
+      document.getElementById('kpi-bounce').innerText = bounceRate + '%';
+      document.getElementById('kpi-scroll').innerText = avgScroll + '%';
+      document.getElementById('kpi-mobile').innerText = mobilePct + '%';
+      document.getElementById('kpi-returning').innerText = returningPct + '%';
 
+      // Rage click banner
+      const banner = document.getElementById('rage-banner');
+      if (allRageElements.size > 0) {
+        const names = Array.from(allRageElements).join(', ');
+        banner.innerHTML = `⚠️ <strong>Rage clicks gedetecteerd op:</strong> ${names}`;
+        banner.style.display = 'block';
+      } else {
+        banner.style.display = 'none';
+      }
+
+      // Navigatiepaden
       const transitions = {};
       metrics.forEach(session => {
         if (session.pageViews && session.pageViews.length > 1) {
@@ -325,11 +513,33 @@
         }
       });
 
+      // Funnel
+      const funnelSteps = [
+        { label: 'index.html', page: 'index.html' },
+        { label: 'services.html', page: 'services.html' },
+        { label: 'about.html', page: 'about.html' },
+        { label: 'marketplace.html', page: 'marketplace.html' },
+        { label: 'Signup', page: null } // special: waitlistSignups > 0
+      ];
+      const funnelCounts = funnelSteps.map(step => {
+        if (step.page === null) {
+          return metrics.filter(s => (s.waitlistSignups || 0) > 0).length;
+        }
+        return metrics.filter(s => (s.pageViews || []).some(p => p.toLowerCase() === step.page)).length;
+      });
+      const funnelPcts = funnelCounts.map(c => total > 0 ? +((c / total) * 100).toFixed(1) : 0);
+
       renderTrafficChart(trafficSources);
+      renderDeviceChart(deviceCounts);
       renderEventsChart(eventsCount);
+      renderScrollChart(scrollBuckets);
+      renderFunnelChart(funnelSteps.map(s => s.label), funnelPcts);
+      renderSourceTable(sourceMap);
       renderFlowChart(transitions);
       renderRawTable(metrics);
     }
+
+    // ── Charts ────────────────────────────────────────────────────────────────
 
     let trafficChartInstance = null;
     function renderTrafficChart(dataObj) {
@@ -343,7 +553,29 @@
           labels: labels.length ? labels : ['Geen data'],
           datasets: [{
             data: data.length ? data : [1],
-            backgroundColor: ['#22c55e', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#e2e8f0'],
+            backgroundColor: ['#22c55e','#3b82f6','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#e2e8f0'],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'right' } }
+        }
+      });
+    }
+
+    let deviceChartInstance = null;
+    function renderDeviceChart(counts) {
+      const ctx = document.getElementById('deviceChart').getContext('2d');
+      if (deviceChartInstance) deviceChartInstance.destroy();
+      deviceChartInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Mobiel', 'Tablet', 'Desktop'],
+          datasets: [{
+            data: [counts.mobile || 0, counts.tablet || 0, counts.desktop || 0],
+            backgroundColor: ['#f59e0b','#3b82f6','#22c55e'],
             borderWidth: 1
           }]
         },
@@ -358,20 +590,18 @@
     let eventsChartInstance = null;
     function renderEventsChart(dataObj) {
       const ctx = document.getElementById('eventsChart').getContext('2d');
-      const sortedEvents = Object.keys(dataObj)
+      const sorted = Object.keys(dataObj)
         .map(k => ({ label: k, count: dataObj[k] }))
         .sort((a, b) => b.count - a.count)
         .slice(0, 10);
-      const labels = sortedEvents.map(e => e.label);
-      const data = sortedEvents.map(e => e.count);
       if (eventsChartInstance) eventsChartInstance.destroy();
       eventsChartInstance = new Chart(ctx, {
         type: 'bar',
         data: {
-          labels: labels.length ? labels : ['Geen data'],
+          labels: sorted.length ? sorted.map(e => e.label) : ['Geen data'],
           datasets: [{
             label: 'Clicks',
-            data: data.length ? data : [0],
+            data: sorted.length ? sorted.map(e => e.count) : [0],
             backgroundColor: '#22c55e',
             borderRadius: 4
           }]
@@ -385,6 +615,69 @@
       });
     }
 
+    let scrollChartInstance = null;
+    function renderScrollChart(buckets) {
+      const ctx = document.getElementById('scrollChart').getContext('2d');
+      if (scrollChartInstance) scrollChartInstance.destroy();
+      scrollChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: Object.keys(buckets),
+          datasets: [{
+            label: 'Sessies',
+            data: Object.values(buckets),
+            backgroundColor: ['#ef4444','#f59e0b','#3b82f6','#22c55e'],
+            borderRadius: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          indexAxis: 'y',
+          plugins: { legend: { display: false } },
+          scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } } }
+        }
+      });
+    }
+
+    let funnelChartInstance = null;
+    function renderFunnelChart(labels, pcts) {
+      const ctx = document.getElementById('funnelChart').getContext('2d');
+      if (funnelChartInstance) funnelChartInstance.destroy();
+      funnelChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: '% van bezoekers',
+            data: pcts,
+            backgroundColor: '#22c55e',
+            borderRadius: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          indexAxis: 'y',
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: ctx => ` ${ctx.parsed.x}% van bezoekers`
+              }
+            }
+          },
+          scales: {
+            x: {
+              beginAtZero: true,
+              max: 100,
+              ticks: { callback: v => v + '%' }
+            }
+          }
+        }
+      });
+    }
+
     let flowChartInstance = null;
     function renderFlowChart(dataObj) {
       const ctx = document.getElementById('flowChart').getContext('2d');
@@ -392,16 +685,14 @@
         .map(k => ({ label: k, count: dataObj[k] }))
         .sort((a, b) => b.count - a.count)
         .slice(0, 10);
-      const labels = sorted.map(e => e.label);
-      const data = sorted.map(e => e.count);
       if (flowChartInstance) flowChartInstance.destroy();
       flowChartInstance = new Chart(ctx, {
         type: 'bar',
         data: {
-          labels: labels.length ? labels : ['Nog geen navigatiedata'],
+          labels: sorted.length ? sorted.map(e => e.label) : ['Nog geen navigatiedata'],
           datasets: [{
             label: 'Overgangen',
-            data: data.length ? data : [0],
+            data: sorted.length ? sorted.map(e => e.count) : [0],
             backgroundColor: '#3b82f6',
             borderRadius: 4
           }]
@@ -416,29 +707,74 @@
       });
     }
 
+    // ── Conversies per bron tabel ─────────────────────────────────────────────
+
+    function renderSourceTable(sourceMap) {
+      const tbody = document.getElementById('source-table-body');
+      const rows = Object.entries(sourceMap)
+        .map(([src, d]) => ({
+          src,
+          visitors: d.visitors,
+          signups: d.signups,
+          cvr: d.visitors > 0 ? (d.signups / d.visitors) * 100 : 0
+        }))
+        .sort((a, b) => b.cvr - a.cvr);
+
+      if (rows.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Geen data.</td></tr>';
+        return;
+      }
+
+      const maxCvr = rows[0].cvr || 1;
+      tbody.innerHTML = rows.map(row => `
+        <tr>
+          <td>${row.src}</td>
+          <td>${row.visitors}</td>
+          <td>${row.signups}</td>
+          <td>
+            <div class="cvr-bar-wrap">
+              <div class="cvr-bar" style="width:${Math.round((row.cvr / maxCvr) * 80)}px"></div>
+              <span>${row.cvr.toFixed(1)}%</span>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // ── Ruwe data tabel ───────────────────────────────────────────────────────
+
     function renderRawTable(metrics) {
       const tbody = document.getElementById('raw-table-body');
       if (!metrics || metrics.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Nog geen sessiedata.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;">Nog geen sessiedata.</td></tr>';
         return;
       }
-      // Meest recente sessies bovenaan
       const sorted = [...metrics].sort((a, b) => (b.startedAt || 0) - (a.startedAt || 0));
-      tbody.innerHTML = sorted.map(session => {
-        const views = session.pageViews ? session.pageViews.join(', ') : '';
-        const clicks = session.clicks ? session.clicks.length + ' clicks' : '0 clicks';
+      tbody.innerHTML = sorted.map(s => {
+        const views = s.pageViews ? s.pageViews.join(', ') : '';
+        const clicks = s.clicks ? s.clicks.length + ' clicks' : '0 clicks';
+        const depth = s.scrollDepth != null ? s.scrollDepth + '%' : '—';
+        const exitPage = s.exitPage || '—';
+        const ref = s.ref || '—';
+        const device = s.device || '—';
         return `
           <tr>
-            <td style="font-family: monospace;" title="${session.id}">${String(session.id).substring(0, 16)}…</td>
-            <td>${session.referrer || 'direct'}</td>
-            <td>${formatTime(session.timeSpentMs)}</td>
-            <td><strong>${session.waitlistSignups || 0}</strong></td>
-            <td style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${views}">${views}</td>
-            <td style="color: var(--slate-600);">${clicks}</td>
+            <td style="font-family:monospace;" title="${s.id}">${String(s.id).substring(0, 16)}…</td>
+            <td>${s.referrer || 'direct'}</td>
+            <td>${ref}</td>
+            <td>${device}</td>
+            <td>${depth}</td>
+            <td>${exitPage}</td>
+            <td>${formatTime(s.timeSpentMs)}</td>
+            <td><strong>${s.waitlistSignups || 0}</strong></td>
+            <td style="max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${views}">${views}</td>
+            <td style="color:var(--slate-600);">${clicks}</td>
           </tr>
         `;
       }).join('');
     }
+
+    // ── Init ──────────────────────────────────────────────────────────────────
 
     async function initDashboard() {
       setStatus('Laden…');
